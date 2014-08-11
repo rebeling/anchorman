@@ -51,7 +51,8 @@ def search_text(string, word):
     Returns a tuple of the text before the match, the match and after the match
     if a word exists or returns None is no match is found.
     """
-    re_word = u"".join([u"[%s%s]" % (c.upper(), c.lower()) for c in list(word)])
+    re_word = u"".join([u"[%s%s]" % (c.upper(), c.lower())
+                        for c in list(word)])
     re_capture = u"(\W)(%s)([^\w\-])" % re_word
     match = re.search(re_capture, " %s " % string)
     if match:
@@ -62,12 +63,31 @@ def search_text(string, word):
         return (pre_part, matched_part, post_part)
 
 
-def replace_in_element(element, key, replace, ignore):
+def replace_in_element(element, search_word,
+                       replace=create_link,
+                       ignore=is_link,
+                       search=search_text):
+    """
+    Recursively search `element` and its children for text containing the
+    `search_word`. The first instance of the word that is in an element that
+    doesn't return true if applied to the `ignore` function is removed and an
+    element created by `replace` is inserted in its place.
+
+    The `search` function is applied to the text part of elements. It must
+    return a tuple (text_before_match, matched_text, text_after_match) or None.
+
+    The `replace` function is applied with the matching `search_word` as an
+    argument. It is expected to return an lxml Element.
+
+    The `ignore` function is applied with the containing element as an
+    argument, if the function returns True that element isn't searched, however
+    the ignore function is still applied to each child element.
+    """
 
     # Search in text
     if not ignore(element):
         text = element.text
-        match = search_text(text, key)
+        match = search(text, search_word)
         if match:
             pre_str, matched, post_str = match
             new_element = replace(matched)
@@ -76,14 +96,14 @@ def replace_in_element(element, key, replace, ignore):
 
     # Search child elements
     for child in element.iterchildren():
-        result = replace_in_element(child, key, replace, ignore)
+        result = replace_in_element(child, search_word, replace, ignore)
         if result:
             return True
 
     # Search tail text
     if not ignore(element.getparent()):
         text = element.tail
-        match = search_text(text, key)
+        match = search(text, search_word)
         if match:
             pre_str, matched, post_str = match
             new_element = replace(matched)
@@ -109,9 +129,7 @@ def replace_token(content, key, make_element, ignore_element):
 
     root = to_tree(content)
     updated = replace_in_element(root, key, make_element, ignore_element)
-    if updated:
-        return (from_tree(root), True)
-    return (from_tree(root), False)
+    return (from_tree(root), updated)
 
 
 def add_in_text_links(content, links):
@@ -120,7 +138,8 @@ def add_in_text_links(content, links):
     the matched words are replaced with an "a" tag with the link.
     """
     return reduce(lambda acc, val: replace_token(acc, val[0],
-                                                 partial(create_link, val[0], val[1]),
+                                                 partial(create_link, val[0],
+                                                         val[1]),
                                                  is_link)[0],
                   dict(links).iteritems(), content)
 
