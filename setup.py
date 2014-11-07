@@ -9,5 +9,5 @@ setup(
     author='Retresco',
     packages=['tagger'],
     install_requires=["lxml"],
-    tests_require=["nose"]
+    tests_require=["pytest"]
 )

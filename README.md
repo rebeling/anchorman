@@ -62,10 +62,12 @@ of a word but can also be used to build more complicated tagging strategies.
 
     python setup.py develop
 
-## Testing
-    
-    py.test test
-
 ## Installing 
 
     python setup.py install
+
+## Testing in a virtualenv
+
+    virtualenv .
+    ./bin/pip install -r requirements.txt
+    ./bin/py.test test
