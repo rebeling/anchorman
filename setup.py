@@ -3,11 +3,11 @@
 from setuptools import setup
 
 setup(
-    name='tagger',
-    version='1.0',
-    description='Tag text in HTML documents',
-    author='Retresco',
-    packages=['tagger'],
-    install_requires=["lxml"],
-    tests_require=["pytest"]
+    name='anchorman',
+    version='0.0.1',
+    description='link text in HTML documents',
+    author='Tarn Barford',
+    packages=['anchorman'],
+    install_requires=['lxml'],
+    tests_require=['pytest', 'pytest-cov']
 )
