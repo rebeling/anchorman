@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 import pytest
 from lxml import etree
-from tagger.tagger import remove_elements, \
-    add_in_text_links, search_text
 
-selector = './/a[@class="in-text-link"]'
+from anchorman.linkit import remove_elements
+from anchorman.linkit import add_in_text_links
+from anchorman.linkit import search_text
+
+selector = './/a[@class="anchorman"]'
 
 
 def link(key):
-    link_format = u"<a class=\"in-text-link\" href=\"%s\">%s</a>"
+    link_format = u"<a class=\"anchorman\" href=\"%s\">%s</a>"
     return link_format % (links[key.lower()], key)
 
 links = {
@@ -67,7 +69,7 @@ update_pairs = [
 
 def link_fn(key, value, match):
     element = etree.Element('a')
-    element.attrib["class"] = "in-text-link"
+    element.attrib["class"] = "anchorman"
     element.attrib["href"] = value
     element.text = match
     return element

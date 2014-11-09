@@ -9,7 +9,7 @@ def create_link(term, value, match):
     Create an lxml anchor element
     """
     element = etree.Element('a')
-    element.attrib["class"] = "in-text-link"
+    element.attrib["class"] = "anchorman"
     element.attrib["href"] = value
     element.text = match
     return element
