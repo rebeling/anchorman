@@ -15,8 +15,6 @@ of a word but can also be used to build more complicated annotation strategies.
 Linking example
 ---------------
 
-::
-
     >>> import anchorman
     >>> links = [('fox', 'http://en.wikipedia.org/wiki/Fox'), ('dog', 'http://en.wikipedia.org/wiki/Dog')]
     >>> text = "<p>The quick brown fox jumps over the lazy dog.</p>"
