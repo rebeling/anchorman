@@ -15,13 +15,13 @@ of a word but can also be used to build more complicated annotation strategies.
 Linking example
 ---------------
 
-    ''''python
->>> import anchorman
->>> links = [('fox', 'http://en.wikipedia.org/wiki/Fox'), ('dog', 'http://en.wikipedia.org/wiki/Dog')]
->>> text = "<p>The quick brown fox jumps over the lazy dog.</p>"
->>> anchorman.add_links(links, text)
-<p>The quick brown <a class="anchorman" href="http://www.wikipedia.en/fox">Fox</a> jumps over the lazy dog.</p>
-    ''''
+::
+
+    >>> import anchorman
+    >>> links = [('fox', 'http://en.wikipedia.org/wiki/Fox'), ('dog', 'http://en.wikipedia.org/wiki/Dog')]
+    >>> text = "<p>The quick brown fox jumps over the lazy dog.</p>"
+    >>> anchorman.add_links(links, text)
+    <p>The quick brown <a class="anchorman" href="http://www.wikipedia.en/fox">Fox</a> jumps over the lazy dog.</p>
  
 
 
