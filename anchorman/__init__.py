@@ -11,12 +11,9 @@ Anchorman is a library, written in Python.
 
    >>> import anchorman
    >>> links = [('Fox', 'http://www.wikipedia.en/fox')]
-   >>> text = "<p>The Fox jumps the brown.</p>"
-   >>> a = anchorman.add_links(links, text)
-   >>> a.counts
-   [1]
-   >>> a.text
-   "<p>The <a class="anchorman" href=\"http://www.wikipedia.en/fox\">Fox</a> jumps the brown.</p>"
+   >>> text = "<p>The quick brown fox jumps over the lazy dog.</p>"
+   >>> anchorman.add_links(links, text)
+   <p>The quick brown <a class="anchorman" href="http://www.wikipedia.en/fox">Fox</a> jumps over the lazy dog.</p>
 
 
 :copyright: (c) 2014 by Tarn Barford, Matthias Rebel.

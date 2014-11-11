@@ -1,12 +1,46 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 import re
 from lxml import etree
-from functools import partial
-from tree import to_tree, from_tree, update_text, update_tail
+
+from tree import to_tree, from_tree
 
 
-def create_link(term, value, match):
+class Anchorman(object):
+    """ 
+    Create the main object for the add_links request.
     """
-    Create an lxml anchor element
+    def __init__(self, html, links, text, counts, **kwargs):
+        self.original = html
+        self.links = links
+        self.text = text
+        self.counts = counts
+
+    def __str__(self):
+        return self.text
+
+
+def remove_links(content, selector='.//a[@class="anchorman"]'):
+    """
+    Takes a string of HTML or text and removes all the tags 
+    - specified by selector - and leaves their content.
+    """
+    try:
+        root = to_tree(content)
+        to_remove = root.xpath(selector)
+        for element in to_remove:
+            element.tag = "to-remove"
+            etree.strip_tags(root, "to-remove")
+        return from_tree(root)
+    except Exception, e:
+        return 'exception: %s' % e
+
+
+def link_fn(key, value, match):
+    """ 
+    The link object
+    todo: make it available for personalization of Element and attrib
     """
     element = etree.Element('a')
     element.attrib["class"] = "anchorman"
@@ -15,134 +49,120 @@ def create_link(term, value, match):
     return element
 
 
-def is_link(element):
+def ignore_fn(element):
     """
-    Return true if the element is a link
+    Do not replace and element in itself.
+    todo: use a customized class selector, default anchorman
     """
-    return element is not None and element.tag == "a"
-
-
-def remove_elements(content, selector):
-    """
-    Takes a string of HTML or text and removes all the tags matching the
-    selector.
-
-    Returns a new string.
-    """
-    root = to_tree(content)
-
-    to_remove = root.xpath(selector)
-    for element in to_remove:
-        element.tag = "deleted"
-
-    etree.strip_tags(root, "deleted")
-
-    return from_tree(root)
-
-
-def search_text(string, word):
-    """
-    Takes a string of text and searches for a matching word.
-
-    * Attempts to ignore all punctuation to only.
-    * Matches whole words
-    * Ignores case
-
-    Returns a tuple of the text before the match, the match and after the match
-    if a word exists or returns None is no match is found.
-    """
-    re_word = u"".join([u"[%s%s]" % (c.upper(), c.lower())
-                        for c in list(word)])
-    re_capture = u"(\W)(%s)([^\w\-])" % re_word
-    match = re.search(re_capture, " %s " % string)
-    if match:
-        offset = match.start()
-        pre_part = string[:offset]
-        matched_part = match.groups()[1]
-        post_part = string[offset + len(matched_part):]
-        return (pre_part, matched_part, post_part)
-
-
-def replace_in_element(element, search_word,
-                       replace=create_link,
-                       ignore=is_link,
-                       search=search_text):
-    """
-    Recursively search `element` and its children for text containing the
-    `search_word`. The first instance of the word that is in an element that
-    doesn't return true if applied to the `ignore` function is removed and an
-    element created by `replace` is inserted in its place.
-
-    The `search` function is applied to the text part of elements. It must
-    return a tuple (text_before_match, matched_text, text_after_match) or None.
-
-    The `replace` function is applied with the matching `search_word` as an
-    argument. It is expected to return an lxml Element.
-
-    The `ignore` function is applied with the containing element as an
-    argument, if the function returns True that element isn't searched, however
-    the ignore function is still applied to each child element.
-    """
-
-    # Search in text
-    if not ignore(element):
-        text = element.text
-        match = search(text, search_word)
-        if match:
-            pre_str, matched, post_str = match
-            new_element = replace(matched)
-            update_text(element, pre_str, new_element, post_str)
-            return True
-
-    # Search child elements
-    for child in element.iterchildren():
-        result = replace_in_element(child, search_word, replace, ignore)
-        if result:
-            return True
-
-    # Search tail text
-    if not ignore(element.getparent()):
-        text = element.tail
-        match = search(text, search_word)
-        if match:
-            pre_str, matched, post_str = match
-            new_element = replace(matched)
-            update_tail(element, pre_str, new_element, post_str)
-            return True
-
+    if "anchorman" in element.get("class", ""):
+        return True
     return False
 
 
-def replace_token(content, key, make_element, ignore_element):
+def replace_in_element(element, key, value, replacement_fn, replaces=None,
+        ignore_fn=lambda x: False):
+
+    re_word = key.replace('.', '\.')
+    re_capture = u"([^\wäöüßÄÖÜ])(%s)([^\wäöüßÄÖÜ])" % re_word
+    count = 0
+
+    if element.tail is not None and not ignore_fn(element.getparent()):
+        match = re.search(re_capture, " %s " % element.tail)
+        if match:
+            count += 1
+            text = element.tail
+            new_link = replacement_fn(key, value, match.groups(1)[1])
+            element.addnext(new_link)
+
+            if match.start() == 0:
+                element.tail = ""
+            else:
+                element.tail = text[:match.start() - 1] + match.groups()[0]
+
+            if match.start() + len(''.join(match.groups())) == len(text) + 2:
+                new_link.tail = ""
+            else:
+                new_link.tail = match.groups()[2] + text[match.start()+len(match.groups()[1])+1:]
+
+            if replaces and replaces == count:
+                return count
+
+    if element.text is not None and not ignore_fn(element):
+        match = re.search(re_capture, " %s " % element.text)
+        if match:
+            count += 1
+            text = element.text
+            new_link = replacement_fn(key, value, match.groups(1)[1])
+
+            if match.start() == 0:
+                element.text = ""
+            else:
+                element.text = text[:match.start()-1] + match.groups()[0]
+
+            if match.start() + len(''.join(match.groups())) == len(text) + 2:
+                new_link.tail = ""
+            else:
+                new_link.tail = match.groups()[2] + text[match.start()+len(match.groups()[1])+1:]
+
+            element.insert(0, new_link)
+
+            if replaces and count == replaces:
+                return count
+
+    return count 
+
+
+def replace_token(content, key, value, replacement_fn, count=0, replaces=None):
     """
-    Take content as a string and search
+    Takes content as a string, a match to replace and the repacement.
 
     Updates content with all matches of the "key" variable and surrounds them
-    with an element created by make_element. The key string is not case
-    sensitive and it will only surround matches of the key string that are not
-    surround by other letters, it tries to match whole words.
+    with an "a" tag with a class "in-text-link" and a href of the "value"
+    variable. The key string is not case sensitive and it will only surround
+    matches of the key string that are not surround by other letters, it tries
+    to match whole words.
 
     Ruturns a tuple with the updated content and the number of replacements
     made.
 
     """
-
     root = to_tree(content)
-    updated = replace_in_element(root, key, make_element, ignore_element)
-    return (from_tree(root), updated)
+
+    for element in root.iter():
+        count = replace_in_element(element, key, value, replacement_fn, 
+            replaces=replaces, ignore_fn=ignore_fn)
+
+        if replaces and count == replaces:
+            return (from_tree(root), count)
+
+    return (from_tree(root), count)
 
 
-def add_in_text_links(content, links):
+def add_links(html, links, **kwargs):
     """
-    Takes content and a dictionary of words to highlight and links. Surrounds
-    the matched words are replaced with an "a" tag with the link.
+    Takes html and a dictionary of words to highlight and links. Surrounds
+    the matched words with a specified html element - by default a link.
     """
-    return reduce(lambda acc, val: replace_token(acc, val[0],
-                                                 partial(create_link, val[0],
-                                                         val[1]),
-                                                 is_link)[0],
-                  dict(links).iteritems(), content)
+    replacement_format = link_fn
+    enriched = reduce(lambda acc, val: 
+        replace_token(acc, 
+                      val[0], 
+                      val[1], 
+                      replacement_format, 
+                      replaces=kwargs.get('replaces', None))[0],
+        dict(links).iteritems(),
+        html
+    )
+    # todo: add the counts for eaach item ...may position too
+    counts = [1]
+    return Anchorman(html, links, enriched, counts, **kwargs)
+
 
 if __name__ == "__main__":
-    text = '<p><br/>Fox.</p>'
-    #print replace_token(text, "Fox", "hello", link_fn)
+    text = '<p>The quick brown fox. jumps over the lazy dog.</p>'
+    links = [('fox', 'http://en.wikipedia.org/wiki/Fox'), ('mammals', 'http://en.wikipedia.org/wiki/Mammal')]
+    # counts should be = [1, 0]
+    # print replace_token(text, "Fox.", "hello", link_fn)
+    a = add_links(text, links)
+    print a
+    print remove_links(a.text)
