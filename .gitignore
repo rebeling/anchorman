@@ -9,7 +9,6 @@ lib
 .Python
 
 junit.xml
-coverage.xml
 
 *.egg-info
 *.pyc
