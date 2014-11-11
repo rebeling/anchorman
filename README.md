@@ -19,7 +19,7 @@ Linking example
     >>> links = [('fox', 'http://en.wikipedia.org/wiki/Fox'), ('dog', 'http://en.wikipedia.org/wiki/Dog')]
     >>> text = "<p>The quick brown fox jumps over the lazy dog.</p>"
     >>> anchorman.add_links(links, text)
-    <p>The quick brown <a class="anchorman" href="http://www.wikipedia.en/fox">Fox</a> jumps over the lazy dog.</p>
+    <p>The quick brown <a class="anchorman" href="http://www.wikipedia.en/Fox">fox</a> jumps over the lazy <a class="anchorman" href="http://www.wikipedia.en/Dog">dog</a>.</p>
  
 
 
