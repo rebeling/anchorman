@@ -1,4 +1,5 @@
-## Anchorman
+Anchorman
+=========
 
 Find words in HTML and replace them with a new element. Generally used as an
 unsophisticated way of marking terms with anchors, e.g. `a` or `abbr` tags.
@@ -11,7 +12,8 @@ replacements and the result text.
 This function can be easily used to update a single occurrence or all occurrences
 of a word but can also be used to build more complicated annotation strategies.
 
-## Linking example
+Linking example
+---------------
 
    >>> import anchorman
    >>> links = [('fox', 'http://en.wikipedia.org/wiki/Fox'), ('dog', 'http://en.wikipedia.org/wiki/Dog')]
@@ -20,21 +22,25 @@ of a word but can also be used to build more complicated annotation strategies.
    <p>The quick brown <a class="anchorman" href="http://www.wikipedia.en/fox">Fox</a> jumps over the lazy dog.</p>
 
 
-## Building  
+Building
+--------
 
     python setup.py develop
 
-## Installing 
+Installing
+----------
 
     python setup.py install
 
-## Testing in a virtualenv
+Testing in a virtualenv
+-----------------------
 
     virtualenv .
     ./bin/pip install -r requirements.txt
     ./bin/py.test test
 
-## Todos
+Todos
+-----
 
     * make it available for personalization of Element and attrib
     * use a customized class selector, default anchorman
