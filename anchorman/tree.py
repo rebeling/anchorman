@@ -1,8 +1,16 @@
-from lxml import etree
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from lxml import etree, html
+
+
+
+def to_string(e):
+    return html.tostring(e)
 
 
 def to_tree(s):
-    xml = "<root>%s</root>" % s
+    xml = "<root> %s </root>" % s
     return etree.fromstring(xml)
 
 

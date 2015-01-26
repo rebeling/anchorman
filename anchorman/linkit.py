@@ -3,49 +3,84 @@
 
 import re
 from lxml import etree
-
 from tree import to_tree, from_tree
 
 
-class Anchorman(object):
-    """ 
-    Create the main object for the add_links request.
+def remove_links(content, selector='.//a[@class="anchorman"]', markup_format={}):
     """
-    def __init__(self, html, links, text, counts, **kwargs):
-        self.original = html
-        self.links = links
-        self.text = text
-        self.counts = counts
-
-    def __str__(self):
-        return self.text
-
-
-def remove_links(content, selector='.//a[@class="anchorman"]'):
-    """
-    Takes a string of HTML or text and removes all the tags 
+    Takes a string of HTML or text and removes all the tags
     - specified by selector - and leaves their content.
     """
-    try:
-        root = to_tree(content)
-        to_remove = root.xpath(selector)
-        for element in to_remove:
-            element.tag = "to-remove"
-            etree.strip_tags(root, "to-remove")
-        return from_tree(root)
-    except Exception, e:
-        return 'exception: %s' % e
+    if 'highlighting' in markup_format:
+        # remove pre and post tags
+        pre = markup_format['highlighting'].get('pre', None)
+        post = markup_format['highlighting'].get('post', None)
+        if pre and post:
+            content = content.replace(pre, '')
+            content = content.replace(post, '')
+        return content
+    else:
+        # remove by selector
+        try:
+            # print selector
+            root = to_tree(content)
+            to_remove = root.xpath(selector)
+            for element in to_remove:
+                element.tag = "to-remove"
+                etree.strip_tags(root, "to-remove")
+            return from_tree(root)
+        except Exception, e:
+            return 'exception: %s' % e
 
 
-def link_fn(key, value, match):
-    """ 
-    The link object
-    todo: make it available for personalization of Element and attrib
-    """
-    element = etree.Element('a')
-    element.attrib["class"] = "anchorman"
-    element.attrib["href"] = value
-    element.text = match
+def linker_format(link_format):
+    new_link_format, selector = None, None
+    if link_format:
+        rmtuple = None
+        if 'rm-identifier' in link_format:
+            rmtuple = ("data-rm-key", link_format['rm-identifier'])
+            rm = link_format.get('attributes', [])
+            rm.append(rmtuple)
+            link_format['attributes'] = rm
+        tag = link_format.get('tag', None)
+        if tag:
+            selector = './/%s' % (tag)
+            if rmtuple:
+                selector += '[@%s="%s"]' % (rmtuple[0], rmtuple[1])
+        # else do not overwrite the default self.selector
+        new_link_format = {
+            'tag': link_format.get('tag', 'a'),
+            'value_key': link_format.get('value_key', 'href'),
+            'attributes': link_format.get('attributes', [])
+            }
+    return new_link_format, selector
+
+
+def link_fn(key, value, key_attributes, match, attributes=None):
+    # print 'link_fn', key, value, key_attributes, match
+    # apply special attributes for every item to global attributes or iteself
+    ka_applied, ka = [], {}
+    if key_attributes:
+        ka = dict(key_attributes)
+
+    if attributes == None:
+        attributes = {}
+    element = etree.Element(attributes.get('tag', 'a'))
+    element.attrib[attributes.get('value_key', 'href')] = value
+
+    for (k,v) in attributes.get('attributes', [("class", "anchorman")]):
+        if k in ka:
+            v = "%s %s" % (v, ka[k])
+            ka_applied.append(k)
+        element.attrib[k] = v
+
+    rest = list(set(ka.keys()) - set(ka_applied))
+    if rest:
+        for r in rest:
+            element.attrib[r] = ka[r]
+
+
+    element.text = match.groups()[1]
     return element
 
 
@@ -59,62 +94,138 @@ def ignore_fn(element):
     return False
 
 
-def replace_in_element(element, key, value, replacement_fn, replaces=None,
-        ignore_fn=lambda x: False):
+def get_newlink(key, value, key_attributes, replacement_fn, match, attributes):
+    # create a new_link of the item and replace occurences
+    return replacement_fn(key,
+                          value,
+                          key_attributes,
+                          match,
+                          attributes=attributes)
+
+
+def replace_in_element(element, key, value, key_attributes, replacement_fn,
+    replaces=None, ignore_fn=lambda x: False, attributes=None, all_links=[]):
 
     re_word = key.replace('.', '\.')
-    re_capture = u"([^\wäöüßÄÖÜ])(%s)([^\wäöüßÄÖÜ])" % re_word
-    count = 0
+    re_capture = u"([^\w\-/äöüßÄÖÜ])(%s)([^\w\-/äöüßÄÖÜ])" % re_word
 
-    if element.tail is not None and not ignore_fn(element.getparent()):
-        match = re.search(re_capture, " %s " % element.tail)
-        if match:
-            count += 1
-            text = element.tail
-            new_link = replacement_fn(key, value, match.groups(1)[1])
-            element.addnext(new_link)
+    if 'case-sensitive' in attributes:
+        if attributes['case-sensitive'] == False:
+            re_capture = u"([^\w\-/äöüßÄÖÜ])(%s|%s|%s)([^\w\-/äöüßÄÖÜ])" % (re_word,re_word.lower(),re_word.title())
 
-            if match.start() == 0:
-                element.tail = ""
-            else:
-                element.tail = text[:match.start() - 1] + match.groups()[0]
+    highlighting = True if 'highlighting' in attributes else False
 
-            if match.start() + len(''.join(match.groups())) == len(text) + 2:
-                new_link.tail = ""
-            else:
-                new_link.tail = match.groups()[2] + text[match.start()+len(match.groups()[1])+1:]
+    if highlighting:
+        # replace strings with string
 
-            if replaces and replaces == count:
-                return count
+        for tail in [False, True]:
+            thistext = element.tail if tail else element.text
 
-    if element.text is not None and not ignore_fn(element):
-        match = re.search(re_capture, " %s " % element.text)
-        if match:
-            count += 1
-            text = element.text
-            new_link = replacement_fn(key, value, match.groups(1)[1])
+            if thistext != None:
+                iterator = re.finditer(re_capture, " %s " % thistext)
+                iterator = reversed(list(iterator))
+                final, lastend, count = [], 0, 0
 
-            if match.start() == 0:
-                element.text = ""
-            else:
-                element.text = text[:match.start()-1] + match.groups()[0]
+                pre = attributes['highlighting'].get('pre', '-set-pre-marker-')
+                post = attributes['highlighting'].get('post', '-set-post-marker-')
+                if iterator:
+                    for match in iterator:
+                        start, end = match.span()
+                        # check if there is not a starting markup in the first
+                        # part already ...no markup inside of the same markup
+                        pre_c1 = thistext[:start].count(pre)
+                        post_c1 = thistext[:start].count(post)
+                        if pre_c1 == post_c1:
+                            thistext = "%s%s%s%s%s" % (
+                                thistext[:start],
+                                pre,
+                                match.groups()[1],
+                                post,
+                                thistext[end-2:])
+                        if tail:
+                            element.tail = thistext
+                        else:
+                            element.text = thistext
 
-            if match.start() + len(''.join(match.groups())) == len(text) + 2:
-                new_link.tail = ""
-            else:
-                new_link.tail = match.groups()[2] + text[match.start()+len(match.groups()[1])+1:]
-
-            element.insert(0, new_link)
-
-            if replaces and count == replaces:
-                return count
-
-    return count 
+                        count += 1
 
 
-def replace_token(content, key, value, replacement_fn, count=0, replaces=None):
+    else:
+        # replace string with links in element
+        # print "%s\t%s\t%s\t\t%s" % (element.tag, element.attrib, element.text, element.tail)
+        final, lastend, count = [], 0, 0
+
+        if element.text:
+
+            iterator = re.finditer(re_capture, " %s " % element.text)
+            allitems = [(match.start(), match.end(), match) for match in iterator]
+            if allitems:
+
+                chain, lastend, lastrest = [], 0, None
+                for i,(start,end,match) in enumerate(allitems):
+
+                    # print match
+                    # print match.groups()
+
+                    before = element.text[lastend:start]
+                    chain.append((before, match))
+                    lastend = end-2
+                    lastrest = element.text[lastend:]
+
+                chain.append((lastrest, match))
+                chain.reverse()
+
+                for i,(after,match) in enumerate(chain):
+                    newlink = get_newlink(key, value, key_attributes,
+                        replacement_fn, match, attributes)
+                    if element.tag != newlink.tag:
+                        newlink.tail = after
+                        if i < len(chain)-1:
+                            element.insert(0, newlink)
+                        else:
+                            element.text = after
+
+        if element.tail:
+
+            iterator = re.finditer(re_capture, " %s " % element.tail)
+            allitems = [(match.start(), match.end(), match) for match in iterator]
+            if allitems:
+
+                chain, lastend, lastrest = [], 0, None
+                for i,(start,end,match) in enumerate(allitems):
+
+                    # print match
+                    # print match.groups()
+
+                    before = element.tail[lastend:start]
+                    chain.append(before)
+                    lastend = end-2
+                    lastrest = element.tail[lastend:]
+
+                chain.append(lastrest)
+                chain.reverse()
+                element.tail = ''
+
+                for i,textbefore in enumerate(chain):
+                    if textbefore:
+                        if i == 0:
+                            element.tail = textbefore
+                            continue
+                        newlink = get_newlink(key, value, key_attributes,
+                            replacement_fn, match, attributes)
+                        element.addnext(newlink)
+                        if i <= len(chain)-1:
+                            element.tail = textbefore
+
+    return count
+
+
+
+
+def replace_token(content, key, value, key_attributes, replacement_fn,
+    count=0, replaces=None, link_format=None):
     """
-    Takes content as a string, a match to replace and the repacement.
+    Takes content as a string, a match to replace and the replacement.
 
     Updates content with all matches of the "key" variable and surrounds them
     with an "a" tag with a class "in-text-link" and a href of the "value"
@@ -129,8 +240,14 @@ def replace_token(content, key, value, replacement_fn, count=0, replaces=None):
     root = to_tree(content)
 
     for element in root.iter():
-        count = replace_in_element(element, key, value, replacement_fn, 
-            replaces=replaces, ignore_fn=ignore_fn)
+        count = replace_in_element( element,
+                                    key,
+                                    value,
+                                    key_attributes,
+                                    replacement_fn,
+                                    replaces=replaces,
+                                    ignore_fn=ignore_fn,
+                                    attributes=link_format)
 
         if replaces and count == replaces:
             return (from_tree(root), count)
@@ -138,31 +255,36 @@ def replace_token(content, key, value, replacement_fn, count=0, replaces=None):
     return (from_tree(root), count)
 
 
-def add_links(html, links, **kwargs):
+def add_links(text, links, **kwargs):
     """
     Takes html and a dictionary of words to highlight and links. Surrounds
     the matched words with a specified html element - by default a link.
     """
     replacement_format = link_fn
-    enriched = reduce(lambda acc, val: 
-        replace_token(acc, 
-                      val[0], 
-                      val[1], 
-                      replacement_format, 
-                      replaces=kwargs.get('replaces', None))[0],
-        dict(links).iteritems(),
-        html
+    enriched = reduce(lambda acc, val:
+        replace_token(acc,
+                      val.keys()[0],
+                      val[val.keys()[0]]['value'],
+                      val[val.keys()[0]].get('attributes', []),
+                      replacement_format,
+                      replaces=kwargs.get('replaces_per_item', None),
+                      link_format=kwargs.get('markup_format', None),
+                      )[0],
+        links,
+        text
     )
-    # todo: add the counts for eaach item ...may position too
+
     counts = [1]
-    return Anchorman(html, links, enriched, counts, **kwargs)
+    return enriched, counts
 
 
 if __name__ == "__main__":
-    text = '<p>The quick brown fox. jumps over the lazy dog.</p>'
-    links = [('fox', 'http://en.wikipedia.org/wiki/Fox'), ('mammals', 'http://en.wikipedia.org/wiki/Mammal')]
-    # counts should be = [1, 0]
-    # print replace_token(text, "Fox.", "hello", link_fn)
-    a = add_links(text, links)
-    print a
-    print remove_links(a.text)
+
+    # text = '<p>The quick brown fox. jumps over the lazy dog.</p>'
+    # links = [('fox', 'http://en.wikipedia.org/wiki/Fox'), ('mammals', 'http://en.wikipedia.org/wiki/Mammal')]
+    # # counts should be = [1, 0]
+    # # print replace_token(text, "Fox.", "hello", link_fn)
+    # a = add_links(text, links)
+    # print a
+    # print remove_links(a.text)
+    pass
