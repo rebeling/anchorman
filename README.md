@@ -20,7 +20,7 @@ Linking example
     >>> text = "<p>The quick brown fox jumps over the lazy dog.</p>"
     >>> anchorman.add_links(links, text)
     <p>The quick brown <a class="anchorman" href="http://www.wikipedia.en/Fox">fox</a> jumps over the lazy <a class="anchorman" href="http://www.wikipedia.en/Dog">dog</a>.</p>
- 
+
 
 
 Building
@@ -42,7 +42,4 @@ Testing in a virtualenv
 
 Todos
 -----
-
-    * make it available for personalization of Element and attrib
-    * use a customized class selector, default anchorman
-    * add the counts for each linking ...may position too
+    * return linking info: counts, positions
