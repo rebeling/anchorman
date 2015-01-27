@@ -42,5 +42,5 @@ Testing in a virtualenv
 
 Todos
 -----
-    * return linking info
+    * return more sophisticated linking info
     * improve case sensitiv option

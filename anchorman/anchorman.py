@@ -4,6 +4,7 @@
 from linkit import linker_format
 from linkit import add_links
 from linkit import remove_links
+from utils import sort_for_longest_match
 
 
 class Anchorman(object):
@@ -12,15 +13,12 @@ class Anchorman(object):
     """
     def __init__(self, *args, **kwargs):
         self.link_format = None
-        self.selector = './/a' #[@class="anchorman"]'
+        self.selector = './/a'
         self.set_link_format(kwargs)
-        self.result = ''
-        self.counts = 0
-
+        self.result, self.counts = None, None
 
     def __str__(self):
         return self.result
-
 
     def set_link_format(self, kwargs):
         markup_format = kwargs.get('markup_format', {})
@@ -31,23 +29,15 @@ class Anchorman(object):
         self.selector = selector if selector else self.selector
 
     def add(self, links, html, **kwargs):
-
-        keys = {x.keys()[0]:x for x in links}
-        xs = sorted(keys.keys(), key=len, reverse=True)
-        b = []
-        for y in xs:
-            b.append(keys[y])
-        links = b
-
         self.set_link_format(kwargs)
         kwargs['link_format'] = self.link_format
         markup_format = kwargs.get('markup_format', {})
         if markup_format:
             self.markup_format = markup_format
-        enriched, counts = add_links(html, links, **kwargs)
-        self.result = enriched
-        self.counts = counts
-        return enriched
+        self.result, self.counts = add_links(html,
+                                             sort_for_longest_match(links),
+                                             **kwargs)
+        return self.result
 
     def remove(self, *args, **kwargs):
         self.set_link_format(kwargs)
@@ -69,11 +59,11 @@ if __name__ == '__main__':
             ('class', 'anchorman')
             ],
         'rm-identifier': 'anchorman-link',
-        'highlighting': {
-            'pre': '${{',
-            'post': '}}'
-            },
-        'case-sensitive': False,
+        # 'highlighting': {
+        #     'pre': '${{',
+        #     'post': '}}'
+        #     },
+        # 'case-sensitive': False,
         }
 
     links = [
