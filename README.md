@@ -42,4 +42,5 @@ Testing in a virtualenv
 
 Todos
 -----
-    * return linking info: counts, positions
+    * return linking info
+    * improve case sensitiv option
