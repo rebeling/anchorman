@@ -21,16 +21,12 @@ def remove_links(content, selector='.//a[@class="anchorman"]', markup_format={})
         return content
     else:
         # remove by selector
-        try:
-            # print selector
-            root = to_tree(content)
-            to_remove = root.xpath(selector)
-            for element in to_remove:
-                element.tag = "to-remove"
-                etree.strip_tags(root, "to-remove")
-            return from_tree(root)
-        except Exception, e:
-            return 'exception: %s' % e
+        root = to_tree(content)
+        to_remove = root.xpath(selector)
+        for element in to_remove:
+            element.tag = "to-remove"
+            etree.strip_tags(root, "to-remove")
+        return from_tree(root)
 
 
 def linker_format(link_format):
@@ -56,15 +52,13 @@ def linker_format(link_format):
     return new_link_format, selector
 
 
-def link_fn(key, value, key_attributes, match, attributes=None):
+def link_fn(key, value, key_attributes, match, attributes={}):
     # print 'link_fn', key, value, key_attributes, match
     # apply special attributes for every item to global attributes or iteself
     ka_applied, ka = [], {}
     if key_attributes:
         ka = dict(key_attributes)
 
-    if attributes == None:
-        attributes = {}
     element = etree.Element(attributes.get('tag', 'a'))
     element.attrib[attributes.get('value_key', 'href')] = value
 
@@ -84,14 +78,14 @@ def link_fn(key, value, key_attributes, match, attributes=None):
     return element
 
 
-def ignore_fn(element):
-    """
-    Do not replace and element in itself.
-    todo: use a customized class selector, default anchorman
-    """
-    if "anchorman" in element.get("class", ""):
-        return True
-    return False
+# def ignore_fn(element):
+#     """
+#     Do not replace and element in itself.
+#     todo: use a customized class selector, default anchorman
+#     """
+#     if "anchorman" in element.get("class", ""):
+#         return True
+#     return False
 
 
 def get_newlink(key, value, key_attributes, replacement_fn, match, attributes):
@@ -104,23 +98,24 @@ def get_newlink(key, value, key_attributes, replacement_fn, match, attributes):
 
 
 def replace_in_element(count, element, key, value, key_attributes, replacement_fn,
-    replaces=None, ignore_fn=lambda x: False, attributes=None, all_links=[]):
+    replaces=None, attributes=None, all_links=[]): # ignore_fn=lambda x: False,
 
     re_word = key.replace('.', '\.')
     re_capture = u"([^\w\-/äöüßÄÖÜ])(%s)([^\w\-/äöüßÄÖÜ])" % re_word
+    highlighting = False
 
-    if 'case-sensitive' in attributes:
-        if attributes['case-sensitive'] == False:
-            re_capture = u"([^\w\-/äöüßÄÖÜ])(%s|%s|%s)([^\w\-/äöüßÄÖÜ])" % (re_word,re_word.lower(),re_word.title())
-
-    highlighting = True if 'highlighting' in attributes else False
+    if attributes:
+        if 'case-sensitive' in attributes:
+            if attributes['case-sensitive'] == False:
+                re_capture = u"([^\w\-/äöüßÄÖÜ])(%s|%s|%s)([^\w\-/äöüßÄÖÜ])" % (
+                    re_word, re_word.lower(), re_word.title())
+        if 'highlighting' in attributes:
+            highlighting = True
 
     if highlighting:
         # replace strings with string
-
         for tail in [False, True]:
             thistext = element.tail if tail else element.text
-
             if thistext != None:
                 iterator = re.finditer(re_capture, " %s " % thistext)
                 iterator = reversed(list(iterator))
@@ -137,22 +132,16 @@ def replace_in_element(count, element, key, value, key_attributes, replacement_f
                         post_c1 = thistext[:start].count(post)
                         if pre_c1 == post_c1:
                             count += 1
-                            thistext = "%s%s%s%s%s" % (
-                                thistext[:start],
-                                pre,
-                                match.groups()[1],
-                                post,
+                            thistext = "%s%s%s%s%s" % (thistext[:start],
+                                pre, match.groups()[1], post,
                                 thistext[end-2:])
                         if tail:
                             element.tail = thistext
                         else:
                             element.text = thistext
 
-
-
     else:
         # replace string with links in element
-        # print "%s\t%s\t%s\t\t%s" % (element.tag, element.attrib, element.text, element.tail)
         final, lastend= [], 0
 
         if element.text:
@@ -187,10 +176,8 @@ def replace_in_element(count, element, key, value, key_attributes, replacement_f
             iterator = re.finditer(re_capture, " %s " % element.tail)
             allitems = [(match.start(), match.end(), match) for match in iterator]
             if allitems:
-
                 chain, lastend, lastrest = [], 0, None
                 for i,(start,end,match) in enumerate(allitems):
-
                     before = element.tail[lastend:start]
                     chain.append(before)
                     lastend = end-2
@@ -239,7 +226,7 @@ def replace_token(content, key, value, key_attributes, replacement_fn,
                                     key_attributes,
                                     replacement_fn,
                                     replaces=replaces,
-                                    ignore_fn=ignore_fn,
+                                    # ignore_fn=ignore_fn,
                                     attributes=link_format)
 
         if replaces and count == replaces:
@@ -264,7 +251,7 @@ def add_links(text, links, **kwargs):
         text, count = replace_token(
             text,
             key,
-            link_key['value'],
+            link_key.get('value', key),
             link_key.get('attributes', []),
             replacement_format,
             replaces=kwargs.get('replaces_per_item', None),
@@ -275,13 +262,5 @@ def add_links(text, links, **kwargs):
     return text, counts
 
 
-if __name__ == "__main__":
-
-    # text = '<p>The quick brown fox. jumps over the lazy dog.</p>'
-    # links = [('fox', 'http://en.wikipedia.org/wiki/Fox'), ('mammals', 'http://en.wikipedia.org/wiki/Mammal')]
-    # # counts should be = [1, 0]
-    # # print replace_token(text, "Fox.", "hello", link_fn)
-    # a = add_links(text, links)
-    # print a
-    # print remove_links(a.text)
-    pass
+# if __name__ == "__main__":
+#     pass
