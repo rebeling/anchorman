@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from anchorman import *
+import anchorman
 
 
-original = (
-    """<p>Foxes are small-to-medium-sized, omnivorous mammals belonging to several genera of the Canidae family. Foxes are slightly smaller than a medium-size domestic dog, with a flattened skull, upright triangular ears, a pointed, slightly upturned snout, and a long bushy tail (or brush).</p>
+text = (
+    """<p>Foxes are small-to-medium-sized, omnivorous mammals belonging to several genera of the Canidae family. Foxes are slightly smaller than a medium-size domestic dog, with a flattened skull, upright triangular ears,<br> a pointed, slightly upturned snout, and a long bushy tail (or brush).</p>
     <p>Twelve species belong to the monophyletic group of Vulpes genus of "true foxes". Approximately another 25 current or extinct species are always or sometimes called foxes; these foxes are either part of the paraphyletic group of the South American foxes and the outlying group, which consists of Bat-eared fox, Gray fox, and Island fox.[1] Foxes are found on every continent except Antarctica. By far the most common and widespread <b>species</b> of fox is the red fox <i>(Vulpes vulpes)</i> with about 47 recognized sub-species.[2] The global distribution of foxes, together with their widespread reputation for cunning, has contributed to their prominence in popular culture and folklore in many societies around the world. The hunting of foxes with packs of hounds, long an established pursuit in Europe, especially in the British Isles, was exported by European settlers to various parts of the New World.</p>"""
     )
 
@@ -46,10 +46,9 @@ def test_anchorman_class(tmpdir):
         }
     ]
 
-    a = Anchorman()
-    a.add(
+    a = anchorman.add(
+        text,
         links,
-        original,
         markup_format=markup_format, # default: a, href=value, class="anchorman"
         replaces_per_item=1          # default: all occurences
         )
@@ -65,9 +64,9 @@ def test_anchorman_class(tmpdir):
 
     markup_items = [{'tail': {}}]
     a.add(
-        markup_items,
         a.result,
-        markup_format=markup_format2, # default: a, href=value, class="anchorman"
+        markup_items,
+        markup_format=markup_format2 # default: a, href=value, class="anchorman"
         )
     assert '${{tail}}' in a.result
     assert a.counts == [('tail', 1)]
@@ -77,6 +76,6 @@ def test_anchorman_class(tmpdir):
     # remove the old links also
     a.remove(markup_format=markup_format)
 
-    assert original == a.result
+    assert text.replace('<br>', '<br/>') == a.result
 
     assert a.__str__() == a.result
