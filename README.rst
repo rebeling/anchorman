@@ -1,9 +1,11 @@
 Anchorman
 ============
 
-Turn your text into a [hypertext](http://en.wikipedia.org/wiki/Hypertext).
+Turn your text into a hypertext_.
 Anchorman provides a class to add and remove elements into a text the way
 you specify it, as anchors, links, abbreviations or just `highlighting` them.
+
+.. _hypertext: http://en.wikipedia.org/wiki/Hypertext
 
 
 Example
@@ -21,7 +23,7 @@ Example
     the lazy <a href="/wiki/dog" class="anchorman">dog</a>.
 
 
-See `More examples`_ section at bottom.
+See `More examples section`_ at bottom.
 
 
 Building
@@ -33,7 +35,7 @@ Building
 
 
 Installing
---------------
+```````````````````````````````````````
 
 .. code::
 
@@ -41,7 +43,7 @@ Installing
 
 
 Testing in a virtualenv
---------------
+```````````````````````````````````````
 
 .. code::
 
@@ -49,14 +51,6 @@ Testing in a virtualenv
     ./bin/pip install -r requirements.txt
     ./bin/py.test test
 
-
-Todos
---------------
-
-    * return more sophisticated linking info
-    * improve case sensitiv replacement option
-    * refactor the module interface
-    * prepare big data set input, e.g. 4000 abbreviations at once
 
 
 More examples
@@ -144,4 +138,13 @@ Highlighting a term with pre- an postfix, e.g. variables in templates or low lev
     >>> print a
     The quick brown ${{fox}} jumps over the lazy dog while the red
     ${{fox}} sleeps.
+
+
+Todos
+--------------
+
+    * return more sophisticated linking info
+    * improve case sensitiv replacement option
+    * refactor the module interface
+    * prepare big data set input, e.g. 4000 abbreviations at once
 
