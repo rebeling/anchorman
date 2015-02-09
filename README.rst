@@ -1,4 +1,3 @@
-============
 Anchorman
 ============
 
@@ -8,9 +7,9 @@ you specify it, as anchors, links, abbreviations or just `highlighting` them.
 
 
 Example
-=========
+--------------
 
-.. code:: python
+.. code::
     >>> import anchorman
     >>> text = "The quick brown fox jumps over the lazy dog."
     >>> links = [{'fox': {'value': '/wiki/fox'}},
@@ -21,31 +20,34 @@ Example
     the lazy <a href="/wiki/dog" class="anchorman">dog</a>.
 
 
-See [more examples](#user-content-more-examples) at bottom.
+See `More examples`_ section at bottom.
 
 
 Building
-=========
+--------------
 
+.. code::
     python setup.py develop
 
 
 Installing
-==========
+--------------
 
+.. code::
     python setup.py install
 
 
 Testing in a virtualenv
-=========================
+--------------
 
+.. code::
     virtualenv .
     ./bin/pip install -r requirements.txt
     ./bin/py.test test
 
 
 Todos
-==========
+--------------
 
     * return more sophisticated linking info
     * improve case sensitiv replacement option
@@ -53,41 +55,50 @@ Todos
     * prepare big data set input, e.g. 4000 abbreviations at once
 
 
-<a name="more-examples"></a> More examples
-============================================================
+More examples
+----------------------------------------------
 
-.. code:: python
+.. code::
     >>> import anchorman
     >>> text = "The quick brown fox jumps over the lazy dog while the red
     fox sleeps."
 
 
-Parameters
-------------------------------------------------------------------------
+**Parameters**
+
 
 Toplevel params as **kwargs
 
- Parameter         |      Note
--------------------|----------------------------------------------------
-markup_format      | tag, value attribute or highlighting with pre n post
-replaces_per_item  | default is replace all occurences
+
+
+
+================== =============
+ Parameter           Description
+================== =============
+markup_format       tag, value attribute or highlighting with pre n post
+------------------ -------------
+replaces_per_item   default is replace all occurences
+================== =============
 
 
 Params on markup_format level
 
- Parameter     |      Note
----------------|--------------------------------------------------------
-case-sensitive |  default is True, with **False** replace: Fox, fox and FOX
-rm-identifier  |  create identifier to delete specific items
+================== =============
+ Parameter           Description
+================== =============
+case-sensitive      default is True, with **False** replace: Fox, fox and FOX
+------------------ -------------
+rm-identifier       create identifier to delete specific items
+================== =============
 
 
-Links with different attributes
--------------------------------------------------------
+**Links with different attributes**
+
 
 Define general attribute, value pairs on markup_format level and more specific
 ones at link level as follows.
 
-.. code:: python
+.. code::
     >>> markup_format = {
             'tag': 'a',
             'value_key': 'href',
@@ -112,12 +123,11 @@ ones at link level as follows.
     class="anchorman animal" title="Fix und Foxi">red fox</a> sleeps.
 
 
-Highlighting
--------------------------------------------------------
+**Highlighting**
 
 Highlighting a term with pre- an postfix, e.g. variables in templates or low level tags.
 
-.. code:: python
+.. code::
     >>> links = [{'fox': {}}]
     >>> markup_format = {
             'highlighting': {
