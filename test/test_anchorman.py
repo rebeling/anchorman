@@ -1,75 +1,81 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 import pytest
 import anchorman
 
 
-def link(key):
-    link_format = u"<a class=\"anchorman\" href=\"%s\">%s</a>"
-    return link_format % (links[key.lower()], key)
+text = (
+    """<p>Foxes are small-to-medium-sized, omnivorous mammals belonging to several genera of the Canidae family. Foxes are slightly smaller than a medium-size domestic dog, with a flattened skull, upright triangular ears,<br> a pointed, slightly upturned snout, and a long bushy tail (or brush).</p>
+    <p>Twelve species belong to the monophyletic group of Vulpes genus of "true foxes". Approximately another 25 current or extinct species are always or sometimes called foxes; these foxes are either part of the paraphyletic group of the South American foxes and the outlying group, which consists of Bat-eared fox, Gray fox, and Island fox.[1] Foxes are found on every continent except Antarctica. By far the most common and widespread <b>species</b> of fox is the red fox <i>(Vulpes vulpes)</i> with about 47 recognized sub-species.[2] The global distribution of foxes, together with their widespread reputation for cunning, has contributed to their prominence in popular culture and folklore in many societies around the world. The hunting of foxes with packs of hounds, long an established pursuit in Europe, especially in the British Isles, was exported by European settlers to various parts of the New World.</p>"""
+    )
 
 
-links = {
-    u"fox": "a red animal",
-    u"dog": "not a fox",
-    u"föx": "a unicode red animal"
-}
+markup_format = {
+    'tag': 'a',
+    'value_key': 'href',
+    'attributes': [
+        ('class', 'anchorman')
+        ],
+    'rm-identifier': 'anchorman-link',
+    }
 
-update_pairs = [
-    (u"the unicode föx", u"the unicode %s" % link(u"föx")),
-    (u"<p><b>fox</b></p>fox", u"<p><b>%s</b></p>%s" % (link("fox"),link("fox"))),
-    (u'<a/>dog', u'<a/>%s' % link("dog")),
-    (u'<a/>dog.', u'<a/>%s.' % link("dog")),
-    (u'<a href="a red animal">rat</a> dog', u'<a href="a red animal">rat</a> %s' % link("dog")),
-    (u'<a href="a red animal">rat</a>!dog', u'<a href="a red animal">rat</a>!%s' % link("dog")),
-    (u"quick brown fox jumped over the lazy cat", u"quick brown %s jumped over the lazy cat" % link("fox")),
-    (u"quick brown cat jumped over the lazy dog", u"quick brown cat jumped over the lazy %s" % link("dog")),
-    (u"quick brown fox jumped over the lazy dog", u"quick brown %s jumped over the lazy %s" % (link("fox"), link("dog"))),
-    (u"<b>fox</b><b>fox</b>", u"<b>%s</b><b>%s</b>" % (link("fox"),link("fox"))),
-    (u"is foxdog a dogfox?", u"is foxdog a dogfox?"),
-    (u"fox", u"%s" % link("fox")),
-    (u"fox and fox", u"%s and fox" % link("fox")),
-    (u"Is it a dog? No, it's fox!", u"Is it a %s? No, it's %s!" % (link("dog"), link("fox"))),
-    (u'<p class="fox">fox</p>', u'<p class="fox">%s</p>' % link("fox")),
-    (u"<p>fox</p>", u"<p>%s</p>" % link("fox"))
-
-    # do we really want this or specify: ['fox', 'Fox', 'FOX']
-    # (u"the captial FOX is shouty", u"the captial fox is shouty" % link("FOX")),
-]
-
-update_pairs_with_kwargs = [
-    # todo: replace the first occurence first and so on
-    (u"<p><b>fox</b></p>fox and fox", u"<p><b>fox</b></p>%s and fox" % link("fox")),
-]
-
-@pytest.fixture(scope='module', params=update_pairs)
-def add_links(request):
-    original, with_links = request.param
-    return (with_links, anchorman.add_links(original, links))
+markup_format2 = {
+    'rm-identifier': 'anchorman-marker',
+    'case-sensitive': False,
+    'highlighting': {
+        'pre': '${{',
+        'post': '}}'
+        }
+    }
 
 
-@pytest.fixture(scope='module', params=update_pairs_with_kwargs)
-def add_links_with_kwargs(request):
-    original, with_links = request.param
-    return (with_links, anchorman.add_links(original, links, replaces=1))
+def test_anchorman_class(tmpdir):
+
+    links = [
+        {'Fox': {'value': '/fox'}},
+        {'mammals': {'value': '/mammals'}},
+        {'red fox': {
+            'value': '/redfox',
+            'attributes': [
+                ('class', 'animal'),
+                ('style', 'font-size:23px;background:red'),
+                ('title', 'Fix und Foxi')
+                ]
+            }
+        }
+    ]
+
+    a = anchorman.add(
+        text,
+        links,
+        markup_format=markup_format, # default: a, href=value, class="anchorman"
+        replaces_per_item=1          # default: all occurences
+        )
+
+    expected_replacement = '<a href="/mammals" class="anchorman" data-rm-key="anchorman-link">mammals</a>'
+    expected_replacement2 = '<a href="/redfox" class="anchorman animal" data-rm-key="anchorman-link" style="font-size:23px;background:red" title="Fix und Foxi">red fox</a>'
+    assert expected_replacement in a.result
+    assert expected_replacement2 in a.result
+
+    expected_counts = [('mammals', 1), ('red fox', 1), ('Fox', 0)]
+    assert expected_counts == a.counts
 
 
-@pytest.fixture(scope='module', params=update_pairs)
-def remove_links(request):
-    original, with_links = request.param
-    return (original, anchorman.remove_links(with_links))
+    markup_items = [{'tail': {}}]
+    a.add(
+        a.result,
+        markup_items,
+        markup_format=markup_format2 # default: a, href=value, class="anchorman"
+        )
+    assert '${{tail}}' in a.result
+    assert a.counts == [('tail', 1)]
 
+    # remove the new markup
+    a.remove()
+    # remove the old links also
+    a.remove(markup_format=markup_format)
 
-def test_add_links(add_links):
-    (expected, updated) = add_links
-    assert expected == updated.text
+    assert text.replace('<br>', '<br/>') == a.result
 
-
-def test_add_links_with_kwargs(add_links_with_kwargs):
-    (expected, updated) = add_links_with_kwargs
-    assert expected == updated.text
-
-
-def test_remove_links(remove_links):
-    (expected, updated) = remove_links
-    assert expected == updated
+    assert a.__str__() == a.result

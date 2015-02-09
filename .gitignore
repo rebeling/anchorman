@@ -15,3 +15,5 @@ junit.xml
 *.pyo
 *.swp
 *.zip
+
+anchorman/example.html
