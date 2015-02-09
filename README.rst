@@ -10,6 +10,7 @@ Example
 --------------
 
 .. code::
+
     >>> import anchorman
     >>> text = "The quick brown fox jumps over the lazy dog."
     >>> links = [{'fox': {'value': '/wiki/fox'}},
@@ -27,6 +28,7 @@ Building
 --------------
 
 .. code::
+
     python setup.py develop
 
 
@@ -34,6 +36,7 @@ Installing
 --------------
 
 .. code::
+
     python setup.py install
 
 
@@ -41,6 +44,7 @@ Testing in a virtualenv
 --------------
 
 .. code::
+
     virtualenv .
     ./bin/pip install -r requirements.txt
     ./bin/py.test test
@@ -64,13 +68,11 @@ More examples
     fox sleeps."
 
 
-**Parameters**
+Parameters
+```````````````````````````````````````
 
 
 Toplevel params as **kwargs
-
-
-
 
 ================== =============
  Parameter           Description
@@ -92,13 +94,14 @@ rm-identifier       create identifier to delete specific items
 ================== =============
 
 
-**Links with different attributes**
-
+Links with different attributes
+```````````````````````````````````````
 
 Define general attribute, value pairs on markup_format level and more specific
 ones at link level as follows.
 
 .. code::
+
     >>> markup_format = {
             'tag': 'a',
             'value_key': 'href',
@@ -123,11 +126,13 @@ ones at link level as follows.
     class="anchorman animal" title="Fix und Foxi">red fox</a> sleeps.
 
 
-**Highlighting**
+Highlighting
+```````````````````````````````````````
 
 Highlighting a term with pre- an postfix, e.g. variables in templates or low level tags.
 
 .. code::
+
     >>> links = [{'fox': {}}]
     >>> markup_format = {
             'highlighting': {
