@@ -24,7 +24,7 @@ Anchorman is a library, written in Python.
 __title__ = 'anchorman'
 __version__ = '0.0.1'
 __author__ = 'Tarn Barford'
-__author_emai__ = 'tarn@tarnbarford.net'
+__author_email__ = 'tarn@tarnbarford.net'
 __url__ = 'https://github.com/tarnacious/anchorman'
 __license__ = 'Apache 2.0'
 __copyright__ = 'Copyright 2015 Tarn Barford'

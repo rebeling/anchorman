@@ -9,7 +9,7 @@ except ImportError:
 
 from codecs import open
 
-with open('README.md', 'r', 'utf-8') as f:
+with open('README.rst', 'r', 'utf-8') as f:
     readme = f.read()
 
 
@@ -19,7 +19,7 @@ setup(
     description='link text in HTML documents',
     long_description=readme,
     author=anchorman.__author__,
-    author_emai=anchorman.__author_emai__,
+    author_emai=anchorman.__author_email__,
     url=anchorman.__url__,
     license=anchorman.__license__,
     packages=['anchorman'],
