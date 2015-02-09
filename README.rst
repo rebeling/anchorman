@@ -57,6 +57,7 @@ More examples
 ----------------------------------------------
 
 .. code::
+
     >>> import anchorman
     >>> text = "The quick brown fox jumps over the lazy dog while the red
     fox sleeps."

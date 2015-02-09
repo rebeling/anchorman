@@ -12,11 +12,11 @@ with open('README.rst', 'r', 'utf-8') as f:
 
 setup(
     name='anchorman',
-    version='0.0.1',
+    version='0.0.2',
     description='Markup terms in text',
     long_description=readme,
     author='Tarn Barford',
-    author_emai='tarn@tarnbarford.net',
+    author_email='tarn@tarnbarford.net',
     url='https://github.com/tarnacious/anchorman',
     license='Apache 2.0',
     packages=['anchorman'],
