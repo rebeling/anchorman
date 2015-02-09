@@ -52,6 +52,7 @@ Testing in a virtualenv
     ./bin/py.test test
 
 
+.. _`More examples section`:
 
 More examples
 ----------------------------------------------
