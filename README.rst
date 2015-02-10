@@ -1,15 +1,18 @@
+============
 Anchorman
 ============
 
-Turn your text into a hypertext_.
-Anchorman provides a class to add and remove elements into a text the way
-you specify it, as anchors, links, abbreviations or just `highlighting` them.
+.
+
+Turn your text into hypertext_. With anchorman you can markup anything,
+create anchors, links, annotate abbreviations or just highlight specific areas.
 
 .. _hypertext: http://en.wikipedia.org/wiki/Hypertext
 
+.
 
 Example
---------------
+============
 
 .. code::
 
@@ -23,27 +26,27 @@ Example
     the lazy <a href="/wiki/dog" class="anchorman">dog</a>.
 
 
-See `More examples section`_ at bottom.
+See `more examples`_ section at bottom.
 
+.
 
-Building
---------------
+Installation
+============
 
-.. code::
-
-    python setup.py develop
-
-
-Installing
-```````````````````````````````````````
+Install anchorman via pip
 
 .. code::
 
+    pip install anchorman
+
+or from source code
+
+.. code::
+
+    git clone https://github.com/tarnacious/anchorman.git && cd anchorman
     python setup.py install
 
-
-Testing in a virtualenv
-```````````````````````````````````````
+test it in a virtual environment
 
 .. code::
 
@@ -52,49 +55,15 @@ Testing in a virtualenv
     ./bin/py.test test
 
 
-.. _`More examples section`:
+.. _more examples:
+
+.
 
 More examples
-----------------------------------------------
+==============
 
-.. code::
-
-    >>> import anchorman
-    >>> text = "The quick brown fox jumps over the lazy dog while the red
-    fox sleeps."
-
-
-Parameters
-```````````````````````````````````````
-
-
-Toplevel params as **kwargs
-
-================== =============
- Parameter           Description
-================== =============
-markup_format       tag, value attribute or highlighting with pre n post
------------------- -------------
-replaces_per_item   default is replace all occurences
-================== =============
-
-
-Params on markup_format level
-
-================== =============
- Parameter           Description
-================== =============
-case-sensitive      default is True, with **False** replace: Fox, fox and FOX
------------------- -------------
-rm-identifier       create identifier to delete specific items
-================== =============
-
-
-Links with different attributes
-```````````````````````````````````````
-
-Define general attribute, value pairs on markup_format level and more specific
-ones at link level as follows.
+**Links with specific attributes**
+Define general attribute value pairs on markup_format level and more specific attributes at the level of each link element.
 
 .. code::
 
@@ -121,11 +90,10 @@ ones at link level as follows.
     style="color:blue;cursor:pointer; font-size:23px;background:red"
     class="anchorman animal" title="Fix und Foxi">red fox</a> sleeps.
 
+.
 
-Highlighting
-```````````````````````````````````````
-
-Highlighting a term with pre- an postfix, e.g. variables in templates or low level tags.
+**Highlighting context**
+Highlighting a term with pre- and postfix, e.g. variables in templates or low level tags.
 
 .. code::
 
@@ -141,12 +109,21 @@ Highlighting a term with pre- an postfix, e.g. variables in templates or low lev
     The quick brown ${{fox}} jumps over the lazy dog while the red
     ${{fox}} sleeps.
 
+.
 
-Todos
---------------
+**Parameters**
 
-    * return more sophisticated linking info
-    * improve case sensitiv replacement option
-    * refactor the module interface
-    * prepare big data set input, e.g. 4000 abbreviations at once
+.. code::
 
+    markup_format: tag, value attribute or highlighting with pre- and postfix
+
+    replaces_per_item: default is replace all occurences, otherwise int
+
+    case-sensitive: default is True, set False to replace: Fox, fox and FOX
+
+    rm-identifier: create a specific identifier per set to delete them later on
+
+
+.
+
+.
