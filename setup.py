@@ -12,7 +12,7 @@ with open('README.rst', 'r', 'utf-8') as f:
 
 setup(
     name='anchorman',
-    version='0.0.2',
+    version='0.0.3',
     description='Markup terms in text',
     long_description=readme,
     author='Tarn Barford',
