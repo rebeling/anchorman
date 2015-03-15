@@ -2,11 +2,6 @@
 Anchorman
 ============
 
-.. image:: https://travis-ci.org/xlcnd/isbnlib.svg?branch=v3.5.2
-    :target: https://travis-ci.org/xlcnd/isbnlib
-    :alt: Built Status
-
-[![Build Status](https://travis-ci.org/rebeling/anchorman.svg?branch=master)](https://travis-ci.org/rebeling/anchorman)
 .
 
 Turn your text into hypertext_. With anchorman you can markup anything,
@@ -38,7 +33,7 @@ See `more examples`_ section at bottom.
 Installation
 ============
 
-Install anchorman via pip
+Install anchorman master via pip |travis|
 
 .. code::
 
@@ -59,6 +54,9 @@ test it in a virtual environment
     ./bin/pip install -r requirements.txt
     ./bin/py.test test
 
+.. |travis| image:: https://travis-ci.org/rebeling/anchorman.svg?branch=master
+    :target: https://travis-ci.org/rebeling/anchorman
+    :alt: Built Status
 
 .. _more examples:
 
