@@ -20,6 +20,15 @@ markup_format = {
     'rm-identifier': 'anchorman-link',
     }
 
+markup_format21 = {
+    'tag': 'em',
+    'value_key': 'data-value',
+    'attributes': [
+        ('class', 'anchorman21')
+        ],
+    'rm-identifier': 'anchorman-link21',
+    }
+
 markup_format2 = {
     'rm-identifier': 'anchorman-marker',
     'case-sensitive': False,
@@ -43,7 +52,8 @@ def test_anchorman_class(tmpdir):
                 ('title', 'Fix und Foxi')
                 ]
             }
-        }
+        },
+        {'a medium-size domestic dog': {'value': '/dog'}}
     ]
 
     a = anchorman.add(
@@ -58,8 +68,24 @@ def test_anchorman_class(tmpdir):
     assert expected_replacement in a.result
     assert expected_replacement2 in a.result
 
-    expected_counts = [('mammals', 1), ('red fox', 1), ('Fox', 0)]
+    expected_counts = [('a medium-size domestic dog', 1), ('mammals', 1), ('red fox', 1), ('Fox', 0)]
     assert expected_counts == a.counts
+
+
+
+    links = [
+        {'domestic': {'value': 'ADJ'}},
+    ]
+
+    a = anchorman.add(
+        a.result,
+        links,
+        markup_format=markup_format21, # default: a, href=value, class="anchorman"
+        replaces_per_item=1          # default: all occurences
+        )
+
+    expected_em_in_a = '<a href="/dog" class="anchorman" data-rm-key="anchorman-link">a medium-size <em data-value="ADJ" class="anchorman21" data-rm-key="anchorman-link21">domestic</em> dog</a>'
+    assert expected_em_in_a in a.result
 
 
     markup_items = [{'tail': {}}]
@@ -75,6 +101,7 @@ def test_anchorman_class(tmpdir):
     a.remove()
     # remove the old links also
     a.remove(markup_format=markup_format)
+    a.remove(markup_format=markup_format21)
 
     assert text.replace('<br>', '<br/>') == a.result
 
