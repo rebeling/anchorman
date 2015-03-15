@@ -33,7 +33,7 @@ See `more examples`_ section at bottom.
 Installation
 ============
 
-Install anchorman master via pip |travis|
+Install anchorman via pip, master branch status: |travis|
 
 .. code::
 
