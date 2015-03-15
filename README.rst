@@ -121,7 +121,7 @@ Highlighting a term with pre- and postfix, e.g. variables in templates or low le
 
     case-sensitive: default is True, set False to replace: Fox, fox and FOX
 
-    rm-identifier: create a specific identifier per set to delete them later on
+    rm-identifier: create a specific identifier per set to delete them later
 
 
 .
