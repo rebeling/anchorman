@@ -2,6 +2,11 @@
 Anchorman
 ============
 
+.. image:: https://travis-ci.org/xlcnd/isbnlib.svg?branch=v3.5.2
+    :target: https://travis-ci.org/xlcnd/isbnlib
+    :alt: Built Status
+
+[![Build Status](https://travis-ci.org/rebeling/anchorman.svg?branch=master)](https://travis-ci.org/rebeling/anchorman)
 .
 
 Turn your text into hypertext_. With anchorman you can markup anything,
