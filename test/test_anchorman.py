@@ -92,13 +92,14 @@ def test_anchorman_class(tmpdir):
     a.add(
         a.result,
         markup_items,
-        markup_format=markup_format2 # default: a, href=value, class="anchorman"
+        markup_format=markup_format2
         )
     assert '${{tail}}' in a.result
     assert a.counts == [('tail', 1)]
 
     # remove the new markup
     a.remove()
+
     # remove the old links also
     a.remove(markup_format=markup_format)
     a.remove(markup_format=markup_format21)
@@ -106,3 +107,10 @@ def test_anchorman_class(tmpdir):
     assert text.replace('<br>', '<br/>') == a.result
 
     assert a.__str__() == a.result
+
+
+def test_AnchormanInputErrorHandling():
+    with pytest.raises(ValueError) as excinfo:
+        anchorman.add('text', 'links')
+    assert excinfo.value.message == 'links (second argument) should be list'
+
