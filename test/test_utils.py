@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from anchorman.utils import sort_for_longest_match_first
+from anchorman.utils import sort_longest_match_first
 from anchorman.utils import validate_input
 
 
@@ -34,9 +34,9 @@ def test_anchorman_utils_validate_input():
     assert values == args
 
 
-def test_anchorman_utils_sort_for_longest_match_first():
+def test_anchorman_utils_sort_longest_match_first():
 
     links = [{'boom': {}}, {'boombastic': {}}]
-    sorted_links = sort_for_longest_match_first(links)
+    sorted_links = sort_longest_match_first(links)
     assert sorted_links == [{'boombastic': {}}, {'boom': {}}]
 

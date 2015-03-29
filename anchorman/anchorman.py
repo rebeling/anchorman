@@ -3,114 +3,145 @@
 from linkit import linker_format
 from linkit import add_links
 from linkit import remove_links
-from utils import sort_for_longest_match_first
+from utils import sort_longest_match_first
 from utils import validate_input
 
 
 class Anchorman(object):
-    """Create the main object for the add_links request. """
+    """
+    Anchorman is the basic API for the linkit request. Beside text and
+    links, use markup_format and replaces_per_item to describe the core
+    functionality.
+
+    The links will be specified as a list of dicts. Dicts key will be
+    the string in the original text to be replaced/augmented.
+
+    links = [
+        {'red fox': {
+            'value': '/redfox',
+            # add or augment the general attributes (see markup)
+            # with more specific or extra attribute, value pairs
+            'attributes': [
+                ('class', 'animal'),
+                ('style', 'font-size:23px;background:red'),
+                ('title', 'The red fox is red')
+                ]
+            }
+        },
+        {'green hornet': {
+            ...
+        }, ...
+    ]
+
+    The markup_format provides two options:
+
+    1. link format
+    2. context highlighting
+
+    markup_format = {
+
+        'tag': 'a',
+        'value_key': 'href', # attribute for the value (see links in add)
+        'attributes': [
+            ('style', 'color:blue;cursor:pointer;'),
+            ('class', 'anchorman')
+            ],
+        'rm-identifier': 'anchorman-link', # identifier for specific rm
+
+        # --- * ---
+        # or highlight the target with a pre- and postfix
+        'highlighting': {
+            'pre': '${{',
+            'post': '}}'
+            },
+
+        # --- * ---
+        'case-sensitive': False, # works for both, default is True
+    }
+    """
 
     def __init__(self, *args, **kwargs):
         """Initialize the class with data from args and kwargs """
-        self.text = args[0]
-        self.links = args[1]
-        self.markup_format = kwargs.get('markup_format',
-                                        {'tag': 'a', 'value_key': 'href'})
-        self.replaces_per_item=kwargs.get('replaces_per_item', None)
-        self.link_format = kwargs.get('link_format', {})
+        self.text = None
+        self.links = None
+        if args:
+            self.text = args[0]
+            self.links = args[1]
         self.selector = './/a'
-        self.set_link_format()
+        self.replaces_per_item=None
+        self._markup_format={'tag': 'a', 'value_key': 'href'}
+        self._update_data(**kwargs)
         self.result = None
         self.counts = None
 
     def __str__(self):
-        return self.result
+        if self.result:
+            return self.result
+        else:
+            return "%s" % self.__class__
 
-    def set_link_format(self):
-        """Set the markup format from self.markup_format
+    @property
+    def markup_format(self):
+        return self._markup_format
 
-        markup_format = {
-            'tag': 'a',
-            'value_key': 'href', # attribute for the value (see links in add)
-            'attributes': [
-                ('style', 'color:blue;cursor:pointer;'),
-                ('class', 'anchorman')
-                ],
-            'rm-identifier': 'anchorman-link', # identifier for specific rm
-            # --- * ---
-            # or highlight the target with a pre- and postfix
-            'highlighting': {
-                'pre': '${{',
-                'post': '}}'
-                },
-            # --- * ---
-            'case-sensitive': False, # works for both, default is True
-        }
-        """
-        _link_format, _selector = linker_format(self.markup_format)
-        if _link_format:
-            self.link_format = _link_format
+    @markup_format.setter
+    def markup_format(self, markup_format):
+        """Markup format updates link and selector """
+        _, _selector = linker_format(markup_format)
         if _selector:
             self.selector = _selector
+        self._markup_format = markup_format
 
-    def add(self, *args, **kwargs):
-        """Augment text with the items of links
+    def _update_data(self, *args, **kwargs):
 
-        links = [
-            {'red fox': {
-                'value': '/redfox',
-                # add or augment the general attributes (see markup)
-                # with more specific or extra attribute, value pairs
-                'attributes': [
-                    ('class', 'animal'),
-                    ('style', 'font-size:23px;background:red'),
-                    ('title', 'The red fox is red')
-                    ]
-                }
-            },
-            {'green hornet': {
-                ...
-            }, ...
-        ]
-        """
         if args:
-            self.text, self.links = args[0], args[1]
+            try:
+                self.text, self.links = args[0], args[1]
+            except ValueError, e:
+                raise "args not specified correct"
 
         if 'replaces_per_item' not in kwargs:
             kwargs['replaces_per_item'] = self.replaces_per_item
+
         if 'markup_format' not in kwargs:
             kwargs['markup_format'] = self.markup_format
+            self.markup_format = self.markup_format
         else:
             self.markup_format = kwargs['markup_format']
 
-        self.set_link_format()
-        kwargs['link_format'] = self.link_format
+    def add(self, *args, **kwargs):
+        """
+        Text and links could be set in the class already, relax we check
+        the args again - may the class vars should be reset here.
+        """
+        self._update_data(*args, **kwargs)
+        result = add_links(self.text,
+                           sort_longest_match_first(self.links),
+                           replaces_per_item=self.replaces_per_item,
+                           markup_format=self.markup_format)
 
-        self.result, self.counts = add_links(
-            self.text,
-            sort_for_longest_match_first(self.links),
-            **kwargs)
+        self.result, self.counts = result
         return self.result
 
     def remove(self, *args, **kwargs):
-        """Remove the markup driven by actual/latest markup_format """
-        self.markup_format = kwargs.get('markup_format', self.markup_format)
-        self.set_link_format()
+        """
+        Remove the markup driven by actual/latest markup_format
+        """
+        self._update_data(*args, **kwargs)
+        self.result = remove_links(kwargs.get('text', self.result),
+                                   selector=self.selector,
+                                   markup_format=self.markup_format)
 
-        self.result = remove_links(
-            kwargs.get('text', self.result),
-            selector=self.selector,
-            markup_format=self.markup_format)
 
-
-def add(*args, **kwargs):
-    """Call class on module level, initialize like this, get back the
-        class and operate on this object instead of the class directly
-
-        import anchorman
-        a = anchorman.add(text, links)
+def add(text, links, **kwargs):
     """
-    success, values = validate_input(args)
+    Call class on module level, initialize like this, get back the
+    class and operate on this object instead of the class directly
+
+    import anchorman
+    a = anchorman.add(text, links)
+    """
+    success, values = validate_input((text, links))
     if success:
         text, links = values
     else:
@@ -123,11 +154,9 @@ def add(*args, **kwargs):
 
 # if __name__ == '__main__':
 
+#     # b = Anchorman()
 #     links = [{'fox': {'value': '/wiki/fox'}}, {'dog': {'value': '/wiki/dog'}}]
 #     text = "The quick brown fox jumps over the lazy <br> dog."
-
-#     a = add(text, links)
-
 #     a = add(text, links)
 #     print a
 #     a.remove()

@@ -137,8 +137,8 @@ def replace_in_element(count, element, key, value, key_attributes, replacement_f
                                 thistext[end-2:])
                         if tail:
                             element.tail = thistext
-                        else:
-                            element.text = thistext
+                        # else:
+                        #     element.text = thistext
 
     else:
         # replace string with links in element
@@ -235,7 +235,7 @@ def replace_token(content, key, value, key_attributes, replacement_fn,
     return (from_tree(root), count)
 
 
-def add_links(text, links, **kwargs):
+def add_links(text, links, replaces_per_item=None, markup_format=None):
     """
     Takes html and a dictionary of words to highlight and links. Surrounds
     the matched words with a specified html element - by default a link.
@@ -254,13 +254,9 @@ def add_links(text, links, **kwargs):
             link_key.get('value', key),
             link_key.get('attributes', []),
             replacement_format,
-            replaces=kwargs.get('replaces_per_item', None),
-            link_format=kwargs.get('markup_format', None),
+            replaces=replaces_per_item,
+            link_format=markup_format,
             )
         append((key, count))
 
     return text, counts
-
-
-# if __name__ == "__main__":
-#     pass
