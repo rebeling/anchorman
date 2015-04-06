@@ -19,13 +19,13 @@ def validate_input(args, _isinstance=isinstance):
             return False, "text (first argument) should be str/unicode"
         if not _isinstance(links, list):
             return False, "links (second argument) should be list"
-    except:
+    except BaseException:
         try:
             arg0 = args[0]
-        except:
+        except BaseException:
             return False, "arguments text and links missing"
         try:
             links = args[1]
-        except:
+        except BaseException:
             return False, "second argument is missing"
     return True, (text, links)
