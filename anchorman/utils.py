@@ -21,7 +21,7 @@ def validate_input(args, _isinstance=isinstance):
             return False, "links (second argument) should be list"
     except BaseException:
         try:
-            arg0 = args[0]
+            text = args[0]
         except BaseException:
             return False, "arguments text and links missing"
         try:
