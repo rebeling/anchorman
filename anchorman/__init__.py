@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from .linkit import remove_links, add_links
 from .anchorman import *
 
 
