@@ -88,8 +88,8 @@ def link_fn(value, key_attributes, match, attributes={}):
 #     return False
 
 
-def replace_in_element(count, element, key, value, key_attributes, replacement_fn,
-    replaces, attributes): # ignore_fn=lambda x: False,
+def replace_in_element(count, element, key, value, key_attributes,
+    replacement_fn, attributes): # replaces,  ignore_fn=lambda x: False,
 
     re_word = key.replace('.', '\.')
     re_capture = u"([^\w\-/äöüßÄÖÜ])(%s)([^\w\-/äöüßÄÖÜ])" % re_word
@@ -216,9 +216,10 @@ def replace_token(content, key, value, key_attributes, replacement_fn,
                                     value,
                                     key_attributes,
                                     replacement_fn,
-                                    replaces,
-                                    # ignore_fn=ignore_fn,
-                                    link_format)
+                                    link_format
+                                    # replaces,
+                                    # ignore_fn=ignore_fn
+                                    )
 
         if replaces and count == replaces:
             return (from_tree(root), count)
