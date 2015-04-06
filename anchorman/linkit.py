@@ -52,9 +52,11 @@ def linker_format(link_format):
     return new_link_format, selector
 
 
-def link_fn(value, key_attributes, match, attributes={}):
+def link_fn(value, key_attributes, match, attributes=None):
     # print 'link_fn', key, value, key_attributes, match
     # apply special attributes for every item to global attributes or iteself
+    if attributes is None:
+        attributes = {}
     ka_applied, ka = [], {}
     if key_attributes:
         ka = dict(key_attributes)
