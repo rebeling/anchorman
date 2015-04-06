@@ -98,7 +98,7 @@ class Anchorman(object):
             try:
                 self.text, self.links = args[0], args[1]
             except ValueError, e:
-                raise "args not specified correct"
+                raise "args not specified correct: %s" % e
 
         if 'replaces_per_item' not in kwargs:
             kwargs['replaces_per_item'] = self.replaces_per_item
@@ -129,8 +129,8 @@ class Anchorman(object):
         """
         self._update_data(*args, **kwargs)
         self.result = remove_links(kwargs.get('text', self.result),
-                                   selector=self.selector,
-                                   markup_format=self.markup_format)
+                                   self.markup_format,
+                                   selector=self.selector)
 
 
 def add(text, links, **kwargs):

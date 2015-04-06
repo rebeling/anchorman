@@ -8,7 +8,7 @@ def to_tree(string):
     string = "<root>%s</root>" % string
     try:
         return etree.fromstring(string)
-    except:
+    except etree.XMLSyntaxError:
         return html.fromstring(string)
 
 def from_tree(tree):
