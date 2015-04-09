@@ -40,9 +40,8 @@ def linker_format(link_format):
             link_format['attributes'] = rm
         tag = link_format.get('tag', None)
         if tag:
-            selector = './/%s' % (tag)
             if rmtuple:
-                selector += '[@%s="%s"]' % (rmtuple[0], rmtuple[1])
+                selector = './/%s[@%s="%s"]' % (tag, rmtuple[0], rmtuple[1])
         # else do not overwrite the default self.selector
         new_link_format = {
             'tag': link_format.get('tag', 'a'),

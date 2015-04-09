@@ -152,12 +152,51 @@ def add(text, links, **kwargs):
     return a
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-#     # b = Anchorman()
-#     links = [{'fox': {'value': '/wiki/fox'}}, {'dog': {'value': '/wiki/dog'}}]
-#     text = "The quick brown fox jumps over the lazy <br> dog."
-#     a = add(text, links)
-#     print a
-#     a.remove()
-#     print a
+    # import cProfile
+    # links = [
+    #     {'Wochenende': {'value': '/wiki/fox'}},
+    #     {'Samstag': {'value': '/wiki/fox'}},
+    #     {'Mannschaften': {'value': '/wiki/fox'}},
+    #     {'Mannschaft': {'value': '/wiki/fox'}},
+    #     {'belegt': {'value': '/wiki/fox'}},
+    #     {'Bereits': {'value': '/wiki/fox'}},
+    #     {'der': {'value': '/wiki/fox'}},
+    #     {'Spieltag': {'value': '/wiki/fox'}},
+    #     {'Vergangene Woche': {'value': '/wiki/fox'}},
+    #     {'Spieler': {'value': '/wiki/fox'}},
+    #     {u'schön': {'value': '/wiki/fox'}},
+    #     {'Spieler': {'value': '/wiki/fox'}},
+    #     {'Tor': {'value': '/wiki/fox'}},
+    #     {'Tabelle': {'value': '/wiki/fox'}},
+    #     {'Ergebnis': {'value': '/wiki/fox'}}
+    #     ]
+
+    text = """Zweite Bundesliga Wunschtrainer Tuchel sagt RB Leipzig ab <p>Mit Thomas Tuchel auf der Trainerbank wollte RB Leipzig nach ganz oben. Doch daraus wird nichts. Der Wunschkandidat sagt dem Klub aus der zweiten Liga ab. Die Begründung liefert Tuchels Berater. Wohin zieht es Thomas Tuchel? Leipzig ist nicht das Ziel des Trainers Wunschkandidat Thomas Tuchel hat Rasenballsport Leipzig eine Absage erteilt. „Thomas Tuchel wird im Sommer definitiv nicht Trainer von RB Leipzig“, sagte Sportdirektor Ralf Rangnick der „Leipziger Volkszeitung“. Tuchels Berater habe dem Klub-Vorstandsvorsitzenden, Oliver Mintzlaff, mitgeteilt, dass der 41-Jährige nicht in die zweiten Fußball-Bundesliga gehe, schrieb die Zeitung am Montag auf ihrer Internetseite. „RB Leipzig ist unabhängig von Herrn Tuchel und anderen Namen auch nicht bereit, finanzielle Grenzen für einen Zweitliga-Trainer zu überschreiten“, sagte Mintzlaff der „Sport Bild“. „Unser Weg bleibt unbeirrt – wir werden mit unserer A-Lösung auf der Trainerposition in die neue Saison gehen.“ Mehr zum Thema Die aktuelle Tabelle der Fußball-Bundesliga Hamburger SV : Ein Nest für Tuchel</p> Vorwürfe von Torwart Müller: „Tuchel ist ein Diktator“ <p>Rangnick hatte Tuchel stets als einen idealen Kandidaten für die kommende Saison bezeichnet, eine bereits vorliegende Einigung aber immer dementiert. Die Trainerfrage hatte sich gestellt, nachdem Alexander Zorniger im Februar vorzeitig aus seinem Vertrag bei RB ausgestiegen war. Nachwuchscoach Achim Beierlorzer war als Interimstrainer bis zum Saisonende verpflichtet worden.</p><p>Die Leipziger haben sieben Spieltage vor dem Saisonende nur noch theoretische Chancen auf den Durchmarsch in die Bundesliga. Nach dem 2:1-Sieg am Ostersonntag über den 1. FC Nürnberg liegen sie acht Zähler hinter dem Relegationsplatz drei.</p><p>Tuchel, dessen ruhender Vertrag zum Saisonende beim Bundesligaverein FSV Mainz 05 ausläuft, ist bei verschiedenen Vereinen im Gespräch. Der 41-Jährige hatte Mainz im vergangenen Sommer verlassen und war seitdem kein neues Engagement eingegangen.</p>"""
+
+    # cProfile.run('add(text, links)')
+
+
+    # b = Anchorman()
+
+
+    # links = [{'fox': {'value': '/wiki/fox'}}, {'dog': {'value': '/wiki/dog'}}]
+    # text = "The quick brown fox jumps over the lazy <br> dog and fox."
+    # a = add(text, links, )
+    # print a
+    # a.remove()
+    # print a
+
+
+    # markup_format = {
+    #     'tag': "a",
+    #     'value_key': "xCOLONhref", # attribute for the value see _get_entity_item
+    #     'attributes': [("class", "taxonomy-entity"),
+    #                    ("xCOLONshow", "embed"),
+    #                    ("xCOLONtype", "simple")]
+    # }
+    # anchi = Anchorman(markup_format=markup_format, selector='.//a[@class="taxonomy-entity"]', replaces_per_item=1)
+    # print anchi.selector
+    # print anchi.replaces_per_item
+    # anchi.remove('erewvbrg ew fefe')
