@@ -67,9 +67,9 @@ class Anchorman(object):
         if args:
             self.text = args[0]
             self.links = args[1]
-        self.selector = './/a'
-        self.replaces_per_item=None
-        self._markup_format={'tag': 'a', 'value_key': 'href'}
+        self.selector = kwargs.get('selector', './/a')
+        self.replaces_per_item = kwargs.get('replaces_per_item', 1)
+        self._markup_format = {'tag': 'a', 'value_key': 'href'}
         self._update_data(**kwargs)
         self.result = None
         self.counts = None
@@ -96,15 +96,17 @@ class Anchorman(object):
 
         if args:
             try:
-                self.text, self.links = args[0], args[1]
+                if 'remove' in kwargs:
+                    self.text = args[0]
+                else:
+                    self.text, self.links = args[0], args[1]
             except ValueError, e:
-                raise "args not specified correct: %s" % e
+                raise "Args not specified correctly: %s" % e
 
-        if 'replaces_per_item' not in kwargs:
-            kwargs['replaces_per_item'] = self.replaces_per_item
+        if 'replaces_per_item' in kwargs:
+            self.replaces_per_item = kwargs['replaces_per_item']
 
         if 'markup_format' not in kwargs:
-            kwargs['markup_format'] = self.markup_format
             self.markup_format = self.markup_format
         else:
             self.markup_format = kwargs['markup_format']
@@ -125,8 +127,10 @@ class Anchorman(object):
 
     def remove(self, *args, **kwargs):
         """
-        Remove the markup driven by actual/latest markup_format
+        Remove the markup driven by actual/latest markup_format or
+        a given selector
         """
+        kwargs['remove'] = True
         self._update_data(*args, **kwargs)
         self.result = remove_links(kwargs.get('text', self.result),
                                    self.markup_format,
