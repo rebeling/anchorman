@@ -69,6 +69,7 @@ class Anchorman(object):
             self.links = args[1]
         self.selector = kwargs.get('selector', './/a')
         self.replaces_per_item = kwargs.get('replaces_per_item', 1)
+        self.replaces_at_all = kwargs.get('replaces_at_all', 5555555555)
         self._markup_format = {'tag': 'a', 'value_key': 'href'}
         self._update_data(**kwargs)
         self.result = None
@@ -120,6 +121,7 @@ class Anchorman(object):
         result = add_links(self.text,
                            sort_longest_match_first(self.links),
                            replaces_per_item=self.replaces_per_item,
+                           replaces_at_all=self.replaces_at_all,
                            markup_format=self.markup_format)
 
         self.result, self.counts = result

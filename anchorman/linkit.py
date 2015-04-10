@@ -228,7 +228,8 @@ def replace_token(content, key, value, key_attributes, replacement_fn,
     return (from_tree(root), count)
 
 
-def add_links(text, links, replaces_per_item=None, markup_format=None):
+def add_links(text, links, replaces_per_item=None, replaces_at_all=None,
+    markup_format=None):
     """
     Takes html and a dictionary of words to highlight and links. Surrounds
     the matched words with a specified html element - by default a link.
@@ -236,6 +237,7 @@ def add_links(text, links, replaces_per_item=None, markup_format=None):
     replacement_format = link_fn
     counts = []
     append = counts.append
+    total_count = 0
 
     for link in links:
         key = link.keys()[0]
@@ -250,5 +252,9 @@ def add_links(text, links, replaces_per_item=None, markup_format=None):
             replaces_per_item,
             markup_format)
         append((key, count))
+
+        total_count += count
+        if total_count >= replaces_at_all:
+            break
 
     return text, counts
