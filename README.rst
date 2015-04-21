@@ -43,7 +43,7 @@ or from source code
 
 .. code::
 
-    git clone https://github.com/tarnacious/anchorman.git && cd anchorman
+    git clone https://github.com/rebeling/anchorman.git && cd anchorman
     python setup.py install
 
 test it in a virtual environment
