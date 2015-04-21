@@ -70,6 +70,7 @@ class Anchorman(object):
         self.selector = kwargs.get('selector', './/a')
         self.replaces_per_item = kwargs.get('replaces_per_item', 1)
         self.replaces_at_all = kwargs.get('replaces_at_all', 5555555555)
+        self.longest_match_first = kwargs.get('longest_match_first', True)
         self._markup_format = {'tag': 'a', 'value_key': 'href'}
         self._update_data(**kwargs)
         self.result = None
@@ -118,8 +119,10 @@ class Anchorman(object):
         the args again - may the class vars should be reset here.
         """
         self._update_data(*args, **kwargs)
+        if self.longest_match_first:
+            self.links = sort_longest_match_first(self.links)
         result = add_links(self.text,
-                           sort_longest_match_first(self.links),
+                           self.links,
                            replaces_per_item=self.replaces_per_item,
                            replaces_at_all=self.replaces_at_all,
                            markup_format=self.markup_format)
