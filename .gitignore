@@ -5,7 +5,6 @@ include
 lib
 
 .DS_Store
-.coverage
 .Python
 
 junit.xml
