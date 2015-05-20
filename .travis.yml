@@ -6,6 +6,6 @@ install:
   - pip install codecov
   - pip install -r requirements.txt
 script:
-  - python -m pytest -v -s
+  - python -m pytest --cov=anchorman --cov-report term-missing -v -s
 after_success:
   - codecov
