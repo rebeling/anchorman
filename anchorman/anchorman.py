@@ -1,20 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from linkit import linker_format
+# import re
+import regex as re
 from linkit import add_links
+from linkit import linker_format
+from linkit import re_pattern_of
 from linkit import remove_links
+from linkit import finditer_result
 from utils import sort_longest_match_first
 from utils import validate_input
 
 
-class Anchorman(object):
-    """
-    Anchorman is the basic API for the linkit request. Beside text and
-    links, use markup_format and replaces_per_item to describe the core
-    functionality.
+"""
+Anchorman is the basic API for the link it request.
 
-    The links will be specified as a list of dicts. Dicts key will be
-    the string in the original text to be replaced/augmented.
+    Beside text and links, use markup\_format and replaces\_per\_item
+    to describe the core functionality. The links will be specified
+    as a list of dicts. Dicts key will be the string in the original
+    text to be replaced/augmented.
 
     links = [
         {'red fox': {
@@ -28,18 +31,15 @@ class Anchorman(object):
                 ]
             }
         },
-        {'green hornet': {
-            ...
-        }, ...
+        {'green hornet': { ... }, ...
     ]
 
-    The markup_format provides two options:
+    The markup_format object has two options:
 
     1. link format
     2. context highlighting
 
     markup_format = {
-
         'tag': 'a',
         'value_key': 'href', # attribute for the value (see links in add)
         'attributes': [
@@ -58,10 +58,66 @@ class Anchorman(object):
         # --- * ---
         'case-sensitive': False, # works for both, default is True
     }
+
+    Params
+
+    Returns an anchorman class object
+
+
+    Args (alias of Parameters)
+    Arguments (alias of Parameters)
+    Attributes
+    Example
+    Examples
+    Keyword Args (alias of Keyword Arguments)
+    Keyword Arguments
+    Methods
+
+    Notes
+    Other Parameters
+    Parameters
+    Return (alias of Returns)
+    Returns
+    Raises
+    References
+    See Also
+    Warning
+    Warnings (alias of Warning)
+    Warns
+    Yields
+
+
+"""
+
+
+class Anchorman(object):
+    """Main module interface object for add and remove annotations.
+
+    Args:
+        text (string, optional): The first parameter.
+
+        links (list, optional): The second parameter.
+            Second line of description should be indented.
+
+
+    Keyword Args:
+
+        selector (string)
+
+        replaces_per_item (int): Default 1
+
+        replaces_at_all (int): Default 5555555
+
+        longest_match_first (bool): Default True
+
+
+    Markup_format in kwargs will update selector when processed.
     """
 
     def __init__(self, *args, **kwargs):
-        """Initialize the class with data from args and kwargs """
+        """Initialize the class with data from args and kwargs
+
+        """
         self.text = None
         self.links = None
         if args:
@@ -69,7 +125,7 @@ class Anchorman(object):
             self.links = args[1]
         self.selector = kwargs.get('selector', './/a')
         self.replaces_per_item = kwargs.get('replaces_per_item', 1)
-        self.replaces_at_all = kwargs.get('replaces_at_all', 5555555555)
+        self.replaces_at_all = kwargs.get('replaces_at_all', 5555555)
         self.longest_match_first = kwargs.get('longest_match_first', True)
         self._markup_format = {'tag': 'a', 'value_key': 'href'}
         self._update_data(**kwargs)
@@ -88,7 +144,7 @@ class Anchorman(object):
 
     @markup_format.setter
     def markup_format(self, markup_format):
-        """Markup format updates link and selector """
+        """Markup format updates link and selector"""
         _, _selector = linker_format(markup_format)
         if _selector:
             self.selector = _selector
@@ -114,13 +170,22 @@ class Anchorman(object):
             self.markup_format = kwargs['markup_format']
 
     def add(self, *args, **kwargs):
-        """
-        Text and links could be set in the class already, relax we check
-        the args again - may the class vars should be reset here.
+        """Add links to text.
+
+        Text and links can be initialized on class level, but also
+        reset in here as args.
+
+        Args:
+            text: The first parameter.
+            links: The second parameter.
+
+        Returns:
+            result (String): the enriched text.
         """
         self._update_data(*args, **kwargs)
         if self.longest_match_first:
             self.links = sort_longest_match_first(self.links)
+
         result = add_links(self.text,
                            self.links,
                            replaces_per_item=self.replaces_per_item,
@@ -131,24 +196,75 @@ class Anchorman(object):
         return self.result
 
     def remove(self, *args, **kwargs):
-        """
-        Remove the markup driven by actual/latest markup_format or
-        a given selector
+        """Remove links/markup from text based on markup_format.
+
+        Returns:
+            result (String): the cleared text.
         """
         kwargs['remove'] = True
         self._update_data(*args, **kwargs)
         self.result = remove_links(kwargs.get('text', self.result),
                                    self.markup_format,
                                    selector=self.selector)
+        return self.result
 
+    def positions(self):
+        """Get positions of all links in text.
+
+        Returns:
+            result (List): list of tuples (match, positions) in text.
+        """
+        allkeys = map(lambda a: a.keys()[0], self.links)
+        result = []
+        text = "{}".format(self.text)
+        # cs = self.markup_format.get('case_sensitive', True)
+
+        # if cs:
+        #     key = '|'.join(allkeys)
+        # else:
+        def all3forms(k):
+            return list(set([k, k.lower(), k.upper(), k.title()]))
+
+        keys = []
+        for k in allkeys:
+            x = all3forms(k)
+            for y in x:
+                keys.append(y)
+        print keys
+        key = '|'.join(keys)
+
+
+        re_w, re_capture = re_pattern_of(key) #, case_sensitive=cs)
+        r = finditer_result(text, None, re_capture)
+        for match in r:
+            st, en = match.span()
+            gr = match.groups()
+            st += len(gr[0])
+            en -= len(gr[2])
+            # result.append((key, (st, en), match.groups()[1]))
+            result.append((match.groups()[1], (st, en)))
+        return result
 
 def add(text, links, **kwargs):
-    """
-    Call class on module level, initialize like this, get back the
-    class and operate on this object instead of the class directly
+    """Call class on module level, initialize and return the class.
 
-    import anchorman
-    a = anchorman.add(text, links)
+    Operate on this object instead of the class directly for simplicity.
+    If text and links are provided apply them. The returned object
+    contains result then already.
+
+    Examples:
+        Use it like this::
+
+            import anchorman
+            a = anchorman.add(text, links)
+
+    Args:
+        text: The first parameter.
+        links: The second parameter.
+
+    Returns:
+        anchorman (class): the class object with added markup.
+
     """
     success, values = validate_input((text, links))
     if success:
@@ -187,13 +303,66 @@ if __name__ == '__main__':
     # cProfile.run('add(text, links)')
 
 
-    # b = Anchorman()
+
+    links = [{'red fox': {'value': '/wiki/fox'}}, {'fox': {'value': '/wiki/fox'}}, {'dog': {'value': '/wiki/dog'}}]
+    # text = "fox The quick brown fox jumps over the lazy <br> dog and fox. dog"
+    text = "fox fox red fox Dog dog Dog"
+
+    # b = Anchorman(text, links, replaces_per_item=100000)
+    # print b.positions()
+
+    # markup_format = {
+    #     'replace_match_with_value': True,
+    #     'tag': "a",
+    #     'value_key': "href", # attribute for the value see _get_entity_item
+    #     'attributes': [("class", "taxonomy-entity"),
+    #                    # ("xCOLONshow", "embed"),
+    #                    # ("xCOLONtype", "simple")
+    #                    ]
+    # }
+
+    # text = "<p>Foxes are small-to-medium-sized, omnivorous mammals belonging to several genera of the Canidae family. Foxes are slightly smaller than a medium-size domestic dog, with a flattened skull, upright triangular ears,<br> a pointed, slightly upturned snout, and a long bushy tail (or brush).</p>"
+
+    text = "Foxes are small-to-medium-sized, omnivorous mammals belonging to several genera of the Canidae family. Foxes are slightly smaller than a medium-size domestic dog, with a flattened skull, upright triangular ears, a pointed, slightly upturned snout, and a long bushy tail (or brush)."
+
+    links = [
+        {'Fox': {'value': '/fox'}},
+        {'mammals': {'value': '/mammals'}},
+        {'red fox': {
+            'value': '/redfox',
+            'attributes': [
+                ('class', 'animal'),
+                ('style', 'font-size:23px;background:red'),
+                ('title', 'Fix und Foxi')
+                ]
+            }
+        },
+        {'a medium-size domestic dog': {'value': '/dog'}}
+    ]
 
 
-    # links = [{'fox': {'value': '/wiki/fox'}}, {'dog': {'value': '/wiki/dog'}}]
-    # text = "The quick brown fox jumps over the lazy <br> dog and fox."
-    # a = add(text, links, )
-    # print a
+    markup_format = {
+        # 'case_sensitive': False,
+        # 'replace_match_with_value': True,
+        # 'highlighting': {
+        #     'pre': '${{',
+        #     'post': '}}'
+        #     }
+    }
+
+    # replaces_per_item=1
+    # replaces_at_all=1
+
+    a = add(
+        text,
+        links,
+        # replaces_per_item=3,
+        # replaces_at_all=1,
+        markup_format=markup_format
+        )
+    print a
+    print text
+    # print a.positions()
     # a.remove()
     # print a
 
