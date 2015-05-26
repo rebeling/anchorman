@@ -2,3 +2,4 @@ lxml==3.4.0
 pytest==2.6.3
 pytest-cov==1.8.1
 regex==2015.5.10
+sphinxcontrib-napoleon==0.3.4
