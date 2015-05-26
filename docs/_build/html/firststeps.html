@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Usage &mdash; Anchorman 0.0.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Anchorman 0.0.6 documentation" href="index.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Welcome to Anchorman" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Anchorman"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Anchorman 0.0.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>Anchorman uses three things: a text, some links and a markup specification. It will iterate the text parse[1] and try to apply the links.</p>
+<p>Markup specification define the strategy. One option is to create a tag of a word and the other is to highlight it.</p>
+<p>[1] the text will be parsed in to an lxml object for processing</p>
+<div class="section" id="general-params">
+<h2>General Params<a class="headerlink" href="#general-params" title="Permalink to this headline">¶</a></h2>
+<p>The following <strong>keyword arguments</strong> configure anchormans
+general behavior.</p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>replaces_per_item</strong> (int): Default 1</dt>
+<dd><p class="first last">Item in links, from first occurence on - starting left edge.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>replaces_at_all</strong> (int): Default infinite</dt>
+<dd><p class="first last">How many items will be marked at all in the text.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>longest_match_first</strong> (bool): Default is True. Links will be</dt>
+<dd><p class="first last">ordered by length and then applied. Set to False will not change
+the order you put in and follows it.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>markup_format</strong> (dict): specifiers the general markup,</dt>
+<dd><p class="first last">see next chapter for details</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="section" id="markup-format">
+<h3>Markup format<a class="headerlink" href="#markup-format" title="Permalink to this headline">¶</a></h3>
+<p>The markup provides two strategies, <strong>linking</strong> and <strong>highlighting</strong>.
+For links specify a tag, a value_key (attribute for item value) and a
+list of attributes. The attributes will be added pairwise as
+attribute=value to the tag.</p>
+<div class="code highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">markup_format</span> <span class="o">=</span> <span class="p">{</span>
+<span class="go">        &#39;tag&#39;: &#39;a&#39;,</span>
+<span class="go">        &#39;value_key&#39;: &#39;href&#39;,</span>
+<span class="go">        &#39;attributes&#39;: [</span>
+<span class="go">            (&#39;style&#39;, &#39;color:blue;cursor:pointer;&#39;),</span>
+<span class="go">            (&#39;class&#39;, &#39;anchorman&#39;)</span>
+<span class="go">        ]</span>
+<span class="go">    }</span>
+</pre></div>
+</div>
+<p>To use <strong>highlighting</strong> simply add a highlighting object with pre and post
+definitions. Pre and post could be everything and will be added pre and
+post the match.</p>
+<div class="code highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">markup_format</span> <span class="o">=</span> <span class="p">{</span>
+<span class="go">        &#39;highlighting&#39;: {</span>
+<span class="go">            &#39;pre&#39;: &#39;${{&#39;,</span>
+<span class="go">            &#39;post&#39;: &#39;}}&#39;</span>
+<span class="go">        }</span>
+<span class="go">    }</span>
+</pre></div>
+</div>
+<p>The following params hold for both strategies, linking and highlighting.</p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>case_sensitive</strong> (bool): Default is True. Set to False,</dt>
+<dd><p class="first last">it is possible to find the lower, upper and title case version of
+item key: fox, FOX, Fox. ...to be improved.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>replace_match_with_value</strong> (bool): Default is False.</dt>
+<dd><p class="first">Set to True, the param allows you to replace the matched key in the output text. For example if you need an id in a template, rather then original term.</p>
+<div class="code last highlight-python"><div class="highlight"><pre>{&#39;fox&#39;: {&#39;value&#39;: &#39;some-id&#39;}}
+&quot;The fox is eating chicken.&quot;
+Result: The ${{some-id}} is eating chicken.
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="items-links-format">
+<h2>Items/Links format<a class="headerlink" href="#items-links-format" title="Permalink to this headline">¶</a></h2>
+<p>The links will be list of items. Key is the replacement to be find in
+text and its value is a dict of value and attributes.</p>
+<p>Attributes will be added pairwise as attribute=value to the tag. If the
+name of the attribute is already specified in the markup_format, then
+markup_format attribute will be extended with the value of the item.</p>
+<div class="code highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">links</span> <span class="o">=</span> <span class="p">[{</span>
+<span class="go">        &#39;red fox&#39;: {</span>
+<span class="go">            &#39;value&#39;: &#39;/wiki/redfox&#39;,</span>
+<span class="go">            &#39;attributes&#39;: [</span>
+<span class="go">                (&#39;class&#39;, &#39;animal&#39;),</span>
+<span class="go">                (&#39;style&#39;, &#39;font-size:23px;background:red;&#39;),</span>
+<span class="go">                (&#39;title&#39;, &#39;Fix und Foxi&#39;)</span>
+<span class="go">            ]</span>
+<span class="go">        }</span>
+<span class="go">    }]</span>
+
+<span class="go"># the markup_format from above augmented with this link data</span>
+<span class="go">&lt;a ... class=&quot;anchorman animal&quot; style=&quot;color:blue;cursor:pointer;</span>
+<span class="go">font-size:23px;background:red;&quot; ... &gt; ... &lt;/a&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="links-with-specific-attributes">
+<h2>Links with specific attributes<a class="headerlink" href="#links-with-specific-attributes" title="Permalink to this headline">¶</a></h2>
+<p>Define general attribute value pairs on markup_format level and more specific attributes at the level of each link element.</p>
+<div class="code highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">links</span> <span class="o">=</span> <span class="p">[{</span>
+<span class="go">        &#39;red fox&#39;: {</span>
+<span class="go">            &#39;value&#39;: &#39;/redfox&#39;,</span>
+<span class="go">            &#39;attributes&#39;: [</span>
+<span class="go">                (&#39;class&#39;, &#39;animal&#39;),</span>
+<span class="go">                (&#39;style&#39;, &#39;font-size:23px;background:red&#39;),</span>
+<span class="go">                (&#39;title&#39;, &#39;Fix und Foxi&#39;)</span>
+<span class="go">            ]</span>
+<span class="go">        }</span>
+<span class="go">    }]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">anchorman</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">markup_format</span><span class="o">=</span><span class="n">markup_format</span><span class="p">)</span>
+<span class="go">The quick brown fox jumps over the lazy dog while the &lt;a href=&quot;/redfox&quot;</span>
+<span class="go">style=&quot;color:blue;cursor:pointer; font-size:23px;background:red&quot;</span>
+<span class="go">class=&quot;anchorman animal&quot; title=&quot;Fix und Foxi&quot;&gt;red fox&lt;/a&gt; sleeps.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="highlighting-context">
+<h2>Highlighting context<a class="headerlink" href="#highlighting-context" title="Permalink to this headline">¶</a></h2>
+<p>Instead of creating tags, you define pre- and post-context for highlighting.
+If highlighting is specified in the markup_format, the link key will be marked
+in text. Usage e.g. variables in templates or simple tags (em, b).</p>
+<div class="code highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">links</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;fox&#39;</span><span class="p">:</span> <span class="p">{}}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">markup_format</span> <span class="o">=</span> <span class="p">{</span>
+<span class="go">        &#39;highlighting&#39;: {</span>
+<span class="go">            &#39;pre&#39;: &#39;${{&#39;,</span>
+<span class="go">            &#39;post&#39;: &#39;}}&#39;</span>
+<span class="go">        }</span>
+<span class="go">    }</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">anchorman</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">markup_format</span><span class="o">=</span><span class="n">markup_format</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">a</span>
+<span class="go">The quick brown ${{fox}} jumps over the lazy dog while the red</span>
+<span class="go">${{fox}} sleeps.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="removal">
+<h2>Removal<a class="headerlink" href="#removal" title="Permalink to this headline">¶</a></h2>
+<div class="code highlight-python"><div class="highlight"><pre>rm-identifier: create a specific identifier per set to delete them later
+</pre></div>
+</div>
+</div>
+<div class="section" id="positions">
+<h2>Positions<a class="headerlink" href="#positions" title="Permalink to this headline">¶</a></h2>
+<p>If you need to know the positions of your items/links in the text. Just
+call positions function on your anchorman object.</p>
+<div class="code highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">text</span> <span class="o">=</span> <span class="s">&quot;fox fox dog dog dog&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">links</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&quot;fox&quot;</span><span class="p">:</span> <span class="p">{}}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="n">links</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">positions</span><span class="p">()</span>
+<span class="go">[(&#39;fox&#39;, (0, 3)), (&#39;fox&#39;, (4, 7))]</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/anchorman.png" title="Welcome to Anchorman."/>
+  </a>
+</p>
+
+<p>
+    <h1 class="logo logo-name"><a href="#">Anchorman</a></h1>
+turns your text into hypertext.
+</p>
+<br>
+<br>
+
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Usage</a><ul>
+<li><a class="reference internal" href="#general-params">General Params</a><ul>
+<li><a class="reference internal" href="#markup-format">Markup format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#items-links-format">Items/Links format</a></li>
+<li><a class="reference internal" href="#links-with-specific-attributes">Links with specific attributes</a></li>
+<li><a class="reference internal" href="#highlighting-context">Highlighting context</a></li>
+<li><a class="reference internal" href="#removal">Removal</a></li>
+<li><a class="reference internal" href="#positions">Positions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Anchorman</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="next chapter">Installation</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Tarn Barford, Matthias Rebel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.4</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

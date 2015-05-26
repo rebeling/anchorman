@@ -1,0 +1,414 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>anchorman.linkit &mdash; Anchorman 0.0.6 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Anchorman 0.0.6 documentation" href="../../index.html" />
+    <link rel="up" title="anchorman" href="../anchorman.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Anchorman 0.0.6 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../anchorman.html" accesskey="U">anchorman</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for anchorman.linkit</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># encoding: utf-8</span>
+
+<span class="kn">import</span> <span class="nn">regex</span> <span class="kn">as</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">etree</span>
+<span class="kn">from</span> <span class="nn">tree</span> <span class="kn">import</span> <span class="n">to_tree</span><span class="p">,</span> <span class="n">from_tree</span>
+
+
+<div class="viewcode-block" id="remove_links"><a class="viewcode-back" href="../../api.html#anchorman.linkit.remove_links">[docs]</a><span class="k">def</span> <span class="nf">remove_links</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">markup_format</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="s">&#39;.//a[@class=&quot;anchorman&quot;]&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes a string of HTML or text and removes all the tags</span>
+<span class="sd">    - specified by selector - and leaves their content.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s">&#39;highlighting&#39;</span> <span class="ow">in</span> <span class="n">markup_format</span><span class="p">:</span>
+        <span class="c"># remove pre and post tags</span>
+        <span class="n">pre</span> <span class="o">=</span> <span class="n">markup_format</span><span class="p">[</span><span class="s">&#39;highlighting&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;pre&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">post</span> <span class="o">=</span> <span class="n">markup_format</span><span class="p">[</span><span class="s">&#39;highlighting&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pre</span> <span class="ow">and</span> <span class="n">post</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">content</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># remove by selector</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">to_tree</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">to_remove</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="n">selector</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">to_remove</span><span class="p">:</span>
+            <span class="n">element</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="s">&quot;to-remove&quot;</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">strip_tags</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s">&quot;to-remove&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">from_tree</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+</div>
+<span class="k">def</span> <span class="nf">linker_format</span><span class="p">(</span><span class="n">link_format</span><span class="p">):</span>
+    <span class="n">new_link_format</span><span class="p">,</span> <span class="n">selector</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">link_format</span><span class="p">:</span>
+        <span class="n">rmtuple</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="s">&#39;rm-identifier&#39;</span> <span class="ow">in</span> <span class="n">link_format</span><span class="p">:</span>
+            <span class="n">rmtuple</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;data-rm-key&quot;</span><span class="p">,</span> <span class="n">link_format</span><span class="p">[</span><span class="s">&#39;rm-identifier&#39;</span><span class="p">])</span>
+            <span class="n">rm</span> <span class="o">=</span> <span class="n">link_format</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;attributes&#39;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">rm</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rmtuple</span><span class="p">)</span>
+            <span class="n">link_format</span><span class="p">[</span><span class="s">&#39;attributes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rm</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="n">link_format</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;tag&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tag</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rmtuple</span><span class="p">:</span>
+                <span class="n">selector</span> <span class="o">=</span> <span class="s">&#39;.//</span><span class="si">%s</span><span class="s">[@</span><span class="si">%s</span><span class="s">=&quot;</span><span class="si">%s</span><span class="s">&quot;]&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">rmtuple</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rmtuple</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c"># else do not overwrite the default self.selector</span>
+        <span class="n">new_link_format</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;tag&#39;</span><span class="p">:</span> <span class="n">link_format</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;tag&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">),</span>
+            <span class="s">&#39;value_key&#39;</span><span class="p">:</span> <span class="n">link_format</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;value_key&#39;</span><span class="p">,</span> <span class="s">&#39;href&#39;</span><span class="p">),</span>
+            <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">link_format</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;attributes&#39;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="p">}</span>
+    <span class="k">return</span> <span class="n">new_link_format</span><span class="p">,</span> <span class="n">selector</span>
+
+
+<span class="k">def</span> <span class="nf">link_fn</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">key_attributes</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+    <span class="k">print</span> <span class="s">&#39;link_fn&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">key_attributes</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">attributes</span>
+    <span class="c"># apply special attributes for every item to global attributes or iteself</span>
+    <span class="k">if</span> <span class="n">attributes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">ka_applied</span><span class="p">,</span> <span class="n">ka</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">key_attributes</span><span class="p">:</span>
+        <span class="n">ka</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">key_attributes</span><span class="p">)</span>
+
+    <span class="n">element</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;tag&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">))</span>
+    <span class="n">value_key</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;value_key&#39;</span><span class="p">,</span> <span class="s">&#39;href&#39;</span><span class="p">)</span>
+
+    <span class="n">vk</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;replace_match_with_value&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">vk</span><span class="p">:</span>
+        <span class="n">element</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">element</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">value_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;attributes&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s">&quot;class&quot;</span><span class="p">,</span> <span class="s">&quot;anchorman&quot;</span><span class="p">)]):</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ka</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ka</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="n">ka_applied</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+    <span class="n">rest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ka</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">ka_applied</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">rest</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rest</span><span class="p">:</span>
+            <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">ka</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+
+    <span class="k">print</span> <span class="s">&quot;link_fn element.text&quot;</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span>
+
+    <span class="k">return</span> <span class="n">element</span>
+
+
+<span class="c"># def ignore_fn(element):</span>
+<span class="c">#     &quot;&quot;&quot;</span>
+<span class="c">#     Do not replace and element in itself.</span>
+<span class="c">#     todo: use a customized class selector, default anchorman</span>
+<span class="c">#     &quot;&quot;&quot;</span>
+<span class="c">#     if &quot;anchorman&quot; in element.get(&quot;class&quot;, &quot;&quot;):</span>
+<span class="c">#         return True</span>
+<span class="c">#     return False</span>
+
+<span class="k">def</span> <span class="nf">re_pattern_of</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="n">re_word</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="s">&#39;\.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">case_sensitive</span><span class="p">:</span>
+        <span class="n">re_capture</span> <span class="o">=</span> <span class="s">u&quot;(^|[^\w\-/äöüßÄÖÜ])(</span><span class="si">%s</span><span class="s">)([^\w\-/äöüßÄÖÜ]|$)&quot;</span> <span class="o">%</span> <span class="n">re_word</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">re_capture</span> <span class="o">=</span> <span class="s">u&quot;(^|[^\w\-/äöüßÄÖÜ])(</span><span class="si">%s</span><span class="s">|</span><span class="si">%s</span><span class="s">|</span><span class="si">%s</span><span class="s">)([^\w\-/äöüßÄÖÜ]|$)&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">re_word</span><span class="p">,</span> <span class="n">re_word</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">re_word</span><span class="o">.</span><span class="n">title</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">re_word</span><span class="p">,</span> <span class="n">re_capture</span>
+
+
+<span class="k">def</span> <span class="nf">finditer_result</span><span class="p">(</span><span class="n">element_sth</span><span class="p">,</span> <span class="n">replaces</span><span class="p">,</span> <span class="n">re_capture</span><span class="p">):</span>
+    <span class="n">iterator</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span>
+        <span class="n">re_capture</span><span class="p">,</span> <span class="s">&quot;{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">element_sth</span><span class="p">),</span> <span class="n">overlapped</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">replaces</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterator</span><span class="p">)[:</span><span class="n">replaces</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">calculate_hl</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">re_capture</span><span class="p">):</span>
+    <span class="n">vk</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;replace_match_with_value&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">tail</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">]:</span>
+        <span class="n">thistext</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">tail</span> <span class="k">if</span> <span class="n">tail</span> <span class="k">else</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">if</span> <span class="n">thistext</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">iterator</span> <span class="o">=</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">finditer_result</span><span class="p">(</span><span class="n">thistext</span><span class="p">,</span> <span class="n">replace_in_element</span><span class="p">,</span> <span class="n">re_capture</span><span class="p">))</span>
+            <span class="n">lastend</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">pre</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s">&#39;highlighting&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;pre&#39;</span><span class="p">,</span> <span class="s">&#39;-set-pre-marker-&#39;</span><span class="p">)</span>
+            <span class="n">post</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s">&#39;highlighting&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="s">&#39;-set-post-marker-&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">iterator</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
+                    <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">span</span><span class="p">()</span>
+                    <span class="c"># check if there is not a starting markup</span>
+                    <span class="c"># in the first part already ...no markup</span>
+                    <span class="c"># inside of the same markup</span>
+                    <span class="n">add2start</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">sub2end</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">pre_c1</span> <span class="o">=</span> <span class="n">thistext</span><span class="p">[:</span><span class="n">start</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">pre</span><span class="p">)</span>
+                    <span class="n">post_c1</span> <span class="o">=</span> <span class="n">thistext</span><span class="p">[:</span><span class="n">start</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+                    <span class="c"># replace_match_with_value</span>
+                    <span class="n">repl</span> <span class="o">=</span> <span class="n">value</span> <span class="k">if</span> <span class="n">vk</span> <span class="k">else</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">pre_c1</span> <span class="o">==</span> <span class="n">post_c1</span><span class="p">:</span>
+                        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">thistext</span> <span class="o">=</span> <span class="s">&quot;{}{}{}{}{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">thistext</span><span class="p">[:</span><span class="n">start</span><span class="o">+</span><span class="n">add2start</span><span class="p">],</span>
+                            <span class="n">pre</span><span class="p">,</span> <span class="n">repl</span><span class="p">,</span> <span class="n">post</span><span class="p">,</span>
+                            <span class="n">thistext</span><span class="p">[</span><span class="n">end</span><span class="o">-</span><span class="n">sub2end</span><span class="p">:])</span>
+                    <span class="k">if</span> <span class="n">tail</span><span class="p">:</span>
+                        <span class="n">element</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="n">thistext</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">element</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">thistext</span>
+    <span class="k">return</span> <span class="n">count</span>
+
+
+<span class="k">def</span> <span class="nf">calculate_el</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">replace_in_element</span><span class="p">,</span>
+    <span class="n">re_capture</span><span class="p">,</span> <span class="n">replacement_fn</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">key_attributes</span><span class="p">):</span>
+
+    <span class="n">lastend</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+        <span class="n">allitems</span> <span class="o">=</span> <span class="n">finditer_result</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">replace_in_element</span><span class="p">,</span> <span class="n">re_capture</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">allitems</span><span class="p">:</span>
+            <span class="n">chain</span><span class="p">,</span> <span class="n">lastend</span><span class="p">,</span> <span class="n">lastrest</span> <span class="o">=</span> <span class="p">[],</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">None</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">allitems</span><span class="p">):</span>
+                <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">span</span><span class="p">()</span>
+                <span class="n">before</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="n">lastend</span><span class="p">:</span><span class="n">start</span><span class="p">]</span>
+                <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">before</span><span class="p">,</span> <span class="n">match</span><span class="p">))</span>
+                <span class="n">lastend</span> <span class="o">=</span> <span class="n">end</span>
+                <span class="n">lastrest</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="n">lastend</span><span class="p">:]</span>
+
+            <span class="k">if</span> <span class="n">lastrest</span><span class="p">:</span>
+                <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">lastrest</span><span class="p">,</span> <span class="n">match</span><span class="p">))</span>
+
+            <span class="n">chain</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">after</span><span class="p">,</span> <span class="n">match</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chain</span><span class="p">):</span>
+
+                <span class="n">newlink</span> <span class="o">=</span> <span class="n">replacement_fn</span><span class="p">(</span><span class="n">value</span><span class="p">,</span>
+                                         <span class="n">key_attributes</span><span class="p">,</span>
+                                         <span class="n">match</span><span class="p">,</span>
+                                         <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span> <span class="o">!=</span> <span class="n">newlink</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                    <span class="n">newlink</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="s">&quot;{}{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">2</span><span class="p">],</span> <span class="n">after</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">element</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">newlink</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">element</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">after</span>
+
+    <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">tail</span><span class="p">:</span>
+        <span class="n">allitems</span> <span class="o">=</span> <span class="n">finditer_result</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">tail</span><span class="p">,</span> <span class="n">replace_in_element</span><span class="p">,</span> <span class="n">re_capture</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">allitems</span><span class="p">:</span>
+            <span class="n">chain</span><span class="p">,</span> <span class="n">lastend</span><span class="p">,</span> <span class="n">lastrest</span> <span class="o">=</span> <span class="p">[],</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">None</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">allitems</span><span class="p">):</span>
+                <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">span</span><span class="p">()</span>
+                <span class="n">before</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">tail</span><span class="p">[</span><span class="n">lastend</span><span class="p">:</span><span class="n">start</span><span class="p">]</span>
+                <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">before</span><span class="p">)</span>
+                <span class="n">lastend</span> <span class="o">=</span> <span class="n">end</span>
+                <span class="n">lastrest</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">tail</span><span class="p">[</span><span class="n">lastend</span><span class="p">:]</span> <span class="c"># + matchedafter</span>
+
+            <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lastrest</span><span class="p">)</span>
+            <span class="n">chain</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+            <span class="n">element</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">textbefore</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chain</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">element</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">textbefore</span>
+                    <span class="k">continue</span>
+
+                <span class="n">newlink</span> <span class="o">=</span> <span class="n">replacement_fn</span><span class="p">(</span><span class="n">value</span><span class="p">,</span>
+                                         <span class="n">key_attributes</span><span class="p">,</span>
+                                         <span class="n">match</span><span class="p">,</span>
+                                         <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
+                <span class="n">element</span><span class="o">.</span><span class="n">addnext</span><span class="p">(</span><span class="n">newlink</span><span class="p">)</span>
+
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">element</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="n">textbefore</span> <span class="o">+</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">count</span>
+
+
+<span class="k">def</span> <span class="nf">replace_in_element</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">key_attributes</span><span class="p">,</span>
+    <span class="n">replacement_fn</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">replace_in_element</span><span class="p">):</span> <span class="c"># replaces,  ignore_fn=lambda x: False,</span>
+
+    <span class="n">highlighting</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;highlighting&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">case_sens</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;case_sensitive&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">print</span> <span class="n">case_sens</span>
+
+    <span class="n">re_word</span><span class="p">,</span> <span class="n">re_capture</span> <span class="o">=</span> <span class="n">re_pattern_of</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="n">case_sens</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">highlighting</span><span class="p">:</span>
+        <span class="c"># replace strings with string</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">calculate_hl</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">re_capture</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># replace string with links in element</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">calculate_el</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">replace_in_element</span><span class="p">,</span> <span class="n">re_capture</span><span class="p">,</span> <span class="n">replacement_fn</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">key_attributes</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">count</span>
+
+
+<div class="viewcode-block" id="replace_token"><a class="viewcode-back" href="../../api.html#anchorman.linkit.replace_token">[docs]</a><span class="k">def</span> <span class="nf">replace_token</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">key_attributes</span><span class="p">,</span> <span class="n">replacement_fn</span><span class="p">,</span>
+                  <span class="n">replaces_per_item</span><span class="p">,</span> <span class="n">link_format</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes content as a string, a match to replace and the replacement.</span>
+
+<span class="sd">    Updates content with all matches of the &quot;key&quot; variable and surrounds them</span>
+<span class="sd">    with an &quot;a&quot; tag with a class &quot;in-text-link&quot; and a href of the &quot;value&quot;</span>
+<span class="sd">    variable. The key string is not case sensitive and it will only surround</span>
+<span class="sd">    matches of the key string that are not surround by other letters, it tries</span>
+<span class="sd">    to match whole words.</span>
+
+<span class="sd">    Ruturns a tuple with the updated content and the number of replacements</span>
+<span class="sd">    made.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">to_tree</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">replace_in_element</span><span class="p">(</span><span class="n">count</span><span class="p">,</span>
+                                   <span class="n">element</span><span class="p">,</span>
+                                   <span class="n">key</span><span class="p">,</span>
+                                   <span class="n">value</span><span class="p">,</span>
+                                   <span class="n">key_attributes</span><span class="p">,</span>
+                                   <span class="n">replacement_fn</span><span class="p">,</span>
+                                   <span class="n">link_format</span><span class="p">,</span>
+                                   <span class="n">replaces_per_item</span>
+                                   <span class="c"># ignore_fn=ignore_fn</span>
+                                   <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">replaces_per_item</span> <span class="ow">and</span> <span class="n">count</span> <span class="o">==</span> <span class="n">replaces_per_item</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">from_tree</span><span class="p">(</span><span class="n">root</span><span class="p">),</span> <span class="n">count</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">from_tree</span><span class="p">(</span><span class="n">root</span><span class="p">),</span> <span class="n">count</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="add_links"><a class="viewcode-back" href="../../api.html#anchorman.linkit.add_links">[docs]</a><span class="k">def</span> <span class="nf">add_links</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">replaces_per_item</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">replaces_at_all</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+              <span class="n">markup_format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes html and a dictionary of words to highlight and links. Surrounds</span>
+<span class="sd">    the matched words with a specified html element - by default a link.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">replacement_format</span> <span class="o">=</span> <span class="n">link_fn</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">append</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">append</span>
+    <span class="n">total_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">link_key</span> <span class="o">=</span> <span class="n">link</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="n">text</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">replace_token</span><span class="p">(</span>
+            <span class="n">text</span><span class="p">,</span>
+            <span class="n">key</span><span class="p">,</span>
+            <span class="n">link_key</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span>
+            <span class="n">link_key</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;attributes&#39;</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="n">replacement_format</span><span class="p">,</span>
+            <span class="n">replaces_per_item</span><span class="p">,</span>
+            <span class="n">markup_format</span><span class="p">)</span>
+        <span class="n">append</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span>
+
+        <span class="n">total_count</span> <span class="o">+=</span> <span class="n">count</span>
+        <span class="k">if</span> <span class="n">total_count</span> <span class="o">&gt;=</span> <span class="n">replaces_at_all</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">text</span><span class="p">,</span> <span class="n">counts</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/anchorman.png" title="Welcome to Anchorman."/>
+  </a>
+</p>
+
+<p>
+    <h1 class="logo logo-name"><a href="#">Anchorman</a></h1>
+turns your text into hypertext.
+</p>
+<br>
+<br>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Tarn Barford, Matthias Rebel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.4</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

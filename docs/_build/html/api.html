@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Interface &mdash; Anchorman 0.0.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Anchorman 0.0.6 documentation" href="index.html" />
+    <link rel="prev" title="Performance" href="performance.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="performance.html" title="Performance"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Anchorman 0.0.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-anchorman">
+<span id="interface"></span><h1>Interface<a class="headerlink" href="#module-anchorman" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="anchorman.add">
+<tt class="descclassname">anchorman.</tt><tt class="descname">add</tt><big>(</big><em>text</em>, <em>links</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#anchorman.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call class on module level, initialize and return the class.</p>
+<p>Operate on this object instead of the class directly for simplicity.
+If text and links are provided apply them. The returned object
+contains result then already.</p>
+<p class="rubric">Examples</p>
+<p>Use it like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">anchorman</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">anchorman</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">links</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>text</strong> &#8211; The first parameter.</li>
+<li><strong>links</strong> &#8211; The second parameter.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>anchorman</strong> &#8211;
+the class object with added markup.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">class</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="anchorman.Anchorman">
+<em class="property">class </em><tt class="descclassname">anchorman.</tt><tt class="descname">Anchorman</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#anchorman.Anchorman" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main module interface object for add and remove annotations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>text</strong> (<em>string, optional</em>) &#8211; The first parameter.</li>
+<li><strong>links</strong> (<em>list, optional</em>) &#8211; The second parameter.
+Second line of description should be indented.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><ul class="first last simple">
+<li><strong>selector (string)</strong></li>
+<li><strong>replaces_per_item</strong> (<em>int</em>) &#8211;
+Default 1</li>
+<li><strong>replaces_at_all</strong> (<em>int</em>) &#8211;
+Default 5555555</li>
+<li><strong>longest_match_first</strong> (<em>bool</em>) &#8211;
+Default True</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Markup_format in kwargs will update selector when processed.</p>
+<dl class="method">
+<dt id="anchorman.Anchorman.add">
+<tt class="descname">add</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#anchorman.Anchorman.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add links to text.</p>
+<p>Text and links can be initialized on class level, but also
+reset in here as args.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>text</strong> &#8211; The first parameter.</li>
+<li><strong>links</strong> &#8211; The second parameter.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> &#8211;
+the enriched text.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">String</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="anchorman.Anchorman.positions">
+<tt class="descname">positions</tt><big>(</big><big>)</big><a class="headerlink" href="#anchorman.Anchorman.positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get positions of all links in text.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>result</strong> &#8211;
+list of tuples (key, positions) in text.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">List</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="anchorman.Anchorman.remove">
+<tt class="descname">remove</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#anchorman.Anchorman.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove links/markup from text based on markup_format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>result</strong> &#8211;
+the cleared text.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-anchorman.linkit">
+<span id="linkit"></span><h1>Linkit<a class="headerlink" href="#module-anchorman.linkit" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="anchorman.linkit.add_links">
+<tt class="descclassname">anchorman.linkit.</tt><tt class="descname">add_links</tt><big>(</big><em>text</em>, <em>links</em>, <em>replaces_per_item=None</em>, <em>replaces_at_all=None</em>, <em>markup_format=None</em><big>)</big><a class="reference internal" href="_modules/anchorman/linkit.html#add_links"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#anchorman.linkit.add_links" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes html and a dictionary of words to highlight and links. Surrounds
+the matched words with a specified html element - by default a link.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="anchorman.linkit.remove_links">
+<tt class="descclassname">anchorman.linkit.</tt><tt class="descname">remove_links</tt><big>(</big><em>content</em>, <em>markup_format</em>, <em>selector='.//a[&#64;class=&quot;anchorman&quot;]'</em><big>)</big><a class="reference internal" href="_modules/anchorman/linkit.html#remove_links"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#anchorman.linkit.remove_links" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a string of HTML or text and removes all the tags
+- specified by selector - and leaves their content.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="anchorman.linkit.replace_token">
+<tt class="descclassname">anchorman.linkit.</tt><tt class="descname">replace_token</tt><big>(</big><em>content</em>, <em>key</em>, <em>value</em>, <em>key_attributes</em>, <em>replacement_fn</em>, <em>replaces_per_item</em>, <em>link_format</em>, <em>count=0</em><big>)</big><a class="reference internal" href="_modules/anchorman/linkit.html#replace_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#anchorman.linkit.replace_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes content as a string, a match to replace and the replacement.</p>
+<p>Updates content with all matches of the &#8220;key&#8221; variable and surrounds them
+with an &#8220;a&#8221; tag with a class &#8220;in-text-link&#8221; and a href of the &#8220;value&#8221;
+variable. The key string is not case sensitive and it will only surround
+matches of the key string that are not surround by other letters, it tries
+to match whole words.</p>
+<p>Ruturns a tuple with the updated content and the number of replacements
+made.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper"><p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/anchorman.png" title="Welcome to Anchorman."/>
+  </a>
+</p>
+
+<p>
+    <h1 class="logo logo-name"><a href="#">Anchorman</a></h1>
+turns your text into hypertext.
+</p>
+<br>
+<br>
+
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Interface</a></li>
+<li><a class="reference internal" href="#module-anchorman.linkit">Linkit</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="performance.html"
+                        title="previous chapter">Performance</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Tarn Barford, Matthias Rebel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.4</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
