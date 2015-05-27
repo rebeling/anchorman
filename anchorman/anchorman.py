@@ -148,6 +148,8 @@ class Anchorman(object):
         _, _selector = linker_format(markup_format)
         if _selector:
             self.selector = _selector
+        if markup_format.get('selector', None):
+            self.selector = markup_format['selector']
         self._markup_format = markup_format
 
     def _update_data(self, *args, **kwargs):
@@ -203,6 +205,8 @@ class Anchorman(object):
         """
         kwargs['remove'] = True
         self._update_data(*args, **kwargs)
+        if kwargs.get('selector', None):
+            self.selector = kwargs['selector']
         self.result = remove_links(kwargs.get('text', self.result),
                                    self.markup_format,
                                    selector=self.selector)
