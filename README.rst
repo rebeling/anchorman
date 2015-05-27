@@ -12,11 +12,10 @@ elements in text.
 
     >>> import anchorman
     >>> text = "The quick brown fox jumps over the lazy dog."
-    >>> links = [
-            {'fox': {'value': '/wiki/fox'}},
-            {'dog': {'value': '/wiki/dog'}}]
+    >>> links = [{'fox': {'value': '/wiki/fox'}},
+                 {'dog': {'value': '/wiki/dog'}}]
     >>> a = anchorman.add(text, links)
-    >>> print a
+    >>> a.result
     The quick brown <a href="/wiki/fox" class="anchorman">fox</a> jumps
     over the lazy <a href="/wiki/dog" class="anchorman">dog</a>.
 
@@ -42,7 +41,7 @@ To install Anchorman, simply:
 Documentation
 =============
 
-For detailed usage documentation |docslink|.
+For detailed usage examples read |docslink|.
 
 .. |docslink| image:: https://readthedocs.org/projects/anchorman/badge/?version=latest
     :target: http://anchorman.readthedocs.org/en/latest/
