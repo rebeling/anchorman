@@ -24,7 +24,7 @@ elements in text.
 Features
 ========
 
-* global and item specific markup
+* global and item specific markups
 * html/xml tags or highlighting
 * handful of params to control replacements
 * remove annotations by selector
@@ -42,9 +42,8 @@ To install Anchorman, simply:
 Documentation
 =============
 
-Detailed usage and API documentation can be found at our code
-documentation site, |docslink|.
+For detailed usage documentation |docslink|.
 
 .. |docslink| image:: https://readthedocs.org/projects/anchorman/badge/?version=latest
-    :target: https://readthedocs.org/projects/anchorman/?badge=latest
+    :target: http://anchorman.readthedocs.org/en/latest/
     :alt: Documentation Status
