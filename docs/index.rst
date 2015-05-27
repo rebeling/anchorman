@@ -7,9 +7,9 @@
 Welcome to Anchorman
 ========================
 
-Turn your text into hypertext_. With anchorman you can markup terms,
-create anchors, links, annotate abbreviations or just highlight specific
-elements in text.
+Anchorman turns your text into hypertext_. With anchorman you can markup
+terms, create anchors, links, annotate abbreviations or just highlight
+specific elements in text.
 
 .. _hypertext: http://en.wikipedia.org/wiki/Hypertext
 
@@ -17,9 +17,8 @@ elements in text.
 
     >>> import anchorman
     >>> text = "The quick brown fox jumps over the lazy dog."
-    >>> links = [
-            {'fox': {'value': '/wiki/fox'}},
-            {'dog': {'value': '/wiki/dog'}}]
+    >>> links = [{'fox': {'value': '/wiki/fox'}},
+                 {'dog': {'value': '/wiki/dog'}}]
     >>> a = anchorman.add(text, links)
     >>> print a
     The quick brown <a href="/wiki/fox" class="anchorman">fox</a> jumps
@@ -43,28 +42,33 @@ instructions for getting the most out of Anchorman.
    performance
 
 
-Code
------------
+.. Code
+.. -----------
 
-If you are looking for information on a specific function,
-class or method, this part of the documentation is for you.
+.. If you are looking for information on a specific function,
+.. class or method, this part of the documentation is for you.
 
-.. toctree::
-   :maxdepth: 2
+.. .. toctree::
+..    :maxdepth: 2
 
-   api
+..    api
 
 
 Credits
 -----------
 
-Tarn_Barford_ is father of this - he had the idea and crafted the first implementation - and I am the mother who takes care of it: grow, feed,
+`Tarn Barford`__ is the father of this - he had the idea and crafted
+the first implementation - and I_ took over mothers part ...grow, feed,
 clean up, etc.
 
 We published this at github and pypi to provide our solution to others,
-get feedback and find contributers in the open source.
+to get feedback and find contributers in the open source.
 
-.. _Tarn_Barford: https://tarnbarford.net/
+.. _Python: https://tarnbarford.net/
+__ Python_
+
+.. _I: http://rebeling.net/
+
 
 Indices and tables
 ----------------------

@@ -1,16 +1,35 @@
-Usage
-=====
-Anchorman uses three things: a text, some links and a markup specification. It will iterate the text parse[1] and try to apply the links.
+User guide
+==============
 
-Markup specification define the strategy. One option is to create a tag of a word and the other is to highlight it.
+Anchorman uses three things: a text, some links and a markup
+specification. It will iterate the text parse [1]_ and try to apply
+the links.
 
-[1] the text will be parsed in to an lxml object for processing
+Markup specification define your strategy for replacing the elements.
+One option is to create a tag of a word and the other is to highlight it.
+
+.. [1] the text will be parsed in to an lxml object for processing
 
 
-General Params
+Basic example
 --------------
-The following **keyword arguments** configure anchormans
-general behavior.
+
+.. code-block:: python
+
+    >>> import anchorman
+    >>> text = "The quick brown fox jumps over the lazy dog."
+    >>> links = [{'fox': {'value': '/wiki/fox'}},
+                 {'dog': {'value': '/wiki/dog'}}]
+    >>> a = anchorman.add(text, links)
+    >>> a.result
+    The quick brown <a href="/wiki/fox" class="anchorman">fox</a> jumps
+    over the lazy <a href="/wiki/dog" class="anchorman">dog</a>.
+
+
+Command replacements
+--------------------
+The following **keyword arguments** configure anchormans general
+replacement behavior.
 
 * **replaces_per_item** (int): Default 1
     Item in links, from first occurence on - starting left edge.
@@ -27,7 +46,7 @@ general behavior.
 
 
 Markup format
-+++++++++++++
+++++++++++++++
 
 The markup provides two strategies, **linking** and **highlighting**.
 For links specify a tag, a value_key (attribute for item value) and a
@@ -36,14 +55,15 @@ attribute=value to the tag.
 
 .. code::
 
-    >>> markup_format = {
-            'tag': 'a',
-            'value_key': 'href',
-            'attributes': [
-                ('style', 'color:blue;cursor:pointer;'),
-                ('class', 'anchorman')
-            ]
-        }
+    # linking
+    markup_format = {
+        'tag': 'a',
+        'value_key': 'href',
+        'attributes': [
+            ('style', 'color:blue;cursor:pointer;'),
+            ('class', 'anchorman')
+        ]
+    }
 
 To use **highlighting** simply add a highlighting object with pre and post
 definitions. Pre and post could be everything and will be added pre and
@@ -51,40 +71,43 @@ post the match.
 
 .. code::
 
-    >>> markup_format = {
-            'highlighting': {
-                'pre': '${{',
-                'post': '}}'
-            }
+    # highlighting
+    markup_format = {
+        'highlighting': {
+            'pre': '${{',
+            'post': '}}'
         }
+    }
 
-The following params hold for both strategies, linking and highlighting.
+The following markup_format params hold for both strategies,
+linking and highlighting.
 
-* **case_sensitive** (bool): Default is True. Set to False,
-    it is possible to find the lower, upper and title case version of
-    item key: fox, FOX, Fox. ...to be improved.
+* **case_sensitive** (bool): Default is True. If not, find the lower,
+    upper and title case version of item key: fox, FOX, Fox.
 
 * **replace_match_with_value** (bool): Default is False.
-    Set to True, the param allows you to replace the matched key in the output text. For example if you need an id in a template, rather then original term.
+    If True, anchorman replaces the matched key in the output text.
+    For example if you need an id in a template, rather then original
+    term.
 
     .. code::
 
-        {'fox': {'value': 'some-id'}}
-        "The fox is eating chicken."
-        Result: The ${{some-id}} is eating chicken.
+        >>> links = [{'fox': {'value': 'some-id'}}]
+        >>> text = "The fox is eating chicken."
+        >>> a = anchorman.add(text, links)
+        >>> a.result
+        The ${{some-id}} is eating chicken.
 
 
-Items/Links format
-------------------
+Links format
+++++++++++++++
 
-The links will be list of items. Key is the replacement to be find in
-text and its value is a dict of value and attributes.
+Links is a list of items. Key is the replacement to be found in
+the text and its value, a dict of repl value and attributes.
 
 Attributes will be added pairwise as attribute=value to the tag. If the
 name of the attribute is already specified in the markup_format, then
 markup_format attribute will be extended with the value of the item.
-
-
 
 .. code::
 
@@ -104,59 +127,23 @@ markup_format attribute will be extended with the value of the item.
     font-size:23px;background:red;" ... > ... </a>
 
 
-
-Links with specific attributes
-------------------------------
-
-Define general attribute value pairs on markup_format level and more specific attributes at the level of each link element.
-
-.. code::
-
-    >>> links = [{
-            'red fox': {
-                'value': '/redfox',
-                'attributes': [
-                    ('class', 'animal'),
-                    ('style', 'font-size:23px;background:red'),
-                    ('title', 'Fix und Foxi')
-                ]
-            }
-        }]
-    >>> a = anchorman.add(text, links, markup_format=markup_format)
-    The quick brown fox jumps over the lazy dog while the <a href="/redfox"
-    style="color:blue;cursor:pointer; font-size:23px;background:red"
-    class="anchorman animal" title="Fix und Foxi">red fox</a> sleeps.
-
-
-Highlighting context
---------------------
-
-Instead of creating tags, you define pre- and post-context for highlighting.
-If highlighting is specified in the markup_format, the link key will be marked
-in text. Usage e.g. variables in templates or simple tags (em, b).
-
-.. code::
-
-    >>> links = [{'fox': {}}]
-    >>> markup_format = {
-            'highlighting': {
-                'pre': '${{',
-                'post': '}}'
-            }
-        }
-    >>> a = anchorman.add(text, links, markup_format=markup_format)
-    >>> print a
-    The quick brown ${{fox}} jumps over the lazy dog while the red
-    ${{fox}} sleeps.
-
-
-
 Removal
 ---------
 
+Items to be removed will be identified by xpath expression.
+
+The information from markup_format will be used to create the
+rm selector. If you need to replace specific items only, provide a
+selector as keyword argument to the remove function or to the
+markup_format.
+
 .. code::
 
-    rm-identifier: create a specific identifier per set to delete them later
+    >>> selector=".//a[contains(@href, '/wiki/fox')]"
+    >>> a.remove(selector=selector)
+
+.. * **rm-identifier** Create a specific identifier per set to delete
+..     its members later.
 
 
 Positions
