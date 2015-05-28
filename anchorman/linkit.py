@@ -4,6 +4,8 @@
 import regex as re
 from lxml import etree
 from tree import to_tree, from_tree
+from utils import linker_format
+from utils import re_pattern_of
 
 
 def remove_links(content, markup_format, selector='.//a[@class="anchorman"]'):
@@ -27,28 +29,6 @@ def remove_links(content, markup_format, selector='.//a[@class="anchorman"]'):
             element.tag = "to-remove"
             etree.strip_tags(root, "to-remove")
         return from_tree(root)
-
-
-def linker_format(link_format):
-    new_link_format, selector = None, None
-    if link_format:
-        rmtuple = None
-        if 'rm-identifier' in link_format:
-            rmtuple = ("data-rm-key", link_format['rm-identifier'])
-            rm = link_format.get('attributes', [])
-            rm.append(rmtuple)
-            link_format['attributes'] = rm
-        tag = link_format.get('tag', None)
-        if tag:
-            if rmtuple:
-                selector = './/%s[@%s="%s"]' % (tag, rmtuple[0], rmtuple[1])
-        # else do not overwrite the default self.selector
-        new_link_format = {
-            'tag': link_format.get('tag', 'a'),
-            'value_key': link_format.get('value_key', 'href'),
-            'attributes': link_format.get('attributes', [])
-            }
-    return new_link_format, selector
 
 
 def link_fn(value, key_attributes, match, attributes=None):
@@ -86,40 +66,21 @@ def link_fn(value, key_attributes, match, attributes=None):
     return element
 
 
-def re_pattern_of(key, case_sensitive=True):
-
-    if type(key) is str:
-        key = [key]
-
-    re_words = []
-    for k in key:
-        w = k.replace('.', '\.')
-        if case_sensitive:
-            re_words.append(w)
-        else:
-            re_words += list(set([w, w.title(), w.lower(), w.upper()]))
-
-    re_words = '|'.join(re_words)
-    re_capture = u"(^|[^\w\-/äöüßÄÖÜ])(%s)([^\w\-/äöüßÄÖÜ]|$)" % re_words
-
-    return re_words, re_capture
-
-
 def finditer_result(element_sth, replaces, re_capture):
-    iterator = re.finditer(
-        re_capture, "{}".format(element_sth), overlapped=True)
-    if replaces:
-        return list(iterator)[:replaces]
-    else:
-        return list(iterator)
+    iterator = re.finditer(re_capture,
+                           "{}".format(element_sth),
+                           overlapped=True)
+    return list(iterator)[:replaces] if replaces else list(iterator)
 
-def calculate_hl(count, element, re_capture, replaces_per_item, value, pre, post, replace_match_with_value):
+
+def calculate_hl(count, element, re_capture, replaces_per_item, value,
+                 pre, post, replace_match_with_value):
 
     for tail in [False, True]:
         thistext = element.tail if tail else element.text
         if thistext is not None:
             iterator = reversed(finditer_result(thistext, replaces_per_item, re_capture))
-            lastend = 0
+
             if iterator:
                 for match in iterator:
                     start, end = match.span()
@@ -146,7 +107,7 @@ def calculate_hl(count, element, re_capture, replaces_per_item, value, pre, post
 
 
 def calculate_el(count, attributes, element, replaces_per_item,
-    re_capture, replacement_fn, value, key_attributes):
+                 re_capture, replacement_fn, value, key_attributes):
 
     lastend = 0
 
@@ -219,11 +180,11 @@ def calculate_el(count, attributes, element, replaces_per_item,
 
 
 def replace_in_element(count, element, key, value, key_attributes,
-    replacement_fn, attributes, replaces_per_item): # replaces,  ignore_fn=lambda x: False,
+                       replacement_fn, attributes, replaces_per_item):
 
     highlighting = attributes.get('highlighting', {})
     case_sens = attributes.get('case_sensitive', True)
-    re_word, re_capture = re_pattern_of(key, case_sensitive=case_sens)
+    _word, re_capture = re_pattern_of(key, case_sensitive=case_sens)
     replace_match_with_value = attributes.get("replace_match_with_value", False)
 
     if highlighting:

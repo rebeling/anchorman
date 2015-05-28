@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# import re
-import regex as re
 from linkit import add_links
 from linkit import linker_format
-from linkit import re_pattern_of
 from linkit import remove_links
 from linkit import finditer_result
+from utils import re_pattern_of
 from utils import sort_longest_match_first
 from utils import validate_input
 
@@ -221,11 +219,7 @@ class Anchorman(object):
         allkeys = map(lambda a: a.keys()[0], self.links)
         result = []
         text = "{}".format(self.text)
-        # cs = self.markup_format.get('case_sensitive', True)
 
-        # if cs:
-        #     key = '|'.join(allkeys)
-        # else:
         def all3forms(k):
             return list(set([k, k.lower(), k.upper(), k.title()]))
 
@@ -234,11 +228,9 @@ class Anchorman(object):
             x = all3forms(k)
             for y in x:
                 keys.append(y)
-        print keys
         key = '|'.join(keys)
 
-
-        re_w, re_capture = re_pattern_of(key) #, case_sensitive=cs)
+        _w, re_capture = re_pattern_of(key)
         r = finditer_result(text, None, re_capture)
         for match in r:
             st, en = match.span()
@@ -248,6 +240,7 @@ class Anchorman(object):
             # result.append((key, (st, en), match.groups()[1]))
             result.append((match.groups()[1], (st, en)))
         return result
+
 
 def add(text, links, **kwargs):
     """Call class on module level, initialize and return the class.
@@ -281,7 +274,7 @@ def add(text, links, **kwargs):
     return a
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
     # import cProfile
     # links = [
@@ -302,15 +295,15 @@ if __name__ == '__main__':
     #     {'Ergebnis': {'value': '/wiki/fox'}}
     #     ]
 
-    text = """Zweite Bundesliga Wunschtrainer Tuchel sagt RB Leipzig ab <p>Mit Thomas Tuchel auf der Trainerbank wollte RB Leipzig nach ganz oben. Doch daraus wird nichts. Der Wunschkandidat sagt dem Klub aus der zweiten Liga ab. Die Begründung liefert Tuchels Berater. Wohin zieht es Thomas Tuchel? Leipzig ist nicht das Ziel des Trainers Wunschkandidat Thomas Tuchel hat Rasenballsport Leipzig eine Absage erteilt. „Thomas Tuchel wird im Sommer definitiv nicht Trainer von RB Leipzig“, sagte Sportdirektor Ralf Rangnick der „Leipziger Volkszeitung“. Tuchels Berater habe dem Klub-Vorstandsvorsitzenden, Oliver Mintzlaff, mitgeteilt, dass der 41-Jährige nicht in die zweiten Fußball-Bundesliga gehe, schrieb die Zeitung am Montag auf ihrer Internetseite. „RB Leipzig ist unabhängig von Herrn Tuchel und anderen Namen auch nicht bereit, finanzielle Grenzen für einen Zweitliga-Trainer zu überschreiten“, sagte Mintzlaff der „Sport Bild“. „Unser Weg bleibt unbeirrt – wir werden mit unserer A-Lösung auf der Trainerposition in die neue Saison gehen.“ Mehr zum Thema Die aktuelle Tabelle der Fußball-Bundesliga Hamburger SV : Ein Nest für Tuchel</p> Vorwürfe von Torwart Müller: „Tuchel ist ein Diktator“ <p>Rangnick hatte Tuchel stets als einen idealen Kandidaten für die kommende Saison bezeichnet, eine bereits vorliegende Einigung aber immer dementiert. Die Trainerfrage hatte sich gestellt, nachdem Alexander Zorniger im Februar vorzeitig aus seinem Vertrag bei RB ausgestiegen war. Nachwuchscoach Achim Beierlorzer war als Interimstrainer bis zum Saisonende verpflichtet worden.</p><p>Die Leipziger haben sieben Spieltage vor dem Saisonende nur noch theoretische Chancen auf den Durchmarsch in die Bundesliga. Nach dem 2:1-Sieg am Ostersonntag über den 1. FC Nürnberg liegen sie acht Zähler hinter dem Relegationsplatz drei.</p><p>Tuchel, dessen ruhender Vertrag zum Saisonende beim Bundesligaverein FSV Mainz 05 ausläuft, ist bei verschiedenen Vereinen im Gespräch. Der 41-Jährige hatte Mainz im vergangenen Sommer verlassen und war seitdem kein neues Engagement eingegangen.</p>"""
+    # text = """Zweite Bundesliga Wunschtrainer Tuchel sagt RB Leipzig ab <p>Mit Thomas Tuchel auf der Trainerbank wollte RB Leipzig nach ganz oben. Doch daraus wird nichts. Der Wunschkandidat sagt dem Klub aus der zweiten Liga ab. Die Begründung liefert Tuchels Berater. Wohin zieht es Thomas Tuchel? Leipzig ist nicht das Ziel des Trainers Wunschkandidat Thomas Tuchel hat Rasenballsport Leipzig eine Absage erteilt. „Thomas Tuchel wird im Sommer definitiv nicht Trainer von RB Leipzig“, sagte Sportdirektor Ralf Rangnick der „Leipziger Volkszeitung“. Tuchels Berater habe dem Klub-Vorstandsvorsitzenden, Oliver Mintzlaff, mitgeteilt, dass der 41-Jährige nicht in die zweiten Fußball-Bundesliga gehe, schrieb die Zeitung am Montag auf ihrer Internetseite. „RB Leipzig ist unabhängig von Herrn Tuchel und anderen Namen auch nicht bereit, finanzielle Grenzen für einen Zweitliga-Trainer zu überschreiten“, sagte Mintzlaff der „Sport Bild“. „Unser Weg bleibt unbeirrt – wir werden mit unserer A-Lösung auf der Trainerposition in die neue Saison gehen.“ Mehr zum Thema Die aktuelle Tabelle der Fußball-Bundesliga Hamburger SV : Ein Nest für Tuchel</p> Vorwürfe von Torwart Müller: „Tuchel ist ein Diktator“ <p>Rangnick hatte Tuchel stets als einen idealen Kandidaten für die kommende Saison bezeichnet, eine bereits vorliegende Einigung aber immer dementiert. Die Trainerfrage hatte sich gestellt, nachdem Alexander Zorniger im Februar vorzeitig aus seinem Vertrag bei RB ausgestiegen war. Nachwuchscoach Achim Beierlorzer war als Interimstrainer bis zum Saisonende verpflichtet worden.</p><p>Die Leipziger haben sieben Spieltage vor dem Saisonende nur noch theoretische Chancen auf den Durchmarsch in die Bundesliga. Nach dem 2:1-Sieg am Ostersonntag über den 1. FC Nürnberg liegen sie acht Zähler hinter dem Relegationsplatz drei.</p><p>Tuchel, dessen ruhender Vertrag zum Saisonende beim Bundesligaverein FSV Mainz 05 ausläuft, ist bei verschiedenen Vereinen im Gespräch. Der 41-Jährige hatte Mainz im vergangenen Sommer verlassen und war seitdem kein neues Engagement eingegangen.</p>"""
 
     # cProfile.run('add(text, links)')
 
 
 
-    links = [{'red fox': {'value': '/wiki/fox'}}, {'fox': {'value': '/wiki/fox'}}, {'dog': {'value': '/wiki/dog'}}]
-    # text = "fox The quick brown fox jumps over the lazy <br> dog and fox. dog"
-    text = "fox fox red fox Dog dog Dog"
+    # links = [{'red fox': {'value': '/wiki/fox'}}, {'fox': {'value': '/wiki/fox'}}, {'dog': {'value': '/wiki/dog'}}]
+    # # text = "fox The quick brown fox jumps over the lazy <br> dog and fox. dog"
+    # text = "fox fox red fox Dog dog Dog"
 
     # b = Anchorman(text, links, replaces_per_item=100000)
     # print b.positions()
@@ -327,46 +320,52 @@ if __name__ == '__main__':
 
     # text = "<p>Foxes are small-to-medium-sized, omnivorous mammals belonging to several genera of the Canidae family. Foxes are slightly smaller than a medium-size domestic dog, with a flattened skull, upright triangular ears,<br> a pointed, slightly upturned snout, and a long bushy tail (or brush).</p>"
 
-    text = "Foxes are small-to-medium-sized, omnivorous mammals belonging to several genera of the Canidae family. Foxes are slightly smaller than a medium-size domestic dog, with a flattened skull, upright triangular ears, a pointed, slightly upturned snout, and a long bushy tail (or brush)."
+    # text = "Foxes are small-to-medium-sized, omnivorous mammals belonging to several genera of the Canidae family. Foxes are slightly smaller than a medium-size domestic dog, with a flattened skull, upright triangular ears, a pointed, slightly upturned snout, and a long bushy tail (or brush)."
 
-    links = [
-        {'Fox': {'value': '/fox'}},
-        {'mammals': {'value': '/mammals'}},
-        {'red fox': {
-            'value': '/redfox',
-            'attributes': [
-                ('class', 'animal'),
-                ('style', 'font-size:23px;background:red'),
-                ('title', 'Fix und Foxi')
-                ]
-            }
-        },
-        {'a medium-size domestic dog': {'value': '/dog'}}
-    ]
+    # links = [
+    #     {'Fox': {'value': '/fox'}},
+    #     {'mammals': {'value': '/mammals'}},
+    #     {'red fox': {
+    #         'value': '/redfox',
+    #         'attributes': [
+    #             ('class', 'animal'),
+    #             ('style', 'font-size:23px;background:red'),
+    #             ('title', 'Fix und Foxi')
+    #             ]
+    #         }
+    #     },
+    #     {'a medium-size domestic dog': {'value': '/dog'}}
+    # ]
 
 
-    markup_format = {
-        # 'case_sensitive': False,
-        # 'replace_match_with_value': True,
-        # 'highlighting': {
-        #     'pre': '${{',
-        #     'post': '}}'
-        #     }
-    }
+    # markup_format = {
+    #     # 'case_sensitive': False,
+    #     # 'replace_match_with_value': True,
+    #     # 'highlighting': {
+    #     #     'pre': '${{',
+    #     #     'post': '}}'
+    #     #     }
+    # }
 
     # replaces_per_item=1
     # replaces_at_all=1
 
-    a = add(
-        text,
-        links,
-        # replaces_per_item=3,
-        # replaces_at_all=1,
-        markup_format=markup_format
-        )
-    print a
-    print text
-    # print a.positions()
+    # a = add(
+    #     text,
+    #     links,
+    #     # replaces_per_item=3,
+    #     # replaces_at_all=1,
+    #     markup_format=markup_format
+    #     )
+    # print a
+
+    # # markup_format['selector'] = ".//a[contains(@href, '/mammals')]"
+    # # print a.remove(markup_format=markup_format)
+
+    # print a.remove(selector=".//a[contains(@href, '/mammals')]")
+
+    # print text
+    # # print a.positions()
     # a.remove()
     # print a
 
