@@ -1,91 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from linkit import add_links
-from linkit import linker_format
-from linkit import remove_links
 from linkit import finditer_result
+from linkit import remove_links
+from utils import linker_format
 from utils import re_pattern_of
 from utils import sort_longest_match_first
 from utils import validate_input
-
-
-"""
-Anchorman is the basic API for the link it request.
-
-    Beside text and links, use markup\_format and replaces\_per\_item
-    to describe the core functionality. The links will be specified
-    as a list of dicts. Dicts key will be the string in the original
-    text to be replaced/augmented.
-
-    links = [
-        {'red fox': {
-            'value': '/redfox',
-            # add or augment the general attributes (see markup)
-            # with more specific or extra attribute, value pairs
-            'attributes': [
-                ('class', 'animal'),
-                ('style', 'font-size:23px;background:red'),
-                ('title', 'The red fox is red')
-                ]
-            }
-        },
-        {'green hornet': { ... }, ...
-    ]
-
-    The markup_format object has two options:
-
-    1. link format
-    2. context highlighting
-
-    markup_format = {
-        'tag': 'a',
-        'value_key': 'href', # attribute for the value (see links in add)
-        'attributes': [
-            ('style', 'color:blue;cursor:pointer;'),
-            ('class', 'anchorman')
-            ],
-        'rm-identifier': 'anchorman-link', # identifier for specific rm
-
-        # --- * ---
-        # or highlight the target with a pre- and postfix
-        'highlighting': {
-            'pre': '${{',
-            'post': '}}'
-            },
-
-        # --- * ---
-        'case-sensitive': False, # works for both, default is True
-    }
-
-    Params
-
-    Returns an anchorman class object
-
-
-    Args (alias of Parameters)
-    Arguments (alias of Parameters)
-    Attributes
-    Example
-    Examples
-    Keyword Args (alias of Keyword Arguments)
-    Keyword Arguments
-    Methods
-
-    Notes
-    Other Parameters
-    Parameters
-    Return (alias of Returns)
-    Returns
-    Raises
-    References
-    See Also
-    Warning
-    Warnings (alias of Warning)
-    Warns
-    Yields
-
-
-"""
 
 
 class Anchorman(object):
@@ -210,7 +131,7 @@ class Anchorman(object):
                                    selector=self.selector)
         return self.result
 
-    def positions(self):
+    def positions(self, **kwargs):
         """Get positions of all links in text.
 
         Returns:
@@ -220,17 +141,9 @@ class Anchorman(object):
         result = []
         text = "{}".format(self.text)
 
-        def all3forms(k):
-            return list(set([k, k.lower(), k.upper(), k.title()]))
-
-        keys = []
-        for k in allkeys:
-            x = all3forms(k)
-            for y in x:
-                keys.append(y)
-        key = '|'.join(keys)
-
-        _w, re_capture = re_pattern_of(key)
+        cs = kwargs.get('case_sensitive',
+                        self.markup_format.get('case_sensitive', True))
+        _, re_capture = re_pattern_of(allkeys, case_sensitive=cs)
         r = finditer_result(text, None, re_capture)
         for match in r:
             st, en = match.span()
@@ -305,7 +218,7 @@ def add(text, links, **kwargs):
     # # text = "fox The quick brown fox jumps over the lazy <br> dog and fox. dog"
     # text = "fox fox red fox Dog dog Dog"
 
-    # b = Anchorman(text, links, replaces_per_item=100000)
+    # b = Anchorman(text, links,replaces_per_item=100000)
     # print b.positions()
 
     # markup_format = {
@@ -339,16 +252,16 @@ def add(text, links, **kwargs):
 
 
     # markup_format = {
-    #     # 'case_sensitive': False,
-    #     # 'replace_match_with_value': True,
-    #     # 'highlighting': {
-    #     #     'pre': '${{',
-    #     #     'post': '}}'
-    #     #     }
+    #     'case_sensitive': False,
+    # #     # 'replace_match_with_value': True,
+    # #     # 'highlighting': {
+    # #     #     'pre': '${{',
+    # #     #     'post': '}}'
+    # #     #     }
     # }
 
-    # replaces_per_item=1
-    # replaces_at_all=1
+    # # replaces_per_item=1
+    # # replaces_at_all=1
 
     # a = add(
     #     text,
@@ -359,19 +272,19 @@ def add(text, links, **kwargs):
     #     )
     # print a
 
-    # # markup_format['selector'] = ".//a[contains(@href, '/mammals')]"
-    # # print a.remove(markup_format=markup_format)
+    # # # markup_format['selector'] = ".//a[contains(@href, '/mammals')]"
+    # # # print a.remove(markup_format=markup_format)
 
-    # print a.remove(selector=".//a[contains(@href, '/mammals')]")
+    # # print a.remove(selector=".//a[contains(@href, '/mammals')]")
 
-    # print text
-    # # print a.positions()
-    # a.remove()
-    # print a
+    # # print text
+    # print a.positions(case_sensitive=False)
+    # # a.remove()
+    # # print a
 
 
-    # markup_format = {
-    #     'tag': "a",
+    # # markup_format = {
+    # #     'tag': "a",
     #     'value_key': "xCOLONhref", # attribute for the value see _get_entity_item
     #     'attributes': [("class", "taxonomy-entity"),
     #                    ("xCOLONshow", "embed"),

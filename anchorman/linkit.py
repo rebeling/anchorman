@@ -4,7 +4,6 @@
 import regex as re
 from lxml import etree
 from tree import to_tree, from_tree
-from utils import linker_format
 from utils import re_pattern_of
 
 
@@ -184,7 +183,7 @@ def replace_in_element(count, element, key, value, key_attributes,
 
     highlighting = attributes.get('highlighting', {})
     case_sens = attributes.get('case_sensitive', True)
-    _word, re_capture = re_pattern_of(key, case_sensitive=case_sens)
+    _, re_capture = re_pattern_of(key, case_sensitive=case_sens)
     replace_match_with_value = attributes.get("replace_match_with_value", False)
 
     if highlighting:
