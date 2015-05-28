@@ -1,4 +1,4 @@
-User guide
+Introduction
 ==============
 
 Anchorman uses three things: a text, some links and a markup
@@ -11,8 +11,8 @@ One option is to create a tag of a word and the other is to highlight it.
 .. [1] the text will be parsed in to an lxml object for processing
 
 
-Basic example
---------------
+Getting started
+----------------
 
 .. code-block:: python
 
