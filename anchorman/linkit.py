@@ -110,17 +110,17 @@ def calculate_hl(count, element, re_capture, replaces_per_item, value,
 
 
 def get_chain(allitems, element, tail_mode=True):
-    lastend, lastrest = 0, None
+    lastend, lastrest, match = 0, None, None
     chain = []
     chain_append = chain.append
     this = element.tail if tail_mode else element.text
-    for i, match in enumerate(allitems):
+
+    for match in allitems:
         start, end = match.span()
         before = this[lastend:start]
         chain_append((before, match))
         lastend = end
         lastrest = this[lastend:]
-
     chain_append((lastrest, match))
     chain.reverse()
 
