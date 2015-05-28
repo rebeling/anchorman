@@ -128,7 +128,9 @@ def get_chain(allitems, element, tail_mode=True):
 
 
 def calculate_el(count, attributes, element, replaces_per_item,
-                 re_capture, replacement_fn, value, key_attributes):
+                 re_capture, value, key_attributes):
+
+    replacement_fn = link_fn
 
     if element.text:
         allitems = finditer_result(element.text,
@@ -176,8 +178,11 @@ def calculate_el(count, attributes, element, replaces_per_item,
     return count
 
 
-def replace_in_element(count, element, key, value, key_attributes,
-                       replacement_fn, attributes, replaces_per_item):
+def replace_in_element(count, element, key, link_key,
+                       attributes, replaces_per_item):
+
+    value = link_key.get('value', key)
+    key_attributes = link_key.get('attributes', [])
 
     highlighting = attributes.get('highlighting', {})
     case_sens = attributes.get('case_sensitive', True)
@@ -202,13 +207,12 @@ def replace_in_element(count, element, key, value, key_attributes,
                              element,
                              replaces_per_item,
                              re_capture,
-                             replacement_fn,
                              value,
                              key_attributes)
     return count
 
 
-def replace_token(content, key, value, key_attributes, replacement_fn,
+def replace_token(content, key, link_key,
                   replaces_per_item, link_format, count=0):
     """
     Takes content as a string, a match to replace and the replacement.
@@ -225,16 +229,16 @@ def replace_token(content, key, value, key_attributes, replacement_fn,
     """
     root = to_tree(content)
     count = 0
+    # value = link_key.get('value', key),
+    # key_attributes = link_key.get('attributes', []),
+
     for element in root.iter():
         count = replace_in_element(count,
                                    element,
                                    key,
-                                   value,
-                                   key_attributes,
-                                   replacement_fn,
+                                   link_key,
                                    link_format,
                                    replaces_per_item
-                                   # ignore_fn=ignore_fn
                                    )
 
         if replaces_per_item and count == replaces_per_item:
@@ -249,7 +253,7 @@ def add_links(text, links, replaces_per_item=None, replaces_at_all=None,
     Takes html and a dictionary of words to highlight and links. Surrounds
     the matched words with a specified html element - by default a link.
     """
-    replacement_format = link_fn
+    # replacement_format = link_fn
     counts = []
     append = counts.append
     total_count = 0
@@ -258,14 +262,11 @@ def add_links(text, links, replaces_per_item=None, replaces_at_all=None,
         key = link.keys()[0]
         link_key = link[key]
 
-        text, count = replace_token(
-            text,
-            key,
-            link_key.get('value', key),
-            link_key.get('attributes', []),
-            replacement_format,
-            replaces_per_item,
-            markup_format)
+        text, count = replace_token(text,
+                                    key,
+                                    link_key,
+                                    replaces_per_item,
+                                    markup_format)
         append((key, count))
 
         total_count += count
