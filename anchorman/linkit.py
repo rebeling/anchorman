@@ -17,8 +17,7 @@ def remove_links(content, markup_format, selector='.//a[@class="anchorman"]'):
         pre = markup_format['highlighting'].get('pre', None)
         post = markup_format['highlighting'].get('post', None)
         if pre and post:
-            content = content.replace(pre, '')
-            content = content.replace(post, '')
+            return content.replace(pre, '').replace(post, '')
         return content
     else:
         # remove by selector
@@ -31,7 +30,6 @@ def remove_links(content, markup_format, selector='.//a[@class="anchorman"]'):
 
 
 def link_fn(value, key_attributes, match, attributes=None):
-
     # print 'link_fn', value, key_attributes, match, attributes
     # apply special attributes for every item to global attributes or iteself
     if attributes is None:
@@ -66,38 +64,44 @@ def link_fn(value, key_attributes, match, attributes=None):
 
 
 def finditer_result(element_sth, replaces, re_capture):
-    iterator = re.finditer(re_capture,
-                           "{}".format(element_sth),
+    iterator = re.finditer(re_capture, "{}".format(element_sth),
                            overlapped=True)
     return list(iterator)[:replaces] if replaces else list(iterator)
 
 
 def calculate_hl(count, element, re_capture, replaces_per_item, value,
-                 pre, post, replace_match_with_value):
+                 pre, post, rplc_match_with_value):
 
     for tail in [False, True]:
         thistext = element.tail if tail else element.text
+
         if thistext is not None:
-            iterator = reversed(finditer_result(thistext, replaces_per_item, re_capture))
+            iterator = reversed(finditer_result(thistext,
+                                                replaces_per_item,
+                                                re_capture))
 
             if iterator:
                 for match in iterator:
                     start, end = match.span()
+                    groups = match.groups()
                     # check if there is not a starting markup
                     # in the first part already ...no markup
                     # inside of the same markup
-                    add2start = len(match.groups()[0])
-                    sub2end = len(match.groups()[2])
+
                     pre_c1 = thistext[:start].count(pre)
                     post_c1 = thistext[:start].count(post)
+
                     # replace_match_with_value
-                    repl = value if replace_match_with_value else match.groups()[1]
+                    repl = value if rplc_match_with_value else groups[1]
+
                     if pre_c1 == post_c1:
                         count += 1
+                        before, after = len(groups[0]), len(groups[2])
+
                         thistext = "{}{}{}{}{}".format(
-                            thistext[:start+add2start],
-                            pre, repl, post,
-                            thistext[end-sub2end:])
+                            thistext[:start+before], pre, repl, post,
+                            thistext[end-after:])
+
                     if tail:
                         element.tail = thistext
                     else:
@@ -105,65 +109,59 @@ def calculate_hl(count, element, re_capture, replaces_per_item, value,
     return count
 
 
+def get_chain(allitems, element, tail_mode=True):
+    lastend, lastrest = 0, None
+    chain = []
+    chain_append = chain.append
+    this = element.tail if tail_mode else element.text
+    for i, match in enumerate(allitems):
+        start, end = match.span()
+        before = this[lastend:start]
+        chain_append((before, match))
+        lastend = end
+        lastrest = this[lastend:]
+
+    chain_append((lastrest, match))
+    chain.reverse()
+
+    return chain
+
+
 def calculate_el(count, attributes, element, replaces_per_item,
                  re_capture, replacement_fn, value, key_attributes):
 
-    lastend = 0
-
     if element.text:
-        allitems = finditer_result(element.text, replaces_per_item, re_capture)
+        allitems = finditer_result(element.text,
+                                   replaces_per_item,
+                                   re_capture)
         if allitems:
-            chain, lastend, lastrest = [], 0, None
-
-            for i, match in enumerate(allitems):
-                start, end = match.span()
-                before = element.text[lastend:start]
-                chain.append((before, match))
-                lastend = end
-                lastrest = element.text[lastend:]
-
-            if lastrest:
-                chain.append((lastrest, match))
-
-            chain.reverse()
-
+            chain = get_chain(allitems, element, tail_mode=False)
             for i, (after, match) in enumerate(chain):
-                newlink = replacement_fn(value,
-                                         key_attributes,
-                                         match,
-                                         attributes=attributes)
-
+                newlink = replacement_fn(value, key_attributes,
+                                         match, attributes=attributes)
                 if element.tag != newlink.tag:
-                    newlink.tail = "{}{}".format(
-                        match.groups()[2], after)
+                    groups = match.groups()
+                    newlink.tail = "{}{}".format(groups[2], after)
 
                     if i < len(chain)-1:
-                        count += 1
                         element.insert(0, newlink)
+                        count += 1
                     else:
-                        element.text = "{}{}".format(
-                            after, match.groups()[0])
+                        element.text = "{}{}".format(after, groups[0])
 
     if element.tail:
-        allitems = finditer_result(element.tail, replaces_per_item, re_capture)
+        allitems = finditer_result(element.tail,
+                                   replaces_per_item,
+                                   re_capture)
         if allitems:
-            chain, lastend, lastrest = [], 0, None
-
-            for i, match in enumerate(allitems):
-                start, end = match.span()
-                before = element.tail[lastend:start]
-                chain.append(before)
-                lastend = end
-                lastrest = element.tail[lastend:] # + matchedafter
-
-            chain.append(lastrest)
-            chain.reverse()
+            chain = get_chain(allitems, element, tail_mode=True)
             element.tail = ''
 
-            for i, textbefore in enumerate(chain):
+            for i, (textbefore, match) in enumerate(chain):
 
+                groups = match.groups()
                 if i == 0:
-                    element.tail = match.groups()[2] + textbefore
+                    element.tail = groups[2] + textbefore
                     continue
 
                 newlink = replacement_fn(value,
@@ -174,7 +172,7 @@ def calculate_el(count, attributes, element, replaces_per_item,
 
                 count += 1
                 if i <= len(chain)-1:
-                    element.tail = textbefore + match.groups()[0]
+                    element.tail = textbefore + groups[0]
     return count
 
 
@@ -184,7 +182,8 @@ def replace_in_element(count, element, key, value, key_attributes,
     highlighting = attributes.get('highlighting', {})
     case_sens = attributes.get('case_sensitive', True)
     _, re_capture = re_pattern_of(key, case_sensitive=case_sens)
-    replace_match_with_value = attributes.get("replace_match_with_value", False)
+    rplc_match_with_value = attributes.get("replace_match_with_value",
+                                           False)
 
     if highlighting:
         # replace strings with string
@@ -195,7 +194,7 @@ def replace_in_element(count, element, key, value, key_attributes,
                              value,
                              highlighting.get('pre', '-set-pre-marker-'),
                              highlighting.get('post', '-set-post-marker-'),
-                             replace_match_with_value)
+                             rplc_match_with_value)
     else:
         # replace string with links in element
         count = calculate_el(count,
