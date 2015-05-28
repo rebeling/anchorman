@@ -37,7 +37,7 @@ instructions for getting the most out of Anchorman.
 .. toctree::
    :maxdepth: 2
 
-   firststeps
+   introduction
    installation
    performance
 

@@ -1,9 +1,9 @@
 Introduction
 ==============
 
-Anchorman uses three things: a text, some links and a markup
-specification. It will iterate the text parse [1]_ and try to apply
-the links.
+Anchorman turns your text into hypertext and uses three things:
+a text, a list of links and a markup specification. It iterates the
+text parse [1]_ looking for link matches and replaces them in the text.
 
 Markup specification define your strategy for replacing the elements.
 One option is to create a tag of a word and the other is to highlight it.
@@ -141,6 +141,8 @@ markup_format.
 
     >>> selector=".//a[contains(@href, '/wiki/fox')]"
     >>> a.remove(selector=selector)
+
+Or in case of highlighting a simple string replace of pre and post.
 
 .. * **rm-identifier** Create a specific identifier per set to delete
 ..     its members later.
