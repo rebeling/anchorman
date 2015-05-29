@@ -7,7 +7,7 @@ install:
   - pip install -r requirements.txt
 
 script:
-    - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then coverage run $(which py.test) anchorman --doctest-modules --verbose; coverage report --show-missing; else py.test anchorman --verbose; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then coverage run $(which py.test) anchorman --verbose; coverage report --show-missing; else py.test anchorman - -verbose; fi
 
 after_success:
     - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then pip install coveralls ; coveralls ; fi
