@@ -1,11 +1,24 @@
 language: python
+sudo: false
 python:
   - "2.7"
 # command to install dependencies
 install:
-  - pip install codecov
   - pip install -r requirements.txt
+
 script:
-  - python -m pytest --cov=anchorman --cov-report term-missing -v -s
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then coverage run $(which py.test) anchorman --doctest-modules --verbose; coverage report --show-missing; else py.test anchorman --verbose; fi
+
 after_success:
-  - codecov
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then pip install coveralls ; coveralls ; fi
+
+notifications:
+  email: false
+
+
+
+script:
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then coverage run $(which py.test) dask pframe pbag --doctest-modules --verbose; coverage report --show-missing; else py.test dask pframe pbag --verbose; fi
+
+after_success:
+
