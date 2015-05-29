@@ -14,11 +14,3 @@ after_success:
 
 notifications:
   email: false
-
-
-
-script:
-    - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then coverage run $(which py.test) dask pframe pbag --doctest-modules --verbose; coverage report --show-missing; else py.test dask pframe pbag --verbose; fi
-
-after_success:
-
