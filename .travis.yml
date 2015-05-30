@@ -4,13 +4,14 @@ python:
   - "2.7"
 # command to install dependencies
 install:
+  - pip install coveralls python-coveralls coverage
   - pip install -r requirements.txt
 
 script:
-    - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then coverage run $(which py.test) anchorman --verbose; coverage report --show-missing; else py.test anchorman - -verbose; fi
+    - py.test test --doctest-modules -v --cov coveralls --cov-report term-missing
 
 after_success:
-    - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then pip install coveralls ; coveralls ; fi
+    - coveralls
 
 notifications:
   email: false
