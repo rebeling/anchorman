@@ -19,4 +19,4 @@ Anchorman is a library, written in Python.
 :copyright: (c) 2015 by Tarn Barford, Matthias Rebel.
 :license: Apache 2.0, see LICENSE for more details.
 """
-__version__ = '0.0.8a'
+__version__ = '0.0.9'
