@@ -8,6 +8,8 @@ lib
 .DS_Store
 .Python
 .coverage
+.eggs
+.ipynb_checkpoints
 
 junit.xml
 
@@ -17,4 +19,5 @@ junit.xml
 *.swp
 *.zip
 
+pip-selfcheck.json
 anchorman/example.html
