@@ -5,11 +5,14 @@ PIP=${VIRTUALENV_DIR}/bin/pip
 PYTHON=${VIRTUALENV_DIR}/bin/python
 
 install:
+	# install virtualenv
 	virtualenv ${VIRTUALENV_DIR}
 	${VIRTUALENV_DIR}/bin/pip install -r requirements.txt
 	${VIRTUALENV_DIR}/bin/py.test test
 
 docs:
+	# install the following to build the docs
+	# mock sphinx sphinxcontrib-napoleon==0.3.4
 	rm -rfv docs/_build
 	cd docs && make html
 

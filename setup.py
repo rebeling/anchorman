@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import anchorman
 
 try:
     from setuptools import setup
@@ -9,11 +10,9 @@ from codecs import open
 with open('README.rst', 'r', 'utf-8') as f:
     readme = f.read()
 
-__version__ = '0.0.7'
-
 setup(
     name='anchorman',
-    version=__version__,
+    version=anchorman.__version__,
     description='Markup terms in text',
     long_description=readme,
     author='Tarn Barford, Matthias Rebel',
