@@ -1,77 +1,49 @@
+
+.. include:: ../readme.rst
+    :start-line: 0
+    :end-line: 23
+
 .. Anchorman documentation master file, created by
-   sphinx-quickstart on Mon May 18 12:53:24 2015.
+   sphinx-quickstart on Wed Dec  9 23:04:59 2015.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-
-Welcome to Anchorman
-========================
-
-Anchorman turns your text into hypertext_. With anchorman you can markup
-terms, create anchors, links, annotate abbreviations or just highlight
-specific elements in text.
-
-.. _hypertext: http://en.wikipedia.org/wiki/Hypertext
-
-.. code::
-
-    >>> import anchorman
-    >>> text = "The quick brown fox jumps over the lazy dog."
-    >>> links = [{'fox': {'value': '/wiki/fox'}},
-                 {'dog': {'value': '/wiki/dog'}}]
-    >>> a = anchorman.add(text, links)
-    >>> print a
-    The quick brown <a href="/wiki/fox" class="anchorman">fox</a> jumps
-    over the lazy <a href="/wiki/dog" class="anchorman">dog</a>.
-
-Check the user guide for detailed introduction and more examples of
-all the implemented features.
+.. /auto, overview.png and pylintreport must be generated
+   upfront, it is not part of the application to reduce
+   dependencies
 
 
-User Guide
------------
-
-This part of the documentation, provides step-by-step
-instructions for getting the most out of Anchorman.
+Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   introduction
-   installation
-   performance
-
-
-.. Code
-.. -----------
-
-.. If you are looking for information on a specific function,
-.. class or method, this part of the documentation is for you.
-
-.. .. toctree::
-..    :maxdepth: 2
-
-..    api
+   autodocs
+   codegraph
+   pylintreport
+   .. coverage
+   todos
 
 
-Credits
------------
 
-`Tarn Barford`__ is the father of this - he had the idea and crafted
-the first implementation - and I_ took over mothers part ...grow, feed,
-clean up, etc.
+.. include:: ../readme.rst
+    :start-line: 23
+    :end-line: 33
 
-We published this at github and pypi to provide our solution to others,
-to get feedback and find contributers in the open source.
 
-.. _Python: https://tarnbarford.net/
-__ Python_
+Credits and contributions
+--------------------------
 
-.. _I: http://rebeling.net/
+We published this at github and pypi to provide our solution to others, to get feedback and find contributers in the open source.
+
+Thanks `Tarn Barford`__ for inspiration and first steps.
+
+.. _TheAustralien: https://tarnbarford.net/
+__ TheAustralien_
 
 
 Indices and tables
-----------------------
+-------------------
 
 * :ref:`genindex`
 * :ref:`modindex`

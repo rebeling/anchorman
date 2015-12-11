@@ -1,9 +1,0 @@
-Anchorman uses vendor python libraries.
-
-
-lxml library
-------------
-
-The lxml library is shipped under a BSD license. libxml2 and libxslt2 itself 
-are shipped under the MIT license. There should therefore be no obstacle to 
-using lxml in your codebase.

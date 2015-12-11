@@ -1,0 +1,25 @@
+digraph "packages_anchorman" {
+charset="utf-8"
+rankdir=BT
+"0" [label="anchorman", shape="box"];
+"1" [label="anchorman.configure", shape="box"];
+"2" [label="anchorman.generator", shape="box"];
+"3" [label="anchorman.generator.candidate", shape="box"];
+"4" [label="anchorman.generator.element", shape="box"];
+"5" [label="anchorman.generator.highlight", shape="box"];
+"6" [label="anchorman.generator.tag", shape="box"];
+"7" [label="anchorman.generator.text", shape="box"];
+"8" [label="anchorman.main", shape="box"];
+"9" [label="anchorman.positioner", shape="box"];
+"10" [label="anchorman.positioner.interval", shape="box"];
+"11" [label="anchorman.positioner.slices", shape="box"];
+"12" [label="anchorman.utils", shape="box"];
+"3" -> "4" [arrowhead="open", arrowtail="none"];
+"4" -> "5" [arrowhead="open", arrowtail="none"];
+"4" -> "6" [arrowhead="open", arrowtail="none"];
+"8" -> "1" [arrowhead="open", arrowtail="none"];
+"8" -> "3" [arrowhead="open", arrowtail="none"];
+"8" -> "7" [arrowhead="open", arrowtail="none"];
+"8" -> "10" [arrowhead="open", arrowtail="none"];
+"10" -> "11" [arrowhead="open", arrowtail="none"];
+}

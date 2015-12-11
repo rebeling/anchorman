@@ -1,0 +1,10 @@
+name: anchorman
+version: 0.1.0
+author: matthias rebel
+
+# optional
+author_email: "webmaster@rebeling.net"
+url: "https://github.com/rebeling/anchorman"
+description: "" # better use the readme
+license: Apache License
+copyright: "2015"

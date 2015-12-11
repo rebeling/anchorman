@@ -1,0 +1,55 @@
+
+setting:
+
+    element_identifier: entity
+
+    mode: tag # highlight
+
+    # # Item key in links, from first occurence on - starting left edge.
+    # replaces_per_item_key_string!?: 1
+
+    # How many items will be marked at all in the text.
+    replaces_at_all: null
+
+    # Links will be ordered by length and then applied. Set to False
+    # will not change the order you put in and follows it.
+    longest_match_first: true
+
+    case_sensitive: true
+
+    # filter_by_value:
+    #     score: 10.0
+
+    # # # Item filter against group of attrbutes elements of type x
+    # what about multiple attributes?
+    # replaces_per_attribute:
+    #     number_of_items: 1
+    #     attribute_key: type
+
+    # default is t and text and number_of_items could be null
+    text_unit:
+        # key: t
+        # name: text
+        number_of_items: null
+        key: p # s | t
+        name: html-paragraph # sentence | text
+
+
+markup:
+
+    tag:
+        tag: a
+        value_key: href
+        attributes:
+            - style color:blue;cursor:pointer;
+            - class anchorman
+        exclude_keys:
+            - score
+
+    highlight:
+        pre: '${{'
+        post: '}}'
+
+    coreferencer:
+        value_key: text
+        attribute: token

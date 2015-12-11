@@ -1,32 +1,44 @@
-.PHONY: docs clean all prod dev test integration-test virtualenv install install-requirements install-test install-fabric install-sphinx
+.PHONY: clean docs test all prod virtualenv install install-requirements
 
-VIRTUALENV_DIR=${PWD}
+VIRTUALENV_DIR=${PWD}/env
 PIP=${VIRTUALENV_DIR}/bin/pip
 PYTHON=${VIRTUALENV_DIR}/bin/python
+APP_PATH=${PWD}
+APP_NAME=anchorman
 
-install:
-	# install virtualenv
-	virtualenv ${VIRTUALENV_DIR}
-	${VIRTUALENV_DIR}/bin/pip install -r requirements.txt
-	${VIRTUALENV_DIR}/bin/py.test test
+# the `all` target will install everything necessary to develop and deploy
+all: prod
+
+# the `prod` target will create the runnable distribution without tests
+prod: virtualenv install
+
+virtualenv:
+	if [ ! -e ${VIRTUALENV_DIR}/bin/pip ]; then virtualenv ${VIRTUALENV_DIR} --no-site-packages; fi
+
+install: install-requirements
+	${PYTHON} setup.py develop
+
+install-requirements: virtualenv
+	${PIP} install -r requirements.txt
+
+test:
+	# env/bin/py.test --cov-report term-missing --cov=${APP_PATH}/${APP_NAME} test -s
+	env/bin/py.test --cov-report=html --cov=${APP_PATH}/${APP_NAME} test -s
+	mv htmlcov docs/.
 
 docs:
-	# install the following to build the docs
-	# mock sphinx sphinxcontrib-napoleon==0.3.4
+	# the following is included in the repo ...is way to much to set up
+	# pyreverse anchorman -p anchorman
+	# -pylint ${APP_PATH}/anchorman --rcfile ${APP_PATH}/docs/pylintrc > ${APP_PATH}/docs/pylintreport.rst 2>&1
+	# sphinx-apidoc --separate -o docs/auto anchorman
 	rm -rfv docs/_build
 	cd docs && make html
 
 clean:
-	rm -rfv ${VIRTUALENV_DIR}/bin ${VIRTUALENV_DIR}/include
-	rm -rfv ${VIRTUALENV_DIR}/lib ${VIRTUALENV_DIR}/local
-	rm -rfv docs/_build
-	rm -rfv build
-	rm -rfv dist
 	rm -fv .DS_Store .coverage
-	find anchorman -name '*.pyc' -exec rm -fv {} \;
-	find anchorman -name '*.pyo' -exec rm -fv {} \;
-	find test -name '*.pyc' -exec rm -fv {} \;
-	find test -name '*.pyo' -exec rm -fv {} \;
-	find . -depth -name '__pycache__' -exec rm -rfv {} \;
-	find . -depth -name '*.egg-info' -exec rm -rfv {} \;
-
+	rm -rfv docs/_build .cache
+	find ${APP_PATH} -name '*.pyc' -exec rm -fv {} \;
+	find ${APP_PATH} -name '*.pyo' -exec rm -fv {} \;
+	find ${APP_PATH} -name '*,cover' -exec rm -fv {} \;
+	rm -Rf *.egg-info
+	rm -Rf env
