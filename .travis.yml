@@ -13,4 +13,4 @@ after_success:
     - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then pip install coveralls ; coveralls ; fi
 
 notifications:
-  email: false
+  email: true
