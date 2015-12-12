@@ -31,7 +31,7 @@ def create_bs4tag(tag_markup):
     """Use BeautifulSoup to create a base tag element."""
 
     new_soup = BeautifulSoup("", "lxml")
-    kwargs = {x: y for x, y in [x.split() for x in tag_markup['attributes']]}
+    kwargs = {x: y for x, y in (x.split() for x in tag_markup['attributes'])}
     bs4tag = new_soup.new_tag(tag_markup['tag'], **kwargs)
 
     return bs4tag

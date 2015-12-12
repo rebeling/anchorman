@@ -17,6 +17,6 @@ def augment_highlight(highlight, item): #, highlight_markup):
 def create_highlight(highlight_markup):
     """Use format to create a base highlight element."""
 
-    highlight = "%s{}%s" % (highlight_markup['pre'], highlight_markup['post'])
+    highlight = highlight_markup['pre'] + "{}" + highlight_markup['post']
 
     return highlight

@@ -21,3 +21,7 @@ junit.xml
 
 pip-selfcheck.json
 anchorman/example.html
+
+docs/htmlcov
+htmlcov
+.cache

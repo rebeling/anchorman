@@ -40,7 +40,7 @@ def validate(item, candidates, this_unit, setting):
             return False
 
     replaces_at_all = setting.get('replaces_at_all')
-    if replaces_at_all is not None:
+    if isinstance(replaces_at_all, int):
         # be aware it can be 0
         if len(candidates) >= replaces_at_all:
             return False
@@ -48,7 +48,7 @@ def validate(item, candidates, this_unit, setting):
     text_unit_setting = setting.get('text_unit')
     if text_unit_setting:
         number_of_items = text_unit_setting.get('number_of_items')
-        if number_of_items is not None:
+        if isinstance(number_of_items, int):
             if number_of_items <= len(this_unit):
                 return False
 
