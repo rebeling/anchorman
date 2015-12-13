@@ -28,7 +28,7 @@ project_root = os.path.dirname(cwd)
 sys.path.append(project_root)
 
 import anchorman
-from anchorman.configure import get_config
+from anchorman.configuration import get_config
 
 cfg = get_config()
 
@@ -64,7 +64,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinxcontrib.napoleon',
     'sphinx.ext.graphviz',
-    'sphinx.ext.autosummary']
+    ]
 
 autosummary_generate = True
 
