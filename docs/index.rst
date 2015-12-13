@@ -13,7 +13,7 @@
    dependencies
 
 
-.. literalinclude:: /../anchorman/main.py
+.. literalinclude:: ../anchorman/main.py
    :language: python
    :dedent: 8
    :lines: 32-41
