@@ -4,12 +4,13 @@ import yaml
 import os
 import sys
 
+# wat?
 config = yaml.load(open('etc/conf.yaml', 'r').read())
 
-cwd = os.getcwd()
-project_root = os.path.dirname(cwd)
-readme = open(project_root + '/anchorman/readme.rst', 'rt').read()
-requirements = open(project_root + '/anchorman/requirements.txt', 'rt').read()
+
+dir_here = os.path.dirname(os.path.abspath(__file__))
+readme = open(dir_here + '/readme.rst', 'rt').read()
+requirements = open(dir_here + '/requirements.txt', 'rt').read()
 
 
 setup(
