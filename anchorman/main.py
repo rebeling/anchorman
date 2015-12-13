@@ -27,15 +27,18 @@ def annotate(text,
         text (str): The annotated text.
 
     Examples:
-        Basic example with overwriting the config:
+        Basic example with config overwrite:
 
-        >>> text = 'The qüick brown fox jumps over the lazy dog in Los Angeles.'
-        >>> elements = [{'fox': {'value': '/wiki/fox', 'data-type': 'animal'}},
-                        {'dog': {'value': '/wiki/dog', 'data-type': 'animal'}}]
+        >>> text = 'The quick brown fox jumps over the lazy dog.'
+        >>> elements = [
+                {'fox': {
+                    'value': '/wiki/fox', 'data-type': 'animal'}},
+                {'dog': {
+                    'value': '/wiki/dog', 'data-type': 'animal'}}]
         >>> cfg = get_config()
         >>> cfg['setting']['replaces_at_all'] = 1
         >>> print annotate(text, elements, config=cfg)
-        'The qüick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog in Los Angeles.'
+        'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog .'
 
     """
     intervaltree, units = intervals(text, elements, config['setting'])
@@ -44,3 +47,14 @@ def annotate(text,
     # apply the items finally, but start from end ...its not like horse riding!
     text = augment(text, to_be_applied)
     return text
+
+
+def clean(text, config=get_config(project_conf=False)):
+    """Remove elements from text.
+
+    Use config to identify elements.
+
+    .. todo::
+        Implement me ...clean(text .
+    """
+    return None

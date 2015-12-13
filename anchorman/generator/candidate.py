@@ -10,13 +10,14 @@ def data_val(item, replaces_per_attribute):
 
 
 def validate(item, candidates, this_unit, setting, own_validator):
-    """ Apply the rules specified in setting to the item.
+    """Apply the rules specified in setting to the item.
 
-        Take care of candidates already validated and the items already
-        added to this_unit.
+    Take care of candidates already validated and the items already
+    added to this_unit.
 
-        .. todo::
-            replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
+    .. todo::
+        check context of replacement: do not add links in links, or inline of overlapping elements, ...
+        replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
     """
     # print 'validate', item, candidates, setting, this_unit
 
