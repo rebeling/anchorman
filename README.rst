@@ -8,9 +8,6 @@ elements in text.
 .. _hypertext: http://en.wikipedia.org/wiki/Hypertext
 
 
-Example
-
-
 Features
 --------
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from anchorman.main import annotate
-from anchorman.configure import get_config
+from anchorman.configuration import get_config
 from data import *
 
 

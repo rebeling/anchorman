@@ -9,14 +9,13 @@ def data_val(item, replaces_per_attribute):
     return idata.get(rpa['attribute_key']) if rpa else idata
 
 
-def validate(item, candidates, this_unit, setting):
+def validate(item, candidates, this_unit, setting, own_validator):
     """ Apply the rules specified in setting to the item.
 
         Take care of candidates already validated and the items already
         added to this_unit.
 
         .. todo::
-
             replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
     """
     # print 'validate', item, candidates, setting, this_unit
@@ -30,6 +29,11 @@ def validate(item, candidates, this_unit, setting):
 
     # use a specific value of link structure to filter here
     # must be list of types like candidates
+
+    for validator in own_validator:
+        valide = validator(item, candidates, this_unit, setting)
+        if valide is False:
+            return False
 
     replaces_per_attribute = setting.get('replaces_per_attribute')
     if replaces_per_attribute:
@@ -63,33 +67,37 @@ def validate(item, candidates, this_unit, setting):
     return True
 
 
-def retrieve_hits(intervaltree, units, config):
-    """Loop the units and validate the items in each unit."""
+def elements_of_unit(intervaltree, unit, setting):
+    """Get all items / elements of the actual unit to validate."""
+    element_identifier = setting['element_identifier']
+    subtree = intervaltree[unit.begin:unit.end]
+    test_items = []
+    for item in sorted(subtree):
+        if item.data[1][0] == element_identifier:
+            test_items.append(item)
+    return test_items
+
+
+def retrieve_hits(intervaltree, units, config, own_validator):
+    """Loop the units and validate each item in unit."""
 
     setting = config['setting']
     mode = setting['mode']
     markup = config['markup']
-
     element_pattern = create_element_pattern(mode, markup)
 
     candidates = []
     to_be_applied = []
-    for i, unit in enumerate(sorted(units)):
-
-        u = intervaltree[unit.begin:unit.end]
-        u = sorted(u)
+    for unit in sorted(units):
 
         this_unit = []
-        for item in u:
+        for item in elements_of_unit(intervaltree, unit, setting):
 
-            if item.data[1][0] == setting['element_identifier']:
-                booli = validate(item, candidates, this_unit, setting)
-
-                if booli:
-                    candidates.append(item)
-                    this_unit.append(item)
-
-                    lmnt = create_element(element_pattern, item, mode, markup)
-                    to_be_applied.append((item, lmnt))
+            valide = validate(item, candidates, this_unit, setting, own_validator)
+            if valide:
+                element = create_element(element_pattern, item, mode, markup)
+                to_be_applied.append((item, element))
+                candidates.append(item)
+                this_unit.append(item)
 
     return to_be_applied
