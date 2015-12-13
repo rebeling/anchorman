@@ -1,5 +1,5 @@
 
-.. include:: ../readme.rst
+.. include:: /../readme.rst
     :start-line: 0
     :end-line: 9
 
@@ -13,13 +13,13 @@
    dependencies
 
 
-.. literalinclude:: ../anchorman/main.py
+.. literalinclude:: /../anchorman/main.py
    :language: python
    :dedent: 8
    :lines: 32-41
 
 
-.. include:: ../readme.rst
+.. include:: /../readme.rst
     :start-line: 10
     :end-line: 32
 
