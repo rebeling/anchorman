@@ -18,3 +18,7 @@ div.body {
 div.body p, div.body dd, div.body li {
     line-height: 1.6em;
 }
+
+.logo.logo-name {
+    font-size: 1.2em
+}

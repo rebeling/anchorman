@@ -11,13 +11,10 @@ elements in text.
 Features
 --------
 
-Rewrite!
-
-* global and item specific markup via settings
-* elements html/xml tags or highlighting
-* handful of params to control replacements
-* recognized text structure for replacement rules
-* remove annotations by selector
+* mark elements as html/xml tags or highlight context
+* specify replacement rules via setting overwrite
+* consider text units (e.g. html-paragraphs) in replacement rules
+* add your own element validator made easy
 
 
 Installation
@@ -28,6 +25,7 @@ To install Anchorman, simply:
 .. code::
 
     pip install anchorman
+
 
 Documentation
 --------------

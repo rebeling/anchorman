@@ -1,7 +1,7 @@
 
 .. include:: ../readme.rst
     :start-line: 0
-    :end-line: 23
+    :end-line: 9
 
 .. Anchorman documentation master file, created by
    sphinx-quickstart on Wed Dec  9 23:04:59 2015.
@@ -16,12 +16,13 @@
 .. literalinclude:: ../anchorman/main.py
    :language: python
    :dedent: 8
-   :lines: 32-38
+   :lines: 32-41
 
 
+.. include:: ../readme.rst
+    :start-line: 10
+    :end-line: 32
 
-
-Contents:
 
 .. toctree::
    :maxdepth: 1
@@ -31,12 +32,6 @@ Contents:
    pylintreport
    .. coverage
    todos
-
-
-
-.. include:: ../readme.rst
-    :start-line: 23
-    :end-line: 33
 
 
 Credits and contributions
