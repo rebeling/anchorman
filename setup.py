@@ -7,10 +7,14 @@ import sys
 # wat?
 config = yaml.load(open('etc/conf.yaml', 'r').read())
 
-
-dir_here = os.path.dirname(os.path.abspath(__file__))
-readme = open(dir_here + '/readme.rst', 'rt').read()
-requirements = open(dir_here + '/requirements.txt', 'rt').read()
+try:
+    dir_here = os.path.dirname(os.path.abspath(__file__))
+    print dir_here
+    readme = open(dir_here + '/readme.rst', 'rt').read()
+    requirements = open(dir_here + '/requirements.txt', 'rt').read()
+except:
+    readme = ""
+    requirements = ""
 
 
 setup(
