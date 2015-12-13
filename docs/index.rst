@@ -13,13 +13,21 @@
    dependencies
 
 
+.. literalinclude:: ../anchorman/main.py
+   :language: python
+   :dedent: 8
+   :lines: 32-38
+
+
+
+
 Contents:
 
 .. toctree::
    :maxdepth: 1
 
    autodocs
-   codegraph
+   umlview
    pylintreport
    .. coverage
    todos

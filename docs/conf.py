@@ -64,7 +64,9 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinxcontrib.napoleon',
     'sphinx.ext.graphviz',
-]
+    'sphinx.ext.autosummary']
+
+autosummary_generate = True
 
 
 

@@ -22,9 +22,8 @@ install-requirements: virtualenv
 	${PIP} install -r requirements.txt
 
 test:
-	# env/bin/py.test --cov-report term-missing --cov=${APP_PATH}/${APP_NAME} test -s
-	env/bin/py.test --cov-report=html --cov=${APP_PATH}/${APP_NAME} test -s
-	mv htmlcov docs/.
+	env/bin/py.test --cov-report term-missing --cov=${APP_PATH}/${APP_NAME} test -s
+	# env/bin/py.test --cov-report=html --cov=${APP_PATH}/${APP_NAME} test -s && mv htmlcov docs/.
 
 docs:
 	# the following is included in the repo ...is way to much to set up

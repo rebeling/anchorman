@@ -1,0 +1,41 @@
+digraph "packages_anchorman" {
+charset="utf-8"
+rankdir=TB
+ratio = auto
+# rankdir=LR
+"1" [label="{anchorman.configuration|get_config(project_conf=True)\l}", shape=record];
+"2" [label="anchorman.generator", shape="box"];
+
+"3" [label="{anchorman.generator.candidate|validate(item, candidates, this_unit, setting, own_validator)\nelements_of_unit(intervaltree, unit, setting)\lretrieve_hits(intervaltree, units, config, own_validator)\l}", shape=record];
+
+"4" [label="{anchorman.generator.element|create_element_pattern(mode, markup)\lcreate_element(element_pattern, item, mode, markup)\l}", shape=record];
+
+"5" [label="{anchorman.generator.highlight|augment_highlight(highlight, item)\lcreate_highlight(highlight_markup)}", shape=record];
+
+"6" [label="{anchorman.generator.tag|augment_bs4tag(bs4tag, item, tag_markup)\lcreate_bs4tag(tag_markup)\l}", shape=record];
+
+"7" [label="{anchorman.generator.text|augment(text, to_be_applied)\l}",  shape=record];
+
+"8" [label=<<table BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4"><tr><td ALIGN="CENTER" BGCOLOR="#dddddd" HREF="/indext.html" FACE="times-bold">anchorman.main</td></tr><tr><td ALIGN="LEFT">annotate(text, elements)</td></tr></table>>, shape=plaintext];
+
+"9" [label="anchorman.positioner", shape="box"];
+
+"10" [label="{anchorman.positioner.interval|to_intervaltree(data, t=None)\lunit_intervals(intervaltree, text_unit)\lintervals(text, elements, setting)\l}", shape=record];
+
+
+"11" [label="{anchorman.positioner.slices|element_slices(text, elements, element_identifier)\lunit_slices(text, text_unit)\l}", shape=record];
+
+#"12" [label="anchorman.utils", shape="box"];
+
+"8" -> "9" [arrowhead="open", arrowtail="none"];
+"8" -> "2" [arrowhead="open", arrowtail="none"];
+"3" -> "4" [arrowhead="open", arrowtail="none"];
+"4" -> "5" [arrowhead="open", arrowtail="none"];
+"4" -> "6" [arrowhead="open", arrowtail="none"];
+"8" -> "1" [arrowhead="open", arrowtail="none"];
+"2" -> "3" [arrowhead="open", arrowtail="none"];
+"2" -> "7" [arrowhead="open", arrowtail="none"];
+"9" -> "10" [arrowhead="open", arrowtail="none"];
+"10" -> "11" [arrowhead="open", arrowtail="none"];
+{rank=same; "1"; "8";}
+}
