@@ -7,6 +7,7 @@ def get_config(project_conf=True):
     """Load default configuration."""
 
     path = os.path.abspath(os.path.dirname(__file__))
+    print path
     default = yaml.load(open("{0}/{1}".format(path, '../etc/link.yaml'), 'r').read())
 
     if project_conf:
