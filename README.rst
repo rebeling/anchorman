@@ -41,13 +41,14 @@ See etc/link.yaml for options to configure the replacement process or rules.
 
 
 Inherit your own item validator. Item is the potential replacement. Candidates
-is a list of processed, valide and items ready to be applied to text. And this
-unit bears processed, valide and items ready to be applied to text in this
-intervall and finally the setting dict from config.
+is a list of processed and valide items ready to be applied to text. And this
+unit bears processed and valide items ready to be applied to text in this
+intervall or unit. Finally the setting dict from config.
 
 
 .. code:: python
 
+    >>> from anchorman.generator.candidate import data_val
     >>> def validator(item, candidates, this_unit, setting):
     ...    values = data_val(item, None)
     ...    if values['score'] == 42.0 and values['type'] == 'city':
