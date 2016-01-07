@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from copy import copy
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup
 
 
 def augment_bs4tag(bs4tag, item, tag_markup):
@@ -22,7 +22,7 @@ def augment_bs4tag(bs4tag, item, tag_markup):
 
     # add the text
     item_key = item.keys()[0]
-    tag.insert(0, NavigableString(item_key))
+    tag.string = item_key
 
     return tag
 
@@ -31,7 +31,12 @@ def create_bs4tag(tag_markup):
     """Use BeautifulSoup to create a base tag element."""
 
     new_soup = BeautifulSoup("", "lxml")
-    kwargs = {x: y for x, y in (x.split() for x in tag_markup['attributes'])}
+
+    kwargs = {}
+    for attr_value in tag_markup['attributes']:
+        attribute_value = attr_value.split(' ')
+        kwargs[attribute_value[0]] = ' '.join(attribute_value[1:])
+
     bs4tag = new_soup.new_tag(tag_markup['tag'], **kwargs)
 
     return bs4tag

@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from anchorman.configuration import get_config
 from anchorman.generator.candidate import retrieve_hits
+from anchorman.generator.element import remove_elements
 from anchorman.generator.text import augment
 from anchorman.positioner.interval import intervals
 
 
 def annotate(text,
              elements,
-             own_validator=[],
+             own_validator=None,
              config=get_config(project_conf=False)):
     """Find and annotate elements in text.
 
@@ -50,11 +51,10 @@ def annotate(text,
 
 
 def clean(text, config=get_config(project_conf=False)):
-    """Remove elements from text.
+    """Remove elements from text based on mode and markup.
 
-    Use config to identify elements.
-
-    .. todo::
-        Implement me ...clean(text .
+    Use config to identify elements in the text and remove them.
     """
-    return None
+    return remove_elements(text,
+                           config['markup'],
+                           config['setting']['mode'])
