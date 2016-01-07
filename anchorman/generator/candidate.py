@@ -30,11 +30,11 @@ def validate(item, candidates, this_unit, setting, own_validator):
 
     # use a specific value of link structure to filter here
     # must be list of types like candidates
-
-    for validator in own_validator:
-        valide = validator(item, candidates, this_unit, setting)
-        if valide is False:
-            return False
+    if own_validator:
+        for validator in own_validator:
+            valide = validator(item, candidates, this_unit, setting)
+            if valide is False:
+                return False
 
     replaces_per_attribute = setting.get('replaces_per_attribute')
     if replaces_per_attribute:
@@ -45,17 +45,15 @@ def validate(item, candidates, this_unit, setting, own_validator):
             return False
 
     replaces_at_all = setting.get('replaces_at_all')
-    if isinstance(replaces_at_all, int):
+    if isinstance(replaces_at_all, int) and len(candidates) >= replaces_at_all:
         # be aware it can be 0
-        if len(candidates) >= replaces_at_all:
-            return False
+        return False
 
     text_unit_setting = setting.get('text_unit')
     if text_unit_setting:
         number_of_items = text_unit_setting.get('number_of_items')
-        if isinstance(number_of_items, int):
-            if number_of_items <= len(this_unit):
-                return False
+        if isinstance(number_of_items, int) and number_of_items <= len(this_unit):
+            return False
 
     filter_by_value = setting.get('filter_by_value')
     if filter_by_value:
