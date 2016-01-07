@@ -38,5 +38,5 @@ def test_annotate_own_validator_from_outside():
     cfg['setting']['mode'] = 'highlight'
 
     annotated = annotate(p_text, elements, own_validator=[validator], config=cfg)
-    expected_result = '<p class="first">The qüick brown fox jumps</p> <p>over the lazy dog in ${Los Angeles}.</p>'
+    expected_result = '<p class="first">The qüick brown fox jumps</p> <p>over the lazy dog in ${{Los Angeles}}.</p>'
     assert annotated == expected_result

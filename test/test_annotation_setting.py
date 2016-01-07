@@ -14,7 +14,7 @@ def test_annotate_highlight_settings():
     cfg['setting']['text_unit'].update(unit)
 
     annotated = annotate(t_text, elements, config=cfg)
-    expected_result = 'The ${qüick} brown ${fox} jumps over the ${lazy} dog in Los Angeles.'
+    expected_result = 'The ${{qüick}} brown ${{fox}} jumps over the ${{lazy}} dog in Los Angeles.'
     assert annotated == expected_result
 
 
@@ -41,7 +41,7 @@ def test_annotate_highlight_settings_2():
     cfg['setting']['text_unit'].update(unit)
 
     annotated = annotate(t_text, elements, config=cfg)
-    expected_result = 'The ${qüick} brown fox jumps over the lazy dog in Los Angeles.'
+    expected_result = 'The ${{qüick}} brown fox jumps over the lazy dog in Los Angeles.'
     assert annotated == expected_result
 
 
@@ -54,6 +54,6 @@ def test_annotate_highlight_settings_raise_notimplementederror():
     cfg['setting']['text_unit'].update(unit)
 
     try:
-        annotated = annotate(t_text, elements, config=cfg)
+        _ = annotate(t_text, elements, config=cfg)
     except Exception, e:
         assert type(e) == NotImplementedError

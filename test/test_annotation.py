@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from anchorman.main import annotate
+from anchorman.main import clean
 from anchorman.configuration import get_config
 from data import *
 
@@ -12,6 +13,10 @@ def test_annotate_tag():
     expected_result = '<p class="first">The <a class="anchorman" href="/wiki/queick" style="color:blue;cursor:pointer;" type="term">qüick</a> brown <a class="anchorman" href="/wiki/fox" style="color:blue;cursor:pointer;" type="animal">fox</a> jumps</p> <p>over the <a class="anchorman" href="/wiki/lazy" style="color:blue;cursor:pointer;" type="term">lazy</a> <a class="anchorman" href="/wiki/dog" style="color:blue;cursor:pointer;" type="animal">dog</a> in <a class="anchorman" href="/wiki/los-angeles" style="color:blue;cursor:pointer;" type="city">Los Angeles</a>.</p>'
     assert annotated == expected_result
 
+    success, cleared_text = clean(annotated)
+    assert success
+    assert p_text == cleared_text
+
 
 def test_annotate_highlight():
     """Test annotate with default config, but mode highlight."""
@@ -23,8 +28,13 @@ def test_annotate_highlight():
     cfg['setting'].update(rpa)
 
     annotated = annotate(p_text, elements, config=cfg)
-    expected_result = '<p class="first">The qüick brown ${fox} jumps</p> <p>over the lazy dog in ${Los Angeles}.</p>'
+    expected_result = '<p class="first">The qüick brown ${{fox}} jumps</p> <p>over the lazy dog in ${{Los Angeles}}.</p>'
+
     assert annotated == expected_result
+
+    success, cleared_text = clean(annotated, config=cfg)
+    assert success
+    assert p_text == cleared_text
 
 
 def test_annotate_unknown():
@@ -34,7 +44,7 @@ def test_annotate_unknown():
     cfg['setting']['mode'] = 'hocuspocus'
 
     try:
-        annotated = annotate(p_text, elements, config=cfg)
+        _ = annotate(p_text, elements, config=cfg)
     except Exception, e:
         assert type(e) == KeyError
 
@@ -46,7 +56,6 @@ def test_annotate_coreferencer():
     cfg['setting']['mode'] = 'coreferencer'
 
     try:
-        annotated = annotate(p_text, elements, config=cfg)
+        _ = annotate(p_text, elements, config=cfg)
     except Exception, e:
         assert type(e) == NotImplementedError
-
