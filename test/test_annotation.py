@@ -5,6 +5,37 @@ from anchorman.configuration import get_config
 from data import *
 
 
+def test_schema_dot_org():
+    """Test annotate tag with schema dot org specs config."""
+
+    cfg = get_config()
+    unit = {'key': 't', 'name': 'text'}
+    cfg['setting']['text_unit'].update(unit)
+    cfg['markup'] = {'tag': {'tag': 'div'}}
+
+    annotated1 = annotate(s_text, s1_elements, config=cfg)
+    expected_result1 = '<div itemscope itemtype="http://schema.org/Person">Angela Merkel, CDU, Bundeskanzlerin</div>'
+    assert annotated1 == expected_result1
+
+    annotated2 = annotate(annotated1, s11_elements, config=cfg)
+    expected_result2 = '<div itemscope itemtype="http://schema.org/Person">Angela Merkel, <div itemscope itemtype="http://schema.org/Organization">CDU</div>, Bundeskanzlerin</div>'
+    assert annotated2 == expected_result2
+
+    cfg3 = cfg.copy()
+    cfg3['markup'] = {'tag': {'tag': 'span'}}
+    annotated3 = annotate(annotated2, s2_elements, config=cfg3)
+    expected_result3 = '<div itemscope itemtype="http://schema.org/Person"><span itemprop="name">Angela Merkel</span>, <div itemscope itemtype="http://schema.org/Organization"><span itemprop="name">CDU</span></div>, <span itemprop="jobtitle">Bundeskanzlerin</span></div>'
+    assert annotated3 == expected_result3
+
+    success, cleared_text = clean(annotated3, config=cfg3)
+    assert success
+    assert expected_result2 == cleared_text
+
+    success, cleared_text = clean(cleared_text, config=cfg)
+    assert success
+    assert s_text == cleared_text
+
+
 def test_annotate_tag():
     """Test annotate tag with default config."""
 

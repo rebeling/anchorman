@@ -1,9 +1,8 @@
 Welcome to Anchorman
 ====================
 
-Turn your text into hypertext_. With anchorman you can markup terms,
-create anchors, links, annotate abbreviations or just highlight specific
-elements in text.
+Turn your text into hypertext_. Annotate terms as html-tags or
+just highlight them in text.
 
 .. _hypertext: http://en.wikipedia.org/wiki/Hypertext
 
@@ -11,16 +10,17 @@ elements in text.
 Features
 --------
 
-* mark elements as html/xml tags or highlight context
-* specify replacement rules via setting overwrite
+* mark elements as html/xml tags or add highlighting context
+* specify replacement rules via settings
 * consider text units (e.g. html-paragraphs) in replacement rules
 * add your own element validator made easy
 
 
-Usage
-----------
+Usage examples
+---------------
 
-Basic example with config overwrite.
+Basic example with simple cfg overwrite: Replace only one item in the whole text.
+The first element of elements will satisfy this rule and end up as a link in the text.
 
 .. code:: python
 
@@ -37,14 +37,15 @@ Basic example with config overwrite.
     >>> print annotate(text, elements, config=cfg)
     'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog .'
 
-See etc/link.yaml for options to configure the replacement process or rules.
+See etc/link.yaml for options to configure the replacement process or the rules.
 
 
-Inherit your own item validator. Item is the potential replacement. Candidates
-is a list of processed and valide items ready to be applied to text. And this
-unit bears processed and valide items ready to be applied to text in this
-intervall or unit. Finally the setting dict from config.
+The item validator
+++++++++++++++++++++
 
+Inherit your own item validator. Item is the potential replacement.
+Candidates is a list of processed and valide items ready to apply to text.
+This unit bears valide items ready to apply to text in this intervall or unit.
 
 .. code:: python
 
@@ -57,6 +58,58 @@ intervall or unit. Finally the setting dict from config.
     ...        return False
     ...
     >>> print annotate(text, elements, own_validator=[validator])
+
+
+Apply schema.org
+++++++++++++++++++
+
+Not so handy approach is to create contexts with multiple annotation calls.
+But the logic to annotate data around and in each other is pretty hacky as
+the following example shows:
+
+    >>> s_text = 'Angela Merkel, CDU, Bundeskanzlerin'
+
+    >>> # whole block - key - is about person
+    >>> s1_elements = [
+    ...     {"Angela Merkel, CDU, Bundeskanzlerin": {
+    ...         'itemtype': 'http://schema.org/Person',
+    ...         'itemscope': None}},
+    ...     ]
+    ...
+    >>> s11_elements = [
+    ...     {"CDU": {
+    ...         'itemtype': 'http://schema.org/Organization',
+    ...         'itemscope': None}}
+    ...     ]
+    ...
+    >>> s2_elements = [
+    ...     {"Angela Merkel": {
+    ...         'itemprop': 'name'}},
+    ...     {"CDU": {
+    ...         'itemprop': 'name'}},
+    ...     {"Bundeskanzlerin": {
+    ...         'itemprop': 'jobtitle'}}
+    ...     ]
+    ...
+    >>> cfg = get_config()
+    >>> unit = {'key': 't', 'name': 'text'}
+    >>> cfg['setting']['text_unit'].update(unit)
+    >>> cfg['markup'] = {'tag': {'tag': 'div'}}
+    >>> annotated = annotate(s_text, s1_elements, config=cfg)
+    >>> annotated2 = annotate(annotated, s11_elements, config=cfg)
+    >>> cfg3 = cfg.copy()
+    >>> cfg3['markup'] = {'tag': {'tag': 'span'}}
+    >>> annotated3 = annotate(annotated2, s2_elements, config=cfg3)
+
+The text annotated3 looks like this:
+
+    <div itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Angela Merkel</span>,
+        <div itemscope itemtype="http://schema.org/Organization">
+            <span itemprop="name">CDU</span>
+        </div>,
+        <span itemprop="jobtitle">Bundeskanzlerin</span>
+    </div>
 
 
 Installation
@@ -72,7 +125,8 @@ To install Anchorman, simply:
 Credits and contributions
 --------------------------
 
-We published this at github and pypi to provide our solution to others, to get feedback and find contributers in the open source.
+We published this at github and pypi to provide our solution to you.
+Pleased for feedback and contributions.
 
 Thanks `Tarn Barford`__ for inspiration and first steps.
 
@@ -82,5 +136,8 @@ __ TheAustralien_
 
 Todo
 ---------
+* more schema.org examples
+* implement an original text/key replacement logic (kicked value, value_key)
 * check context of replacement: do not add links in links, or inline of overlapping elements, ...
 * replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
+* implement a replacement logic for coreference chains
