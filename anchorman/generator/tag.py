@@ -14,11 +14,8 @@ def augment_bs4tag(bs4tag, item, tag_markup):
 
     for key, value in item_values.items():
 
-        if key is 'value':
-            tag[tag_markup['value_key']] = value
-        else:
-            if key not in exclude_keys:
-                tag[key] = value
+        if key not in exclude_keys:
+            tag[key] = value
 
     # add the text
     item_key = item.keys()[0]

@@ -1,8 +1,24 @@
 Welcome to Anchorman
 ====================
 
-Turn your text into hypertext_. Annotate terms as html-tags or
-just highlight them in text.
+Turn your text into hypertext_ and enrich the content. Anchorman takes a list
+of terms and a text. It finds the terms in your text and replaces them with an
+html-element representation.
+
+The replacement is guided by rules like in the following. Each term is checked
+against the rules and will be applied if valide.
+
+.. code:: python
+
+    # How many items will be marked at all in the text.
+    replaces_at_all: 5
+
+    # Input term has to be exact match in text.
+    case_sensitive: true
+
+The text is analysed via intervalltree and the replacement happens on position
+and context.
+
 
 .. _hypertext: http://en.wikipedia.org/wiki/Hypertext
 
@@ -10,31 +26,22 @@ just highlight them in text.
 Features
 --------
 
-* mark elements as html/xml tags or add highlighting context
-* specify replacement rules via settings
-* consider text units (e.g. html-paragraphs) in replacement rules
+* replacement rules via settings
+* consider text units in the rules (e.g. paragraphs)
 * add your own element validator made easy
 
 
-Usage examples
----------------
+Usage
+------
 
-Basic example with simple cfg overwrite: Replace only one item in the whole text.
-The first element of elements will satisfy this rule and end up as a link in the text.
+The first element of elements is find in text and replaced with a link tag.
 
 .. code:: python
 
     >>> from anchorman.main import annotate
-    >>> from anchorman.configuration import get_config
     >>> text = 'The quick brown fox jumps over the lazy dog.'
-    >>> elements = [
-            {'fox': {
-                'value': '/wiki/fox', 'data-type': 'animal'}},
-            {'dog': {
-                'value': '/wiki/dog', 'data-type': 'animal'}}]
-    >>> cfg = get_config()
-    >>> cfg['setting']['replaces_at_all'] = 1
-    >>> print annotate(text, elements, config=cfg)
+    >>> elements = [{'fox': {'value': '/wiki/fox', 'data-type': 'animal'}}]
+    >>> print annotate(text, elements)
     'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog .'
 
 See etc/link.yaml for options to configure the replacement process or the rules.
@@ -138,6 +145,7 @@ __ TheAustralien_
 
 Todo
 ---------
+* check if position is in input, take care and save some processing
 * more schema.org examples
 * implement an original text/key replacement logic (kicked value, value_key)
 * check context of replacement: do not add links in links, or inline of overlapping elements, ...

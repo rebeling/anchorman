@@ -1,21 +1,24 @@
 
 setting:
 
+    # Identify item in the intervall tree
     element_identifier: entity
 
+    # Set mode for replacement, default is html-tag
     mode: tag # highlight
-
-    # # Item key in links, from first occurence on - starting left edge.
-    # replaces_per_item_key_string!?: 1
 
     # How many items will be marked at all in the text.
     replaces_at_all: null
 
-    # Links will be ordered by length and then applied. Set to False
-    # will not change the order you put in and follows it.
-    longest_match_first: true
-
+    # Input term has to be exact match in text.
     case_sensitive: true
+
+    # # Item key in links, from first occurence on - starting left edge.
+    # replaces_per_item_key_string!?: 1
+
+    # # Links will be ordered by length and then applied. Set to False
+    # # will not change the order you put in and follows it.
+    # longest_match_first: true ...not used anymore
 
     # filter_by_value:
     #     score: 10.0
@@ -28,29 +31,36 @@ setting:
 
     # default is t and text and number_of_items could be null
     text_unit:
+        number_of_items: null # | 5
+        key: p # | s | t
+        name: html-paragraph # | sentence | text
         # key: t
         # name: text
-        number_of_items: null
-        key: p # s | t
-        name: html-paragraph # sentence | text
 
 
 markup:
 
+    # Markup for html-tags
     tag:
         tag: a
-        # do not use anymore > use some logic for replace the original with
-        # a value of the data > text replace with
+        # value_key not used anymore > use some logic for replace the original
+        # with a value of the data > text replace with
+
+        # Default attributes for tag markup.
         attributes:
             - style color:blue;cursor:pointer;
             - class anchorman
+
+        # Exclude keys from the input to be rendered.
         exclude_keys:
             - score
 
+    # Markup for highlighting context
     highlight:
         pre: '${{'
         post: '}}'
 
+    # Markup for coreference is still in TBD
     coreferencer:
         value_key: text
         attribute: token
