@@ -67,13 +67,13 @@ Not so handy approach is to create contexts with multiple annotation calls.
 But the logic to annotate data around and in each other is pretty hacky as
 the following example shows:
 
-    >>> s_text = 'Angela Merkel, CDU, Bundeskanzlerin'
+.. code:: python
 
-    >>> # whole block - key - is about person
+    >>> s_text = 'Angela Merkel, CDU, Bundeskanzlerin'
     >>> s1_elements = [
     ...     {"Angela Merkel, CDU, Bundeskanzlerin": {
     ...         'itemtype': 'http://schema.org/Person',
-    ...         'itemscope': None}},
+    ...         'itemscope': None}}
     ...     ]
     ...
     >>> s11_elements = [
@@ -102,6 +102,8 @@ the following example shows:
     >>> annotated3 = annotate(annotated2, s2_elements, config=cfg3)
 
 The text annotated3 looks like this:
+
+.. code:: html
 
     <div itemscope itemtype="http://schema.org/Person">
         <span itemprop="name">Angela Merkel</span>,
