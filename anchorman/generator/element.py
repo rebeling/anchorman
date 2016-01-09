@@ -21,7 +21,7 @@ def create_element_pattern(mode, markup):
         else:
             raise NotImplementedError
 
-    except KeyError:
+    except KeyError, e:
         raise KeyError
 
     return pattern
@@ -57,12 +57,16 @@ def remove_elements(text, markup, mode):
                 attributes[attribute_value[0]] = ' '.join(attribute_value[1:])
 
         tag = markup[mode].get('tag')
-        args = tag, attributes if attributes else tag
 
-        anchormans = text_soup.findAll(*args)
+        if attributes:
+            anchormans = text_soup.findAll(tag, attributes)
+        else:
+            anchormans = text_soup.findAll(tag)
+
         for x in anchormans:
             # use re.sub vs replace to prevent encoding issues
-            text = re.sub(str(x), x.text, text)
+            str_x = str(x).replace('=""', '')
+            text = re.sub(str_x, x.text, text)
         success = True
         text = text.encode('utf-8')
 

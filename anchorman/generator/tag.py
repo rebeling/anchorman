@@ -33,7 +33,7 @@ def create_bs4tag(tag_markup):
     new_soup = BeautifulSoup("", "lxml")
 
     kwargs = {}
-    for attr_value in tag_markup['attributes']:
+    for attr_value in tag_markup.get('attributes', []):
         attribute_value = attr_value.split(' ')
         kwargs[attribute_value[0]] = ' '.join(attribute_value[1:])
 
