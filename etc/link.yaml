@@ -39,7 +39,8 @@ markup:
 
     tag:
         tag: a
-        value_key: href
+        # do not use anymore > use some logic for replace the original with
+        # a value of the data > text replace with
         attributes:
             - style color:blue;cursor:pointer;
             - class anchorman
