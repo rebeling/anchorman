@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from anchorman.main import annotate
+from anchorman.main import clean
 from anchorman.configuration import get_config
 from data import *
 
@@ -16,6 +17,10 @@ def test_annotate_highlight_settings():
     annotated = annotate(t_text, elements, config=cfg)
     expected_result = 'The ${{qüick}} brown ${{fox}} jumps over the ${{lazy}} dog in Los Angeles.'
     assert annotated == expected_result
+
+    success, cleared_text = clean(annotated, config=cfg)
+    assert success
+    assert t_text == cleared_text
 
 
 def test_annotate_highlight_settings_1():
@@ -55,5 +60,17 @@ def test_annotate_highlight_settings_raise_notimplementederror():
 
     try:
         _ = annotate(t_text, elements, config=cfg)
+    except Exception, e:
+        assert type(e) == NotImplementedError
+
+
+def test_annotate_clean_raise_notimplementederror_on_mode():
+    """Test annotate highlight with overwritten config."""
+
+    cfg = get_config()
+    cfg['setting']['mode'] = 'unknown mode'
+
+    try:
+        _, _ = clean("annotated", config=cfg)
     except Exception, e:
         assert type(e) == NotImplementedError
