@@ -143,3 +143,9 @@ Todo
 * check context of replacement: do not add links in links, or inline of overlapping elements, ...
 * replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
 * implement a replacement logic for coreference chains
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/rebeling/anchorman/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
