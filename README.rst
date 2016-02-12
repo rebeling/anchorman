@@ -1,12 +1,12 @@
-Anchorman
-----------
+Welcome to Anchorman
+---------------------
 
 Turn your text into hypertext_ and enrich the content. Anchorman takes a list
 of terms and a text. It finds the terms in your text and replaces them with an
 html-element representation.
 
-The replacement is guided by rules like in the following. Each term is checked
-against the rules and will be applied if valide.
+The replacement is guided by rules like the following. Each term is checked
+against the rules and will be applied if valid.
 
 .. code:: python
 
@@ -74,6 +74,7 @@ Not so handy approach is to create contexts with multiple annotation calls.
 But the logic to annotate data around and in each other is pretty hacky as
 the following example shows:
 
+
 .. code:: python
 
     >>> s_text = 'Angela Merkel, CDU, Bundeskanzlerin'
@@ -108,7 +109,8 @@ the following example shows:
     >>> cfg3['markup'] = {'tag': {'tag': 'span'}}
     >>> annotated3 = annotate(annotated2, s2_elements, config=cfg3)
 
-The text annotated3 looks like this:
+
+Then text annotated3 looks like this:
 
 .. code:: html
 
@@ -145,15 +147,9 @@ __ TheAustralien_
 
 Todo
 ---------
-* check if position is in input, take care and save some processing
-* more schema.org examples
+* add more schema.org examples
+* check if position exist in input and save extra processing
 * implement an original text/key replacement logic (kicked value, value_key)
-* check context of replacement: do not add links in links, or inline of overlapping elements, ...
+* check context of replacement: do not add links in links, or inline of overlapping elements
 * replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
 * implement a replacement logic for coreference chains
-
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/rebeling/anchorman/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
-
