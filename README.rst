@@ -1,5 +1,5 @@
-Welcome to Anchorman
-====================
+Anchorman
+----------
 
 Turn your text into hypertext_ and enrich the content. Anchorman takes a list
 of terms and a text. It finds the terms in your text and replaces them with an

@@ -11,7 +11,7 @@ setup(
     author=config['author'],
     author_email=config.get('author_email'),
     url=config.get('url'),
-    description=open('readme.rst', 'rt').read(),
+    description='',
     packages=[config['name']],
     install_requires=[
         line.split('==')[0]
