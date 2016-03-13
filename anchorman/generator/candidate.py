@@ -6,8 +6,9 @@ def data_values(item, rpa=None):
     """Get the item.data, rpa = replaces_per_attribute"""
 
     itemdata = item.data[1][1].values()[0]
+
     if rpa:
-        itemdata = itemdata.get(rpa.get['attribute_key'])
+        itemdata = itemdata.get(rpa.get('attribute_key'))
 
     return itemdata
 
