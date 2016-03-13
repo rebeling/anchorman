@@ -8,7 +8,7 @@ html-element representation.
 The replacement is guided by rules like the following. Each term is checked
 against the rules and will be applied if valid.
 
-.. code:: python
+.. code:: yaml
 
     # How many items will be marked at all in the text.
     replaces_at_all: 5
@@ -38,27 +38,27 @@ The first element of elements is find in text and replaced with a link tag.
 
 .. code:: python
 
-    >>> from anchorman.main import annotate
+    >>> from anchorman import annotate
     >>> text = 'The quick brown fox jumps over the lazy dog.'
     >>> elements = [{'fox': {'value': '/wiki/fox', 'data-type': 'animal'}}]
     >>> print annotate(text, elements)
     'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog .'
 
-See etc/link.yaml for options to configure the replacement process or the rules.
+See etc/link.yaml for options to configure the replacement process and rules.
 
 
 The item validator
 ++++++++++++++++++++
 
 Inherit your own item validator. Item is the potential replacement.
-Candidates is a list of processed and valide items ready to apply to text.
-This unit bears valide items ready to apply to text in this intervall or unit.
+Candidates is a list of processed and valid items ready to apply to text.
+This unit bears valid items ready to apply to text in this intervall or unit.
 
 .. code:: python
 
-    >>> from anchorman.generator.candidate import data_val
+    >>> from anchorman.generator.candidate import data_values
     >>> def validator(item, candidates, this_unit, setting):
-    ...    values = data_val(item, None)
+    ...    values = data_values(item)
     ...    if values['score'] == 42.0 and values['type'] == 'city':
     ...        return True
     ...    else:
@@ -99,6 +99,7 @@ the following example shows:
     ...         'itemprop': 'jobtitle'}}
     ...     ]
     ...
+    >>> from anchorman import get_config
     >>> cfg = get_config()
     >>> unit = {'key': 't', 'name': 'text'}
     >>> cfg['setting']['text_unit'].update(unit)
@@ -147,9 +148,9 @@ __ TheAustralien_
 
 Todo
 ---------
-* add more schema.org examples
+* add sentence splitter or add to readme example with <s></s>
 * check if position exist in input and save extra processing
-* implement an original text/key replacement logic (kicked value, value_key)
 * check context of replacement: do not add links in links, or inline of overlapping elements
 * replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
 * implement a replacement logic for coreference chains
+* add more schema.org examples
