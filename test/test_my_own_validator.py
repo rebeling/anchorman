@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from anchorman.main import annotate
-from anchorman.configuration import get_config
-from data import *
-
+from anchorman import annotate, clean, get_config
 from anchorman.generator.candidate import data_val
+from anchorman.configuration import parse_yaml
+
+DATA = parse_yaml('data.yaml', loaded_from=__file__)
 
 
-def validator(item, candidates, this_unit, setting):
+def my_validator(item, candidates, this_unit, setting):
     """Write your own validator based on this values.
 
     You can write your own validator function, because you get access to the
@@ -19,24 +19,26 @@ def validator(item, candidates, this_unit, setting):
         setting (dict): {'mode': 'highlight', 'element_identifier': 'entity', 'text_unit': {'name': 'html-paragraph', 'key': 'p', 'number_of_items': None}, 'longest_match_first': True, 'replaces_at_all': None, 'case_sensitive': True}
 
     Returns:
-        bool: True if element is valide candidate, False otherwise.
-
+        bool: True if element is valid candidate, False otherwise.
     """
 
     values = data_val(item, None)
+    score = values['score']
+    _type = values['type']
 
-    if values['score'] == 42.0 and values['type'] == 'city':
-        return True
-    else:
-        return False
+    return True if score >= 42.0 and _type == 'city' else False
 
 
 def test_annotate_own_validator_from_outside():
     """Test annotate with an own validator."""
 
     cfg = get_config()
-    cfg['setting']['mode'] = 'highlight'
+    cfg['setting'].update({'mode': 'highlight'})
+    two_paragraphs = DATA['two_paragraphs'].encode('utf-8')
+    highlight_elements = DATA['elements']
 
-    annotated = annotate(p_text, elements, own_validator=[validator], config=cfg)
-    expected_result = '<p class="first">The qüick brown fox jumps</p> <p>over the lazy dog in ${{Los Angeles}}.</p>'
+    annotated = annotate(two_paragraphs, highlight_elements,
+                         own_validator=[my_validator], config=cfg)
+
+    expected_result = DATA['two_paragraphs_LA_annotated'].encode('utf-8')
     assert annotated == expected_result
