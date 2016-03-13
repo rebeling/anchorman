@@ -2,7 +2,7 @@
 from setuptools import setup
 import yaml
 
-config = yaml.load(open('etc/conf.yaml', 'r').read())
+config = yaml.load(file('etc/conf.yaml', 'r'))
 
 
 setup(
@@ -12,6 +12,7 @@ setup(
     author_email=config.get('author_email'),
     url=config.get('url'),
     description='',
+    license=config.get('license'),
     packages=[config['name']],
     install_requires=[
         line.split('==')[0]

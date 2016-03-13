@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from anchorman.configuration import get_config
-from anchorman.generator.candidate import retrieve_hits
-from anchorman.generator.element import remove_elements
-from anchorman.generator.text import augment
-from anchorman.positioner.interval import intervals
+from .configuration import get_config
+from .generator.candidate import retrieve_hits
+from .generator.element import remove_elements
+from .generator.result import augment
+from .positioner.interval import intervals
 
 
 def annotate(text,
