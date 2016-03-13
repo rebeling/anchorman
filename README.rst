@@ -1,9 +1,9 @@
 Welcome to Anchorman
 ---------------------
 
-Turn your text into hypertext_ and enrich the content. Anchorman takes a list
-of terms and a text. It finds the terms in your text and replaces them with an
-html-element representation.
+Turn your text into hypertext_ and enrich the content. Anchorman takes a
+list of terms and a text. It finds the terms in this text and replaces
+them with another representation.
 
 The replacement is guided by rules like the following. Each term is checked
 against the rules and will be applied if valid.
