@@ -2,11 +2,14 @@
 from .element import create_element_pattern, create_element
 
 
-def data_val(item, replaces_per_attribute):
-    """Get the item.data """
-    idata = item.data[1][1].values()[0]
-    rpa = replaces_per_attribute
-    return idata.get(rpa['attribute_key']) if rpa else idata
+def data_values(item, rpa=None):
+    """Get the item.data, rpa = replaces_per_attribute"""
+
+    itemdata = item.data[1][1].values()[0]
+    if rpa:
+        itemdata = itemdata.get(rpa.get['attribute_key'])
+
+    return itemdata
 
 
 def validate(item, candidates, this_unit, setting, own_validator):
@@ -39,9 +42,9 @@ def validate(item, candidates, this_unit, setting, own_validator):
     # replaces_per_attribute
     replaces_per_attribute = setting.get('replaces_per_attribute')
     if replaces_per_attribute:
-        value = data_val(item, replaces_per_attribute)
+        value = data_values(item, rpa=replaces_per_attribute)
         number_of_items = replaces_per_attribute['number_of_items']
-        attributes = [data_val(x, replaces_per_attribute) for x in candidates]
+        attributes = [data_values(x, rpa=replaces_per_attribute) for x in candidates]
         if attributes.count(value) >= number_of_items:
             return False
 
@@ -58,7 +61,7 @@ def validate(item, candidates, this_unit, setting, own_validator):
     # filter_by_value
     filter_by_value = setting.get('filter_by_value')
     if filter_by_value:
-        values = data_val(item, None)
+        values = data_values(item)
         for key, val in filter_by_value.items():
             if val > values[key]:
                 return False
