@@ -40,7 +40,6 @@ def annotate(text,
         >>> cfg['setting']['replaces_at_all'] = 1
         >>> print annotate(text, elements, config=cfg)
         'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog .'
-
     """
     intervaltree, units = intervals(text, elements, config['setting'])
     to_be_applied = retrieve_hits(intervaltree, units, config, own_validator)
@@ -55,6 +54,4 @@ def clean(text, config=get_config(project_conf=False)):
 
     Use config to identify elements in the text and remove them.
     """
-    return remove_elements(text,
-                           config['markup'],
-                           config['setting']['mode'])
+    return remove_elements(text, config['markup'], config['setting']['mode'])
