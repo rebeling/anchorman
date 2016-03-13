@@ -32,9 +32,10 @@ def unit_intervals(intervaltree, text_unit):
 
 def intervals(text, elements, setting):
     """From the slices of elements and units create an intervaltree."""
+
     text_unit = setting['text_unit']
 
-    slices = element_slices(text, elements, setting['element_identifier'])
+    slices = element_slices(text, elements, setting)
     text_units = unit_slices(text, text_unit)
     slices.extend(text_units)
 

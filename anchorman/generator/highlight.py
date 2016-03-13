@@ -2,17 +2,15 @@
 from copy import copy
 
 
-def augment_highlight(highlight, item):
+def augment_highlight(highlight, original):
     """Fill the base highlight element with data of the item.
 
     The string manipulation with format causes problems on templating
     syntax with curly brackets.
     """
-    string = copy(highlight)
 
-    # add the text
-    item_key = item.keys()[0]
-    string = string % (item_key)
+    string = copy(highlight)
+    string = string % original
 
     return string
 

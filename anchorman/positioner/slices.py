@@ -3,17 +3,35 @@ import re
 from bs4 import BeautifulSoup
 
 
-def element_slices(text, elements, element_identifier):
+def token_regexes(tokens, case_sensitive):
+    patterns = []
+    for t in tokens:
+        if case_sensitive:
+            patterns.append(r"\b{0}\b".format(t))
+        else:
+            forms = list({t, t.lower(), t.upper(), t.title()})
+            for f in forms:
+                patterns.append(r"\b{0}\b".format(f))
+    return patterns
+
+
+def element_slices(text, elements, setting):
     """Get slices of all elements in text. """
 
-    tokens = [e.keys()[0] for e in elements]
-    tokens = "|".join([r"\b{}\b".format(t) for t in tokens])
+    element_identifier = setting['element_identifier']
+    case_sensitive = setting['case_sensitive']
+
+    tokens = [e.keys()[0].encode('utf-8') for e in elements]
+    tokens = "|".join(token_regexes(tokens, case_sensitive))
     token_regex = re.compile(tokens)
 
     result = []
     for match in token_regex.finditer(text):
         token, _from, _to = match.group(), match.start(), match.end()
-        base = [e for e in elements if e.keys()[0] == token][0]
+        if case_sensitive:
+            base = [e for e in elements if e.keys()[0].encode('utf-8') == token][0]
+        else:
+            base = [e for e in elements if e.keys()[0].lower().encode('utf-8') == token.lower()][0]
         result.append((token, (_from, _to), (element_identifier, base)))
 
     return result
@@ -38,11 +56,6 @@ def unit_slices(text, text_unit):
             _from = text.index(a_text_unit)
             _to = _from + len(a_text_unit)
             result.append((text_unit_key, (_from, _to), (text_unit_name, i)))
-
-    # todo
-    # elif text_unit_pair == ('s', 'sentence'):
-    #     # use some external library or at least have it in mind
-
     else:
         raise NotImplementedError
 

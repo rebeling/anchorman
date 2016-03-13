@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from anchorman.generator.element import create_element_pattern, create_element
+from .element import create_element_pattern, create_element
 
 
 def data_val(item, replaces_per_attribute):
-    """ """
+    """Get the item.data """
     idata = item.data[1][1].values()[0]
     rpa = replaces_per_attribute
     return idata.get(rpa['attribute_key']) if rpa else idata
@@ -32,10 +32,11 @@ def validate(item, candidates, this_unit, setting, own_validator):
     # must be list of types like candidates
     if own_validator:
         for validator in own_validator:
-            valide = validator(item, candidates, this_unit, setting)
-            if valide is False:
+            valid = validator(item, candidates, this_unit, setting)
+            if valid is False:
                 return False
 
+    # replaces_per_attribute
     replaces_per_attribute = setting.get('replaces_per_attribute')
     if replaces_per_attribute:
         value = data_val(item, replaces_per_attribute)
@@ -44,17 +45,17 @@ def validate(item, candidates, this_unit, setting, own_validator):
         if attributes.count(value) >= number_of_items:
             return False
 
+    # replaces_at_all
     replaces_at_all = setting.get('replaces_at_all')
     if isinstance(replaces_at_all, int) and len(candidates) >= replaces_at_all:
-        # be aware it can be 0
         return False
 
-    text_unit_setting = setting.get('text_unit')
-    if text_unit_setting:
-        number_of_items = text_unit_setting.get('number_of_items')
-        if isinstance(number_of_items, int) and number_of_items <= len(this_unit):
-            return False
+    # text_unit > number_of_items
+    items_per_unit = setting.get('text_unit', {}).get('number_of_items')
+    if isinstance(items_per_unit, int) and items_per_unit <= len(this_unit):
+        return False
 
+    # filter_by_value
     filter_by_value = setting.get('filter_by_value')
     if filter_by_value:
         values = data_val(item, None)
@@ -62,12 +63,13 @@ def validate(item, candidates, this_unit, setting, own_validator):
             if val > values[key]:
                 return False
 
-    # every rule is fine, return True and add the item
+    # item is valid
     return True
 
 
 def elements_of_unit(intervaltree, unit, setting):
     """Get all items / elements of the actual unit to validate."""
+
     element_identifier = setting['element_identifier']
     subtree = intervaltree[unit.begin:unit.end]
     test_items = []
@@ -92,8 +94,8 @@ def retrieve_hits(intervaltree, units, config, own_validator):
         this_unit = []
         for item in elements_of_unit(intervaltree, unit, setting):
 
-            valide = validate(item, candidates, this_unit, setting, own_validator)
-            if valide:
+            valid = validate(item, candidates, this_unit, setting, own_validator)
+            if valid:
                 element = create_element(element_pattern, item, mode, markup)
                 to_be_applied.append((item, element))
                 candidates.append(item)

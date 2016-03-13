@@ -3,7 +3,7 @@ from copy import copy
 from bs4 import BeautifulSoup
 
 
-def augment_bs4tag(bs4tag, item, tag_markup):
+def augment_bs4tag(bs4tag, item, tag_markup, original):
     """Fill the base bs4tag element with data of the item."""
 
     tag = copy(bs4tag)
@@ -18,8 +18,7 @@ def augment_bs4tag(bs4tag, item, tag_markup):
             tag[key] = value
 
     # add the text
-    item_key = item.keys()[0]
-    tag.string = item_key
+    tag.string = original
 
     return tag
 

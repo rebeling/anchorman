@@ -26,16 +26,6 @@ s2_elements = [
     ]
 
 
-
-
-
-    # {'fox': {
-    #     'href': '/wiki/fox',
-    #     'score': 23.0,
-    #     'type': 'animal',
-    #     'itemscope': None}}, <<< !
-
-
 elements = [
     {'qüick': {
         'href': '/wiki/queick',
@@ -58,4 +48,3 @@ elements = [
         'score': 42.0,
         'type': 'city'}}
     ]
-

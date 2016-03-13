@@ -2,10 +2,10 @@
 from bs4 import BeautifulSoup
 import re
 
-from anchorman.generator.highlight import augment_highlight
-from anchorman.generator.highlight import create_highlight
-from anchorman.generator.tag import augment_bs4tag
-from anchorman.generator.tag import create_bs4tag
+from .highlight import augment_highlight
+from .highlight import create_highlight
+from .tag import augment_bs4tag
+from .tag import create_bs4tag
 
 
 def create_element_pattern(mode, markup):
@@ -31,18 +31,20 @@ def create_element(element_pattern, item, mode, markup):
     """Create the element that will be inserted in the text."""
 
     markup = markup[mode]
+    _element = item.data[1][1]
+    original = item.data[0]
 
     if mode == 'tag':
-        element = augment_bs4tag(element_pattern, item.data[1][1], markup)
+        element = augment_bs4tag(element_pattern, _element, markup, original)
     else:
-        # elif mode == 'highlight':
-        element = augment_highlight(element_pattern, item.data[1][1])
+        element = augment_highlight(element_pattern, original)
 
     return element
 
 
 def remove_elements(text, markup, mode):
     """Remove elements of text based on the markup specifications."""
+
     success = False
 
     if mode == 'tag':
@@ -58,15 +60,14 @@ def remove_elements(text, markup, mode):
 
         tag = markup[mode].get('tag')
 
-        if attributes:
-            anchormans = text_soup.findAll(tag, attributes)
-        else:
-            anchormans = text_soup.findAll(tag)
+        tsfa = text_soup.findAll
+        anchormans = tsfa(tag, attributes) if attributes else tsfa(tag)
 
         for x in anchormans:
             # use re.sub vs replace to prevent encoding issues
             str_x = str(x).replace('=""', '')
             text = re.sub(str_x, x.text, text)
+
         success = True
         text = text.encode('utf-8')
 
