@@ -18,13 +18,13 @@ def test_annotation_rules1():
             'key': 't',
             'name': 'text'}
     }
-    cfg['setting'].update(overwrite)
+    cfg['settings'].update(overwrite)
 
-    text = DATA['text'].encode('utf-8')
+    text = DATA['test_text']['content'].encode('utf-8')
     highlight_elements = DATA['elements']
     annotated = annotate(text, highlight_elements, config=cfg)
 
-    text_annotated = DATA['text_annotated_rule1'].encode('utf-8')
+    text_annotated = DATA['test_text']['results']['text_annotated_rule1'].encode('utf-8')
     assert annotated == text_annotated
 
 
@@ -41,11 +41,11 @@ def test_annotate_highlight_rules2():
             'key': 't',
             'name': 'text'}
     }
-    cfg['setting'].update(overwrite)
+    cfg['settings'].update(overwrite)
 
-    text2 = DATA['text2'].encode('utf-8')
+    text2 = DATA['test_text']['content'].encode('utf-8')
     highlight_elements = DATA['elements']
     annotated = annotate(text2, highlight_elements, config=cfg)
 
-    text_annotated = DATA['text_annotated_rule2'].encode('utf-8')
+    text_annotated = DATA['test_text']['results']['text_annotated_rule2'].encode('utf-8')
     assert annotated == text_annotated

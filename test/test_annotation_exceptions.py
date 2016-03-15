@@ -10,27 +10,23 @@ def test_markup_unknown():
     """Test annotate with key in settings but not in markup."""
 
     cfg = get_config()
-    cfg['setting'].update({'mode': 'hocuspocus'})
-    two_paragraphs = DATA['two_paragraphs'].encode('utf-8')
-    link_elements = DATA['elements']
+    cfg['settings'].update({'mode': 'hocuspocus'})
 
-    try:
-        _ = annotate(two_paragraphs, link_elements, config=cfg)
-    except Exception, e:
-        assert type(e) == KeyError
+    with pytest.raises(KeyError):
+        _ = annotate('', DATA['elements'], config=cfg)
 
 
 def test_clean_annotatation():
     """Test removal by specific mode of annotation."""
 
     cfg = get_config()
-    cfg['setting'].update({'mode': 'highlight'})
-    two_paragraphs = DATA['two_paragraphs'].encode('utf-8')
+    cfg['settings'].update({'mode': 'highlight'})
+    two_paragraphs = DATA['test_paragraphs']['content'].encode('utf-8')
     highlight_elements = DATA['elements']
     annotated = annotate(two_paragraphs, highlight_elements, config=cfg)
 
     # change config
-    cfg['setting'].update({'mode': 'unknown'})
+    cfg['settings'].update({'mode': 'unknown'})
 
     with pytest.raises(NotImplementedError):
         success, cleared_text = clean(annotated, config=cfg)

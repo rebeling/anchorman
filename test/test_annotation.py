@@ -13,11 +13,11 @@ def test_annotate_tag():
     of elements.
     """
 
-    two_paragraphs = DATA['two_paragraphs'].encode('utf-8')
+    two_paragraphs = DATA['test_paragraphs']['content'].encode('utf-8')
     link_elements = DATA['elements']
     annotated = annotate(two_paragraphs, link_elements)
-    two_paragraphs_annotated = DATA['two_paragraphs_annotated'].encode('utf-8')
-    assert annotated == two_paragraphs_annotated
+    all_annotated = DATA['test_paragraphs']['results']['all_annotated'].encode('utf-8')
+    assert annotated == all_annotated
 
     success, cleared_text = clean(annotated)
     assert success
@@ -39,12 +39,12 @@ def test_annotate_highlight():
             'number_of_items': 1,
             'attribute_key': 'type'}
     }
-    cfg['setting'].update(highlight)
-    two_paragraphs = DATA['two_paragraphs'].encode('utf-8')
+    cfg['settings'].update(highlight)
+    two_paragraphs = DATA['test_paragraphs']['content'].encode('utf-8')
     highlight_elements = DATA['elements']
     annotated = annotate(two_paragraphs, highlight_elements, config=cfg)
 
-    tpopa = DATA['two_paragraphs_one_per_paragrah_annotated'].encode('utf-8')
+    tpopa = DATA['test_paragraphs']['results']['one_per_paragrah_annotated'].encode('utf-8')
     assert annotated == tpopa
 
     success, cleared_text = clean(annotated, config=cfg)
