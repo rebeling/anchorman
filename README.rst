@@ -154,3 +154,6 @@ Todo
 * replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
 * implement a replacement logic for coreference chains
 * add more schema.org examples
+
+
+Feedback and thanks for reading.

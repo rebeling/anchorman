@@ -9,6 +9,8 @@ help:
 	@echo '    clean ........ cleans project'
 	@echo '    release ...... releases project to pypi'
 	@echo '    graph ........ graph of project'
+	@echo '    metric ....... code metric at landscap.io'
+	@echo '    pypi ......... project on pypi'
 
 setup: virtualenv install
 
@@ -41,3 +43,9 @@ release:
 graph:
 	pycallgraph --max-depth 5 graphviz -- ./anchorman/__init__.py
 	open pycallgraph.png
+
+metric:
+	open https://landscape.io/github/rebeling/anchorman
+
+pypi:
+	open https://pypi.python.org/pypi/anchorman
