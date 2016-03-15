@@ -21,22 +21,21 @@ def unit_intervals(intervaltree, text_unit):
 
     text_unit_key_name = text_unit['key'], text_unit['name']
 
-    units = []
-    for item in intervaltree.items():
-        interval_key_name = item.data[0], item.data[1][0]
-        if interval_key_name == text_unit_key_name:
-            units.append(item)
+    # add to units if interval_key_name == text_unit_key_name
+    units = [item
+             for item in intervaltree.items()
+             if (item.data[0], item.data[1][0]) == text_unit_key_name]
 
     return units
 
 
-def intervals(text, elements, setting):
+def intervals(text, elements, settings):
     """From the slices of elements and units create an intervaltree."""
 
-    text_unit = setting['text_unit']
+    text_unit = settings['text_unit']
 
-    slices = element_slices(text, elements, setting)
-    text_units = unit_slices(text, text_unit)
+    slices = element_slices(text, elements, settings)
+    text_units = unit_slices(text, text_unit['key'], text_unit['name'])
     slices.extend(text_units)
 
     intervaltree = to_intervaltree(slices)

@@ -2,10 +2,11 @@
 from bs4 import BeautifulSoup
 import re
 
-from .highlight import augment_highlight
-from .highlight import create_highlight
-from .tag import augment_bs4tag
-from .tag import create_bs4tag
+from anchorman.generator.highlight import augment_highlight
+from anchorman.generator.highlight import create_highlight
+from anchorman.generator.tag import augment_bs4tag
+from anchorman.generator.tag import create_bs4tag
+from anchorman.logger import log
 
 
 def create_element_pattern(mode, markup):
@@ -16,12 +17,15 @@ def create_element_pattern(mode, markup):
 
         if mode == 'tag':
             pattern = create_bs4tag(markup)
+
         elif mode == 'highlight':
             pattern = create_highlight(markup)
+
         else:
             raise NotImplementedError
 
     except KeyError, e:
+        log("KeyError: %s" % e)
         raise KeyError
 
     return pattern
@@ -51,17 +55,10 @@ def remove_elements(text, markup, mode):
         text_soup = BeautifulSoup(text, "lxml")
 
         # use markup info to specify the element you want to find
-        attributes = {}
-        markup_attributes = markup[mode].get('attributes')
-        if markup_attributes:
-            for attr_value in markup_attributes:
-                attribute_value = attr_value.split(' ')
-                attributes[attribute_value[0]] = ' '.join(attribute_value[1:])
-
+        attributes = markup[mode].get('attributes')
         tag = markup[mode].get('tag')
-
-        tsfa = text_soup.findAll
-        anchormans = tsfa(tag, attributes) if attributes else tsfa(tag)
+        spfndll = text_soup.findAll
+        anchormans = spfndll(tag, attributes) if attributes else spfndll(tag)
 
         for x in anchormans:
             # use re.sub vs replace to prevent encoding issues
@@ -72,8 +69,9 @@ def remove_elements(text, markup, mode):
         text = text.encode('utf-8')
 
     elif mode == 'highlight':
-        hl_markup = markup[mode]
-        text = text.replace(hl_markup['pre'], '').replace(hl_markup['post'], '')
+        markup_mode = markup[mode]
+        pre, post = markup_mode['pre'], markup_mode['post']
+        text = text.replace(pre, '').replace(post, '')
         success = True
 
     else:

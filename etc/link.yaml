@@ -1,5 +1,6 @@
 
-setting:
+settings:
+    # settings for the replacment process
 
     # Identify item in the intervall tree
     element_identifier: entity
@@ -44,8 +45,10 @@ markup:
 
         # Default attributes for tag markup.
         attributes:
-            - style color:blue;cursor:pointer;
-            - class anchorman
+            style:
+                "color:blue;cursor:pointer;"
+            class:
+                anchorman
 
         # Exclude keys from the input to be rendered.
         exclude_keys:

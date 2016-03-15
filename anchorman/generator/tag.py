@@ -9,11 +9,8 @@ def augment_bs4tag(bs4tag, item, tag_markup, original):
     tag = copy(bs4tag)
 
     # add the attribute value pairs of item
-    item_values = item.values()[0]
     exclude_keys = tag_markup.get('exclude_keys', [])
-
-    for key, value in item_values.items():
-
+    for key, value in item.values()[0].items():
         if key not in exclude_keys:
             tag[key] = value
 
@@ -23,16 +20,10 @@ def augment_bs4tag(bs4tag, item, tag_markup, original):
     return tag
 
 
-def create_bs4tag(tag_markup):
+def create_bs4tag(markup):
     """Use BeautifulSoup to create a base tag element."""
 
-    new_soup = BeautifulSoup("", "lxml")
+    tag = markup['tag']
+    attributes = markup.get('attributes', {})
 
-    kwargs = {}
-    for attr_value in tag_markup.get('attributes', []):
-        attribute_value = attr_value.split(' ')
-        kwargs[attribute_value[0]] = ' '.join(attribute_value[1:])
-
-    bs4tag = new_soup.new_tag(tag_markup['tag'], **kwargs)
-
-    return bs4tag
+    return BeautifulSoup("", "lxml").new_tag(tag, **attributes)

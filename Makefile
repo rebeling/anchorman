@@ -1,14 +1,14 @@
-.PHONY: setup virtualenv install test clean release
+.PHONY: setup virtualenv install test clean release graph
 
 VIRTUALENV_DIR=${PWD}/env
 APP_NAME=anchorman
 
-
 help:
 	@echo '    setup ........ sets up project'
-	@echo '    unittest ..... runs unittest'
+	@echo '    test ......... runs unittest'
 	@echo '    clean ........ cleans project'
 	@echo '    release ...... releases project to pypi'
+	@echo '    graph ........ graph of project'
 
 setup: virtualenv install
 
@@ -32,7 +32,12 @@ clean:
 	rm -Rf *.egg-info
 
 release:
+	# check this out http://peterdowns.com/posts/first-time-with-pypi.html
 	python setup.py register -r pypitest
 	python setup.py sdist upload -r pypitest
 	python setup.py register -r pypi
 	python setup.py sdist upload -r pypi
+
+graph:
+	pycallgraph --max-depth 5 graphviz -- ./anchorman/__init__.py
+	open pycallgraph.png

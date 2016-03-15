@@ -8,3 +8,9 @@ url: https://github.com/rebeling/anchorman
 description: Anchorman takes a list of terms and a text. It finds the terms in this text and replaces them with another representation.
 license: Apache License
 copyright: 2015
+keywords:
+    - intext
+    - link
+    - annotation
+    - tag
+    - hypertext
