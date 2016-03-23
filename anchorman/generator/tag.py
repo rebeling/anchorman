@@ -4,7 +4,12 @@ from bs4 import BeautifulSoup
 
 
 def augment_bs4tag(bs4tag, item, tag_markup, original):
-    """Fill the base bs4tag element with data of the item."""
+    """Fill the base bs4tag element with data of the item.
+    :param original:
+    :param tag_markup:
+    :param item:
+    :param bs4tag:
+    """
 
     tag = copy(bs4tag)
 
@@ -21,9 +26,11 @@ def augment_bs4tag(bs4tag, item, tag_markup, original):
 
 
 def create_bs4tag(markup):
-    """Use BeautifulSoup to create a base tag element."""
+    """Use BeautifulSoup to create a base tag element.
+    :param markup:
+    """
 
     tag = markup['tag']
     attributes = markup.get('attributes', {})
 
-    return BeautifulSoup("", "lxml").new_tag(tag, **attributes)
+    return BeautifulSoup("", "html.parser").new_tag(tag, **attributes)

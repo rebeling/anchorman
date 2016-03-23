@@ -56,9 +56,9 @@ This unit bears valid items ready to apply to text in this intervall or unit.
 
 .. code:: python
 
-    >>> from anchorman.generator.candidate import data_values
+    >>> from anchorman.generator.candidate import get_data_of
     >>> def validator(item, candidates, this_unit, setting):
-    ...    values = data_values(item)
+    ...    values = get_data_of(item)
     ...    if values['score'] == 42.0 and values['type'] == 'city':
     ...        return True
     ...    else:
@@ -154,6 +154,10 @@ Todo
 * replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
 * implement a replacement logic for coreference chains
 * add more schema.org examples
+* html.parser vs lxml in bs4 - think about config
+* ValueError: IntervalTree: Null Interval objects
+* validate text und elements
+
 
 
 Feedback and thanks for reading.

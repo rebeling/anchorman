@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from anchorman import annotate, clean, get_config
-from anchorman.generator.candidate import data_values
+from anchorman import annotate, get_config
+from anchorman.generator.candidate import attributes_of
 from anchorman.configuration import parse_yaml
 
 DATA = parse_yaml('data.yaml', loaded_from=__file__)
@@ -22,9 +22,9 @@ def my_validator(item, candidates, this_unit, settings):
         bool: True if element is valid candidate, False otherwise.
     """
 
-    values = data_values(item)
-    _score = values['score']
-    _type = values['type']
+    attributes = attributes_of(item)
+    _score = attributes['score']
+    _type = attributes['type']
 
     return True if _score >= 42.0 and _type == 'city' else False
 

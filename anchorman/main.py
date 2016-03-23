@@ -56,5 +56,7 @@ def clean(text, config=get_config(include_project_config=False)):
     """Remove elements from text based on mode and markup.
 
     Use config data to identify markup elements in the text and remove them.
+    :param config:
+    :param text:
     """
     return remove_elements(text, config['markup'], config['settings']['mode'])

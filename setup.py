@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 import yaml
+import os
 
-config = yaml.load(file('etc/config.yaml', 'r'))
+path = os.path.dirname(os.path.abspath(__file__))
+config = yaml.load(file(path + '/etc/config.yaml', 'r'))
 
 
 setup(

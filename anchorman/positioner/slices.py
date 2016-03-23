@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 
 def allforms(t):
-    return list(set([t, t.lower(), t.upper(), t.title()]))
+    return list({t, t.lower(), t.upper(), t.title()})
 
 
 def token_regexes(elements, case_sensitive):
@@ -17,7 +17,11 @@ def token_regexes(elements, case_sensitive):
 
 
 def element_slices(text, elements, settings):
-    """Get slices of all elements in text. """
+    """Get slices of all elements in text.
+    :param settings:
+    :param elements:
+    :param text:
+    """
 
     case_sensitive = settings['case_sensitive']
     token_regex = re.compile(token_regexes(elements, case_sensitive))
@@ -47,7 +51,11 @@ def element_slices(text, elements, settings):
 
 
 def unit_slices(text, text_unit_key, text_unit_name):
-    """Get slices of the text units specified in settings."""
+    """Get slices of the text units specified in settings.
+    :param text_unit_name:
+    :param text_unit_key:
+    :param text:
+    """
 
     units = []
     if (text_unit_key, text_unit_name) == ('t', 'text'):
@@ -56,7 +64,7 @@ def unit_slices(text, text_unit_key, text_unit_name):
                       (text_unit_name, 0)))
 
     elif text_unit_name.startswith(('html', 'xml')):
-        unit_soup = BeautifulSoup(text, "lxml").find_all(text_unit_key)
+        unit_soup = BeautifulSoup(text, "html.parser").find_all(text_unit_key)
         for i, a_text_unit in enumerate(unit_soup):
             a_text_unit = str(a_text_unit)
             _from = text.index(a_text_unit)

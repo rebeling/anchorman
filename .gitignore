@@ -10,7 +10,7 @@ lib
 .coverage
 .eggs
 .ipynb_checkpoints
-
+.idea
 junit.xml
 
 *.egg-info

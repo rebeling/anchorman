@@ -10,7 +10,10 @@ from anchorman.logger import log
 
 
 def create_element_pattern(mode, markup):
-    """Create the basic element pattern based on mode and markup."""
+    """Create the basic element pattern based on mode and markup.
+    :param markup:
+    :param mode:
+    """
 
     try:
         markup = markup[mode]
@@ -32,7 +35,12 @@ def create_element_pattern(mode, markup):
 
 
 def create_element(element_pattern, item, mode, markup):
-    """Create the element that will be inserted in the text."""
+    """Create the element that will be inserted in the text.
+    :param markup:
+    :param mode:
+    :param item:
+    :param element_pattern:
+    """
 
     markup = markup[mode]
     _element = item.data[1][1]
@@ -47,12 +55,16 @@ def create_element(element_pattern, item, mode, markup):
 
 
 def remove_elements(text, markup, mode):
-    """Remove elements of text based on the markup specifications."""
+    """Remove elements of text based on the markup specifications.
+    :param mode:
+    :param markup:
+    :param text:
+    """
 
     success = False
 
     if mode == 'tag':
-        text_soup = BeautifulSoup(text, "lxml")
+        text_soup = BeautifulSoup(text, "html.parser")
 
         # use markup info to specify the element you want to find
         attributes = markup[mode].get('attributes')

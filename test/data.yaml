@@ -5,7 +5,9 @@ test_paragraphs:
     results:
         all_annotated: <p class="first">The <a class="anchorman" href="/wiki/queick" style="color:blue;cursor:pointer;" type="term">qüick</a> brown <a class="anchorman" href="/wiki/fox" style="color:blue;cursor:pointer;" type="animal">fox</a> jumps</p><p>over the <a class="anchorman" href="/wiki/lazy" style="color:blue;cursor:pointer;" type="term">lazy</a> <a class="anchorman" href="/wiki/dog" style="color:blue;cursor:pointer;" type="animal">dog</a> in <a class="anchorman" href="/wiki/los-angeles" style="color:blue;cursor:pointer;" type="city">Los Angeles</a>.</p>
 
+        one_per_unit_annotated: <p class="first">The ${{qüick}} brown fox jumps</p><p>over the ${{lazy}} dog in Los Angeles.</p>
         one_per_paragrah_annotated: <p class="first">The qüick brown ${{fox}} jumps</p><p>over the lazy dog in ${{Los Angeles}}.</p>
+        one_per_type_per_unit_annotated: <p class="first">The ${{qüick}} brown ${{fox}} cat jumps</p><p>over the ${{lazy}} ${{dog}} in ${{Los Angeles}}.</p>
 
         LA_annotated: <p class="first">The qüick brown fox jumps</p><p>over the lazy dog in ${{Los Angeles}}.</p>
 

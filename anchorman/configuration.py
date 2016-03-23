@@ -21,9 +21,11 @@ def parse_yaml(filepath, loaded_from=__file__):
 
 
 def get_config(include_project_config=True):
-    """Load default configuration."""
+    """Load default configuration.
+    :param include_project_config:
+    """
 
-    default = parse_yaml("../etc/link.yaml")
+    default = parse_yaml("../etc/description.yaml")
 
     if include_project_config:
         conf = parse_yaml("../etc/config.yaml")

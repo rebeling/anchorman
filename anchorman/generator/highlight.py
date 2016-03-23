@@ -7,6 +7,8 @@ def augment_highlight(highlight, original):
 
     The string manipulation with format causes problems on templating
     syntax with curly brackets.
+    :param highlight:
+    :param original:
     """
 
     string = copy(highlight)
@@ -16,7 +18,9 @@ def augment_highlight(highlight, original):
 
 
 def create_highlight(highlight_markup):
-    """Use format to create a base highlight element."""
+    """Use format to create a base highlight element.
+    :param highlight_markup:
+    """
 
     highlight = highlight_markup['pre'] + "%s" + highlight_markup['post']
 

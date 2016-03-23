@@ -2,37 +2,45 @@
 settings:
     # settings for the replacment process
 
-    # Identify item in the intervall tree
-    element_identifier: entity
-
-    # Set mode for replacement, default is html tag
-    mode: tag # highlight
-
-    # How many items will be marked at all in the text.
+    # How many items will be marked at all in the text, default all.
     replaces_at_all: null
 
     # Input term has to be exact match in text.
     case_sensitive: true
 
-    # Filter items by specific value ..?!
-    # filter_by_value:
-    #     score: 10.0
-
-    # Filter items against an element attrbute of type x and
-    # show number_of_items per attribute ...what about multiple attributes?
-    # replaces_per_attribute:
-    #     number_of_items: 1
-    #     attribute_key: type
-
     # default is t and text and number_of_items could be null
     text_unit:
-        number_of_items: null # | 5
+        items_per_unit: null # | 5
         key: p
         name: html-paragraph
         # key: t
         # name: text
         # key: s
         # name: sentence
+
+    # Identify item in the intervall tree
+    element_identifier: entity
+
+    # Filter items against an element attrbute of type x and
+    # show items_per_unit per attribute ...what about multiple attributes
+    # and multiple attribute values - one of each overall units !?
+    # replaces:
+    #         by_attribute:
+    #             key: type
+    #             type_per_unit: 1
+
+    # # Filter items by specific value of its attribute
+    # filter_by_attribute:
+    #     # strict: false   # check only one, true only valid if all match
+    #     attributes:
+    #         - key: type
+    #           value: animal
+    #         - key: score
+    #           value: 10
+
+
+    # Set mode / markup for replacement, default is html tag
+    mode: tag # highlight
 
 
 markup:
