@@ -29,7 +29,7 @@ Features
 * replacement rules via settings
 * consider text units in the rules (e.g. paragraphs)
 * add your own element validator made easy
-
+* replace only n items of the same item
 
 Usage
 ------

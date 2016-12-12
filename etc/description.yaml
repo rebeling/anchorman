@@ -17,6 +17,9 @@ settings:
         # name: text
         # key: s
         # name: sentence
+        restricted_areas:
+            - img
+            - a
 
     # Identify item in the intervall tree
     element_identifier: entity

@@ -60,3 +60,8 @@ def clean(text, config=get_config(include_project_config=False)):
     :param text:
     """
     return remove_elements(text, config['markup'], config['settings']['mode'])
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

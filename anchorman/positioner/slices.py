@@ -8,11 +8,9 @@ def allforms(t):
 
 
 def token_regexes(elements, case_sensitive):
-
     tokens = [e.keys()[0].encode('utf-8') for e in elements]
     forms = [[t] if case_sensitive else allforms(t) for t in tokens]
     patterns = [r"\b{0}\b".format(f) for form in forms for f in form]
-
     return "|".join(patterns)
 
 
@@ -22,7 +20,6 @@ def element_slices(text, elements, settings):
     :param elements:
     :param text:
     """
-
     case_sensitive = settings['case_sensitive']
     token_regex = re.compile(token_regexes(elements, case_sensitive))
 
@@ -50,11 +47,12 @@ def element_slices(text, elements, settings):
     return element_slices
 
 
-def unit_slices(text, text_unit_key, text_unit_name):
+def unit_slices(text, text_unit_key, text_unit_name, restricted_areas):
     """Get slices of the text units specified in settings.
     :param text_unit_name:
     :param text_unit_key:
     :param text:
+    :param restricted_areas:
     """
 
     units = []
@@ -72,7 +70,31 @@ def unit_slices(text, text_unit_key, text_unit_name):
             unit = (text_unit_key, (_from, _to), (text_unit_name, i))
             units.append(unit)
 
+        if restricted_areas:
+            restricted_elements = identify_restricted_areas(text,
+                                                            restricted_areas)
+            for unit in restricted_elements:
+                units.append(unit)
+
     else:
         raise NotImplementedError
 
     return units
+
+
+def identify_restricted_areas(text, restricted_areas):
+    """
+    """
+    allTags = BeautifulSoup(text, "html.parser").findAll(True)
+    restricted_elements = []
+    count = 1
+    for tag in allTags:
+        if tag.name in restricted_areas:
+            a_text_unit = str(tag)
+            _from = text.index(a_text_unit)
+            _to = _from + len(a_text_unit)
+            unit = (tag.name, (_from, _to), ('restricted_area', count))
+            restricted_elements.append(unit)
+            count += 1
+
+    return restricted_elements

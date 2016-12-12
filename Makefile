@@ -19,7 +19,7 @@ virtualenv:
 
 install: virtualenv
 	${VIRTUALENV_DIR}/bin/pip install -r requirements.txt
-	${VIRTUALENV_DIR}/bin/python setup.py develop
+	${VIRTUALENV_DIR}/bin/python setup.py develop --always-unzip
 
 test:
 	env/bin/py.test --cov-report term-missing --cov=${PWD}/${APP_NAME} test -s
@@ -32,6 +32,7 @@ clean:
 	rm -Rf env
 	rm -Rf dist build
 	rm -Rf *.egg-info
+	rm -Rf .eggs
 
 release:
 	# check this out http://peterdowns.com/posts/first-time-with-pypi.html

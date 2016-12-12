@@ -12,9 +12,18 @@ def to_intervaltree(data, t=None):
     if t is None:
         t = IntervalTree()
 
+    overlaps = []
     for token, slices, _type in data:
         _from, _to = slices
         t[_from:_to] = (token, _type)
+
+        if _type[0] == 'restricted_area':
+            overlaps.append((_from, _to))
+
+    # remove all elements in restricted_areas
+    if overlaps:
+        for begin, end in overlaps:
+            t.remove_envelop(begin, end)
 
     return t
 
@@ -37,15 +46,18 @@ def unit_intervals(intervaltree, text_unit):
 
 def intervals(text, elements, settings):
     """From the slices of elements and units create an intervaltree.
+
     :param settings:
     :param elements:
     :param text:
     """
-
     text_unit = settings['text_unit']
 
     slices = element_slices(text, elements, settings)
-    text_units = unit_slices(text, text_unit['key'], text_unit['name'])
+    text_units = unit_slices(text,
+                             text_unit['key'],
+                             text_unit['name'],
+                             text_unit.get('restricted_areas'))
     slices.extend(text_units)
 
     intervaltree = to_intervaltree(slices)

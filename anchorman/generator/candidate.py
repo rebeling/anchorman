@@ -32,6 +32,9 @@ def validate(item, candidates, unit_candidates, settings, own_validator):
     #     if candidates.count(item) >= replaces_per_type:
     #         return False
 
+    # 0. check if the context is ok for replacement
+    
+
     # 1. replaces_at_all
     replaces_at_all = settings.get('replaces_at_all')
     if isinstance(replaces_at_all, int) and replaces_at_all <= len(candidates):
@@ -41,6 +44,17 @@ def validate(item, candidates, unit_candidates, settings, own_validator):
     items_per_unit = settings.get('text_unit', {}).get('items_per_unit')
     if isinstance(items_per_unit, int) and items_per_unit <= len(unit_candidates):
         return False
+
+    # 2.1 replaces_per_item
+    # add entity as often as specified with replaces_per_item
+    replaces_per_item = settings.get('replaces_per_item', None)
+    if replaces_per_item:
+        found = 0
+        for candidate in candidates:
+            if candidate.data[0] == item.data[0]:
+                found += 1
+            if found >= replaces_per_item:
+                return False
 
     # 3. replaces_by_attribute
     if specific_replace_rules(item, unit_candidates, settings) is False:
@@ -60,7 +74,6 @@ def validate(item, candidates, unit_candidates, settings, own_validator):
         for validator in own_validator:
             if validator(item, candidates, unit_candidates, settings) is False:
                 return False
-
 
     # item is valid
     return True
@@ -87,7 +100,8 @@ def retrieve_hits(intervaltree, units, config, own_validator):
         unit_candidates = []
         for item in elements_of_unit(intervaltree, unit, settings):
 
-            valid = validate(item, candidates, unit_candidates, settings, own_validator)
+            valid = validate(item, candidates, unit_candidates, settings,
+                             own_validator)
             if valid:
                 element = create_element(element_pattern, item, mode, markup)
                 to_be_applied.append((item, element))
