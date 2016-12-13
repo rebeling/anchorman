@@ -85,16 +85,31 @@ def unit_slices(text, text_unit_key, text_unit_name, restricted_areas):
 def identify_restricted_areas(text, restricted_areas):
     """
     """
-    allTags = BeautifulSoup(text, "html.parser").findAll(True)
+    all_tags = BeautifulSoup(text, "html.parser").findAll(True)
     restricted_elements = []
+    filter_tags = restricted_areas.get('tags', [])
+    filter_classes = restricted_areas.get('classes', [])
+
     count = 1
-    for tag in allTags:
-        if tag.name in restricted_areas:
+    for tag in all_tags:
+        if tag.name in filter_tags:
             a_text_unit = str(tag)
             _from = text.index(a_text_unit)
             _to = _from + len(a_text_unit)
             unit = (tag.name, (_from, _to), ('restricted_area', count))
             restricted_elements.append(unit)
             count += 1
+
+        tag_classes = dict(tag.attrs).get('class', '')
+        print tag_classes
+        for fclass in filter_classes:
+            for tclass in tag_classes:
+                if fclass in tclass:
+                    a_text_unit = str(tag)
+                    _from = text.index(a_text_unit)
+                    _to = _from + len(a_text_unit)
+                    unit = (tag.name, (_from, _to), ('restricted_area', count))
+                    restricted_elements.append(unit)
+                    count += 1
 
     return restricted_elements

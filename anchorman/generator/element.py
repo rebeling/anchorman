@@ -78,7 +78,7 @@ def remove_elements(text, markup, mode):
             text = re.sub(str_x, x.text, text)
 
         success = True
-        text = text.encode('utf-8')
+        # text = text.encode('utf-8')
 
     elif mode == 'highlight':
         markup_mode = markup[mode]

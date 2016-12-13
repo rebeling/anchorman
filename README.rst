@@ -30,6 +30,8 @@ Features
 * consider text units in the rules (e.g. paragraphs)
 * add your own element validator made easy
 * replace only n items of the same item
+* specify restricted_areas for linking by tag: a, img as default
+
 
 Usage
 ------
@@ -148,15 +150,14 @@ __ TheAustralien_
 
 Todo
 ---------
-* add sentence splitter or add to readme example with <s></s>
 * check if position exist in input and save extra processing
-* check context of replacement: do not add links in links, or inline of overlapping elements
+* validate text und elements
+* html.parser vs lxml in bs4 - think about config
+* ValueError: IntervalTree: Null Interval objects
+* add sentence splitter or add to readme example with <s></s>
 * replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
 * implement a replacement logic for coreference chains
 * add more schema.org examples
-* html.parser vs lxml in bs4 - think about config
-* ValueError: IntervalTree: Null Interval objects
-* validate text und elements
 
 
 

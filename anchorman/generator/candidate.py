@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from anchorman.generator.candidate_utils import (
-    specific_replace_rules, attributes_of)
+    specific_replace_rules, n_times_value_overall, attributes_of)
 from anchorman.generator.element import (
     create_element_pattern, create_element)
 from anchorman.generator.unit import elements_of_unit
@@ -27,13 +27,13 @@ def validate(item, candidates, unit_candidates, settings, own_validator):
     # print candidates
     # replaces_per_item = True
     # check if an item like this same token wsa set already?!
+
     # replaces_per_type = settings.get('replaces_per_item')
     # if replaces_per_type:
     #     if candidates.count(item) >= replaces_per_type:
     #         return False
 
-    # 0. check if the context is ok for replacement
-    
+    # 0. check if the context is ok for replacement ?!
 
     # 1. replaces_at_all
     replaces_at_all = settings.get('replaces_at_all')
@@ -47,7 +47,7 @@ def validate(item, candidates, unit_candidates, settings, own_validator):
 
     # 2.1 replaces_per_item
     # add entity as often as specified with replaces_per_item
-    replaces_per_item = settings.get('replaces_per_item', None)
+    replaces_per_item = settings.get('replaces_per_item')
     if replaces_per_item:
         found = 0
         for candidate in candidates:
@@ -56,8 +56,13 @@ def validate(item, candidates, unit_candidates, settings, own_validator):
             if found >= replaces_per_item:
                 return False
 
-    # 3. replaces_by_attribute
+
+    # 3. replaces_by_attribute per unit
     if specific_replace_rules(item, unit_candidates, settings) is False:
+        return False
+
+    # 3.1
+    if n_times_value_overall(item, candidates, settings) is False:
         return False
 
     # 4. filter_by_attribute

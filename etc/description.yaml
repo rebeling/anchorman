@@ -18,19 +18,24 @@ settings:
         # key: s
         # name: sentence
         restricted_areas:
-            - img
-            - a
+            tags:
+                - img
+                - a
+            classes:
+                - p--heading-
 
     # Identify item in the intervall tree
     element_identifier: entity
 
     # Filter items against an element attrbute of type x and
     # show items_per_unit per attribute ...what about multiple attributes
-    # and multiple attribute values - one of each overall units !?
+    
     # replaces:
     #         by_attribute:
-    #             key: type
-    #             type_per_unit: 1
+    #             key: value
+    #             value_per_unit: 1
+    #             value_overall: 2
+
 
     # # Filter items by specific value of its attribute
     # filter_by_attribute:
@@ -40,7 +45,6 @@ settings:
     #           value: animal
     #         - key: score
     #           value: 10
-
 
     # Set mode / markup for replacement, default is html tag
     mode: tag # highlight
