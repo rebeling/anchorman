@@ -2,6 +2,13 @@
 settings:
     # settings for the replacment process
 
+    # see wich elements applied into the text at the end
+    # return_applied_links: True
+
+    # sort_by_item_value:
+    #     key: score
+    #     default: 0
+
     # How many items will be marked at all in the text, default all.
     replaces_at_all: null
 

@@ -68,14 +68,24 @@ def remove_elements(text, markup, mode):
 
         # use markup info to specify the element you want to find
         attributes = markup[mode].get('attributes')
+        identifier = markup[mode].get('identifier')
         tag = markup[mode].get('tag')
         spfndll = text_soup.findAll
         anchormans = spfndll(tag, attributes) if attributes else spfndll(tag)
 
         for x in anchormans:
+            if identifier:
+                key, value = identifier.items()[0]
+            else:
+                key, value = attributes.items()[0]
+
+            sy = '{}="{}"'.format(key, value)
+            fuzzy_re = "<{0}.*?{1}.*?>{2}<\/{0}>".format(tag, sy, x.text)
+            fuzzy_re = fuzzy_re.decode().encode('utf-8')
+
             # use re.sub vs replace to prevent encoding issues
-            str_x = str(x).replace('=""', '')
-            text = re.sub(str_x, x.text, text)
+            x_text = x.text.encode('utf-8')
+            text = re.sub(fuzzy_re, x_text, text)
 
         success = True
         # text = text.encode('utf-8')

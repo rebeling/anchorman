@@ -31,6 +31,8 @@ Features
 * add your own element validator made easy
 * replace only n items of the same item
 * specify restricted_areas for linking by tag: a, img as default
+* return applied elements
+* sort elements by value before apply to text
 
 
 Usage

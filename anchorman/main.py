@@ -44,11 +44,18 @@ def annotate(text,
         >>> print annotate(text, elements, config=cfg)
         'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog .'
     """
-    intervaltree, units = intervals(text, elements, config['settings'])
+    settings = config['settings']
+    intervaltree, units = intervals(text, elements, settings)
     to_be_applied = retrieve_hits(intervaltree, units, config, own_validator)
 
     # apply the items finally, but start from end ...its not like horse riding!
     text = augment(text, to_be_applied)
+
+    return_applied_links = settings.get('return_applied_links')
+    if return_applied_links:
+        applied_links = [item[0].data[1][1] for item in to_be_applied]
+        return text, applied_links
+
     return text
 
 
