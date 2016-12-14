@@ -1,5 +1,5 @@
 name: anchorman
-version: 0.3.3
+version: 0.3.4
 author: matthias rebel
 
 # optional
@@ -7,7 +7,7 @@ author_email: webmaster@rebeling.net
 url: https://github.com/rebeling/anchorman
 description: Anchorman takes a list of terms and a text. It finds the terms in this text and replaces them with another representation.
 license: Apache License
-copyright: 2015
+copyright: 2016
 keywords:
     - intext
     - link

@@ -71,63 +71,6 @@ This unit bears valid items ready to apply to text in this intervall or unit.
     >>> print annotate(text, elements, own_validator=[validator])
 
 
-Apply schema.org
-++++++++++++++++++
-
-Not so handy approach is to create contexts with multiple annotation calls.
-But the logic to annotate data around and in each other is pretty hacky as
-the following example shows:
-
-
-.. code:: python
-
-    >>> s_text = 'Angela Merkel, CDU, Bundeskanzlerin'
-    >>> s1_elements = [
-    ...     {"Angela Merkel, CDU, Bundeskanzlerin": {
-    ...         'itemtype': 'http://schema.org/Person',
-    ...         'itemscope': None}}
-    ...     ]
-    ...
-    >>> s11_elements = [
-    ...     {"CDU": {
-    ...         'itemtype': 'http://schema.org/Organization',
-    ...         'itemscope': None}}
-    ...     ]
-    ...
-    >>> s2_elements = [
-    ...     {"Angela Merkel": {
-    ...         'itemprop': 'name'}},
-    ...     {"CDU": {
-    ...         'itemprop': 'name'}},
-    ...     {"Bundeskanzlerin": {
-    ...         'itemprop': 'jobtitle'}}
-    ...     ]
-    ...
-    >>> from anchorman import get_config
-    >>> cfg = get_config()
-    >>> unit = {'key': 't', 'name': 'text'}
-    >>> cfg['setting']['text_unit'].update(unit)
-    >>> cfg['markup'] = {'tag': {'tag': 'div'}}
-    >>> annotated = annotate(s_text, s1_elements, config=cfg)
-    >>> annotated2 = annotate(annotated, s11_elements, config=cfg)
-    >>> cfg3 = cfg.copy()
-    >>> cfg3['markup'] = {'tag': {'tag': 'span'}}
-    >>> annotated3 = annotate(annotated2, s2_elements, config=cfg3)
-
-
-Then text annotated3 looks like this:
-
-.. code:: html
-
-    <div itemscope itemtype="http://schema.org/Person">
-        <span itemprop="name">Angela Merkel</span>,
-        <div itemscope itemtype="http://schema.org/Organization">
-            <span itemprop="name">CDU</span>
-        </div>,
-        <span itemprop="jobtitle">Bundeskanzlerin</span>
-    </div>
-
-
 Installation
 ------------
 
@@ -152,6 +95,8 @@ __ TheAustralien_
 
 Todo
 ---------
+* write tests for the settings and rules like examples or how to
+
 * check if position exist in input and save extra processing
 * validate text und elements
 * html.parser vs lxml in bs4 - think about config
@@ -159,8 +104,6 @@ Todo
 * add sentence splitter or add to readme example with <s></s>
 * replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
 * implement a replacement logic for coreference chains
-* add more schema.org examples
-
 
 
 Feedback and thanks for reading.

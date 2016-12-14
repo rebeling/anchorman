@@ -22,7 +22,7 @@ install: virtualenv
 	${VIRTUALENV_DIR}/bin/python setup.py develop --always-unzip
 
 test:
-	env/bin/py.test --cov-report term-missing --cov=${PWD}/${APP_NAME} test -s
+	env/bin/py.test --cov-report term-missing --cov=${PWD}/${APP_NAME} test -s -vv
 
 clean:
 	rm -rfv .DS_Store .coverage .cache

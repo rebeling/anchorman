@@ -73,19 +73,19 @@ def remove_elements(text, markup, mode):
         spfndll = text_soup.findAll
         anchormans = spfndll(tag, attributes) if attributes else spfndll(tag)
 
-        for x in anchormans:
+        for anchor in anchormans:
             if identifier:
                 key, value = identifier.items()[0]
             else:
                 key, value = attributes.items()[0]
 
-            sy = '{}="{}"'.format(key, value)
-            fuzzy_re = "<{0}.*?{1}.*?>{2}<\/{0}>".format(tag, sy, x.text)
-            fuzzy_re = fuzzy_re.decode().encode('utf-8')
+            id_string = '{}="{}"'.format(key, value)
+            anchor_text = anchor.text.encode('utf-8')
+            fuzzy_re = "<{0}.*?{1}.*?>{2}<\/{0}>".format(
+                tag, id_string, anchor_text)
 
             # use re.sub vs replace to prevent encoding issues
-            x_text = x.text.encode('utf-8')
-            text = re.sub(fuzzy_re, x_text, text)
+            text = re.sub(fuzzy_re, anchor_text, text)
 
         success = True
         # text = text.encode('utf-8')
