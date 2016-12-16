@@ -96,19 +96,18 @@ def identify_restricted_areas(text, restricted_areas):
             a_text_unit = str(tag)
             _from = text.index(a_text_unit)
             _to = _from + len(a_text_unit)
-            unit = (tag.name, (_from, _to), ('restricted_area', count))
+            unit = ((tag.name, tag.text), (_from, _to), ('restricted_area', count))
             restricted_elements.append(unit)
             count += 1
 
         tag_classes = dict(tag.attrs).get('class', '')
-        print tag_classes
         for fclass in filter_classes:
             for tclass in tag_classes:
                 if fclass in tclass:
                     a_text_unit = str(tag)
                     _from = text.index(a_text_unit)
                     _to = _from + len(a_text_unit)
-                    unit = (tag.name, (_from, _to), ('restricted_area', count))
+                    unit = ((tag.name, tag.text), (_from, _to), ('restricted_area', count))
                     restricted_elements.append(unit)
                     count += 1
 

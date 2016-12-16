@@ -44,6 +44,9 @@ settings:
     # # Input term has to be exact match in text.
     case_sensitive: true
 
+    # replaces_per_item: 1
+    # replaces_per_item_extended_look_up: value_for_key
+
     # # 5.3 apply sorted items
     # # items will placed per default in order they 
     # # appear in the text, but if they should be added

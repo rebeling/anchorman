@@ -6,7 +6,7 @@ from anchorman.generator.element import (
 from anchorman.generator.unit import elements_of_unit
 
 
-def validate(item, candidates, unit_candidates, settings, own_validator):
+def validate(item, candidates, unit_candidates, settings, own_validator, existing_values):
     """Apply the rules specified in settings to the item.
 
     Take care of candidates already validated and the items already
@@ -48,14 +48,28 @@ def validate(item, candidates, unit_candidates, settings, own_validator):
     # 2.1 replaces_per_item
     # add entity as often as specified with replaces_per_item
     replaces_per_item = settings.get('replaces_per_item')
+    replaces_per_item_extended_look_up_key = settings.get('replaces_per_item_extended_look_up')
     if replaces_per_item:
         found = 0
         for candidate in candidates:
             if candidate.data[0] == item.data[0]:
                 found += 1
+            try:
+                ka = attributes_of(item).get(replaces_per_item_extended_look_up_key)
+                la = attributes_of(candidate).get(replaces_per_item_extended_look_up_key)
+                if ka:
+                    if ka == la:
+                        found += 1
+            except:
+                pass
+
             if found >= replaces_per_item:
                 return False
 
+        if item.data[0] in existing_values:
+            found += 1
+        if found >= replaces_per_item:
+            return False
 
     # 3. replaces_by_attribute per unit
     if specific_replace_rules(item, unit_candidates, settings) is False:
@@ -84,7 +98,7 @@ def validate(item, candidates, unit_candidates, settings, own_validator):
     return True
 
 
-def retrieve_hits(intervaltree, units, config, own_validator):
+def retrieve_hits(intervaltree, units, config, own_validator, existing_values, existing_a_tags):
     """Loop the units and validate each item in unit.
 
     :param intervaltree:
@@ -103,10 +117,21 @@ def retrieve_hits(intervaltree, units, config, own_validator):
     for unit in sorted(units):
 
         unit_candidates = []
-        for item in elements_of_unit(intervaltree, unit, settings):
+        # if there are n links in unit and items per unit is restricted do not
+        # link again
+        count = 0
+        items_per_unit = settings.get('text_unit', {}).get('items_per_unit')
+        if isinstance(items_per_unit, int):
+            # filter for existing a tags
+            for start, end in existing_a_tags:
+                if unit.contains_point(start):
+                    count += 1
+            if items_per_unit <= count:
+                continue
 
+        for item in elements_of_unit(intervaltree, unit, settings):
             valid = validate(item, candidates, unit_candidates, settings,
-                             own_validator)
+                             own_validator, existing_values)
             if valid:
                 element = create_element(element_pattern, item, mode, markup)
                 to_be_applied.append((item, element))

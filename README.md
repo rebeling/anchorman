@@ -1,14 +1,11 @@
-Welcome to Anchorman
----------------------
+# Welcome to Anchorman
 
-Turn your text into hypertext_ and enrich the content. Anchorman takes a
+Turn your text into [hypertext](http://en.wikipedia.org/wiki/Hypertext) and enrich the content. Anchorman takes a
 list of terms and a text. It finds the terms in this text and replaces
 them with another representation.
 
 The replacement is guided by rules like the following. Each term is checked
 against the rules and will be applied if valid.
-
-.. code:: yaml
 
     # How many items will be marked at all in the text.
     replaces_at_all: 5
@@ -20,11 +17,7 @@ The text is analysed via intervalltree and the replacement happens on position
 and context.
 
 
-.. _hypertext: http://en.wikipedia.org/wiki/Hypertext
-
-
-Features
---------
+## Features
 
 * replacement rules via settings
 * consider text units in the rules (e.g. paragraphs)
@@ -35,12 +28,9 @@ Features
 * sort elements by value before apply to text
 
 
-Usage
-------
+## Usage
 
 The first element of elements is find in text and replaced with a link tag.
-
-.. code:: python
 
     >>> from anchorman import annotate
     >>> text = 'The quick brown fox jumps over the lazy dog.'
@@ -48,17 +38,14 @@ The first element of elements is find in text and replaced with a link tag.
     >>> print annotate(text, elements)
     'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog .'
 
-See etc/link.yaml for options to configure the replacement process and rules.
+See etc/description.yaml for options to configure the replacement process and rules.
 
 
-The item validator
-++++++++++++++++++++
+### The item validator
 
 Inherit your own item validator. Item is the potential replacement.
 Candidates is a list of processed and valid items ready to apply to text.
 This unit bears valid items ready to apply to text in this intervall or unit.
-
-.. code:: python
 
     >>> from anchorman.generator.candidate import get_data_of
     >>> def validator(item, candidates, this_unit, setting):
@@ -71,30 +58,23 @@ This unit bears valid items ready to apply to text in this intervall or unit.
     >>> print annotate(text, elements, own_validator=[validator])
 
 
-Installation
-------------
+## Installation
 
 To install Anchorman, simply:
-
-.. code::
 
     pip install anchorman
 
 
-Credits and contributions
---------------------------
+## Credits and contributions
 
 We published this at github and pypi to provide our solution to you.
 Pleased for feedback and contributions.
 
-Thanks `Tarn Barford`__ for inspiration and first steps.
-
-.. _TheAustralien: https://tarnbarford.net/
-__ TheAustralien_
+Thanks [@tarnacious](https://github.com/tarnacious) for inspiration and first steps.
 
 
-Todo
----------
+## Todo
+
 * write tests for the settings and rules like examples or how to
 
 * check if position exist in input and save extra processing
@@ -105,5 +85,6 @@ Todo
 * replace only one item of an entity > e.g. A. Merkel, Mum Merkel, ...
 * implement a replacement logic for coreference chains
 
+<img src="https://raw.githubusercontent.com/rebeling/anchorman/master/docs/anchorman.png" width="200">
 
-Feedback and thanks for reading.
+Stay tuned.

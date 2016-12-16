@@ -13,19 +13,25 @@ def to_intervaltree(data, t=None):
         t = IntervalTree()
 
     overlaps = []
+    existing_values = []
+    existing_a_tags = []
     for token, slices, _type in data:
         _from, _to = slices
         t[_from:_to] = (token, _type)
 
         if _type[0] == 'restricted_area':
-            overlaps.append((_from, _to))
+            overlaps.append((_from, _to, token, _type))
+            a, b = token
+            if a == 'a':
+                existing_values.append(b)
+                existing_a_tags.append((_from, _to))
 
     # remove all elements in restricted_areas
     if overlaps:
-        for begin, end in overlaps:
+        for begin, end, token, _type in overlaps:
             t.remove_envelop(begin, end)
 
-    return t
+    return t, existing_values, existing_a_tags
 
 
 def unit_intervals(intervaltree, text_unit):
@@ -60,7 +66,7 @@ def intervals(text, elements, settings):
                              text_unit.get('restricted_areas'))
     slices.extend(text_units)
 
-    intervaltree = to_intervaltree(slices)
+    intervaltree, existing_values, existing_a_tags = to_intervaltree(slices)
     text_unit_intervals = unit_intervals(intervaltree, text_unit)
 
-    return intervaltree, text_unit_intervals
+    return intervaltree, text_unit_intervals, existing_values, existing_a_tags
