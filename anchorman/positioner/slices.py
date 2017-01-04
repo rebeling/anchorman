@@ -1,35 +1,27 @@
 # -*- coding: utf-8 -*-
 import re
 from bs4 import BeautifulSoup
+from anchorman.positioner.slices_utils import check_forbidden_areas
+from anchorman.positioner.slices_utils import token_regexes
+from anchorman.positioner.slices_utils import check_links_inside_tags
 
 
-def allforms(t):
-    return list({t, t.lower(), t.upper(), t.title()})
-
-
-def token_regexes(elements, case_sensitive):
-    tokens = [e.keys()[0].encode('utf-8') for e in elements]
-    forms = [[t] if case_sensitive else allforms(t) for t in tokens]
-    patterns = [r"\b{0}\b".format(f) for form in forms for f in form]
-    return "|".join(patterns)
-
-
-def element_slices(text, elements, settings):
+def element_slices(text, elements, config):
     """Get slices of all elements in text.
-    :param settings:
-    :param elements:
+
     :param text:
+    :param elements:
+    :param config:
     """
-    case_sensitive = settings['case_sensitive']
+    case_sensitive = config['rules']['case_sensitive']
+    element_identifier = config['settings']['element_identifier']
     token_regex = re.compile(token_regexes(elements, case_sensitive))
 
     element_slices = []
     for match in token_regex.finditer(text):
-
         token = match.group()
         base = None
         for element in elements:
-
             check_element = element.keys()[0].encode('utf-8')
             check_token = token
 
@@ -43,72 +35,76 @@ def element_slices(text, elements, settings):
 
         element_slices.append((token,
                                (match.start(), match.end()),
-                               (settings['element_identifier'], base)))
+                               (element_identifier, base)))
+
     return element_slices
 
 
-def unit_slices(text, text_unit_key, text_unit_name, restricted_areas):
+def unit_slices(text, config):
     """Get slices of the text units specified in settings.
-    :param text_unit_name:
-    :param text_unit_key:
-    :param text:
-    :param restricted_areas:
-    """
 
-    units = []
+    :param text:
+    :param config:
+    """
+    text_unit_key = config['settings']['text_unit']['key']
+    text_unit_name = config['settings']['text_unit']['name']
+
+    units, forbidden = [], []
+
     if (text_unit_key, text_unit_name) == ('t', 'text'):
         # the whole text is one unit
-        units.append((text_unit_key, (0, len(text)),
-                      (text_unit_name, 0)))
-
+        units.append((text_unit_key, (0, len(text)), (text_unit_name, 0)))
     elif text_unit_name.startswith(('html', 'xml')):
-        unit_soup = BeautifulSoup(text, "html.parser").find_all(text_unit_key)
-        for i, a_text_unit in enumerate(unit_soup):
-            a_text_unit = str(a_text_unit)
-            _from = text.index(a_text_unit)
-            _to = _from + len(a_text_unit)
-            unit = (text_unit_key, (_from, _to), (text_unit_name, i))
-            units.append(unit)
-
-        if restricted_areas:
-            restricted_elements = identify_restricted_areas(text,
-                                                            restricted_areas)
-            for unit in restricted_elements:
-                units.append(unit)
-
+        # the text need to be parsed to get its structure
+        units, forbidden = parse_units(text, config['settings'])
     else:
         raise NotImplementedError
 
-    return units
+    return units, forbidden
 
 
-def identify_restricted_areas(text, restricted_areas):
+def parse_units(text, settings):
     """
+
+    :param text:
+    :param settings:
     """
-    all_tags = BeautifulSoup(text, "html.parser").findAll(True)
-    restricted_elements = []
-    filter_tags = restricted_areas.get('tags', [])
-    filter_classes = restricted_areas.get('classes', [])
+    # from bs4.diagnose import diagnose
+    # data = open("bad.html").read()
+    # diagnose(data)
 
-    count = 1
-    for tag in all_tags:
-        if tag.name in filter_tags:
-            a_text_unit = str(tag)
-            _from = text.index(a_text_unit)
-            _to = _from + len(a_text_unit)
-            unit = ((tag.name, tag.text), (_from, _to), ('restricted_area', count))
-            restricted_elements.append(unit)
-            count += 1
+    text_unit_key = settings['text_unit']['key']
+    forbidden_areas = settings['text_unit'].get('forbidden_areas', {})
+    soup = BeautifulSoup(text, settings.get('parser', 'lxml'))
+    all_tags = soup.findAll(True)
+    soup_string = str(soup)
+    text_units, forbidden = [], []
 
-        tag_classes = dict(tag.attrs).get('class', '')
-        for fclass in filter_classes:
-            for tclass in tag_classes:
-                if fclass in tclass:
-                    a_text_unit = str(tag)
-                    _from = text.index(a_text_unit)
-                    _to = _from + len(a_text_unit)
-                    unit = ((tag.name, tag.text), (_from, _to), ('restricted_area', count))
-                    restricted_elements.append(unit)
-                    count += 1
+    if soup_string.startswith('<html><body>'):
+        soup_string = soup_string[12:-14]
+        # print "soup_string", soup_string
 
-    return restricted_elements
+    for i, a_tag in enumerate(all_tags):
+        the_tag_str = str(a_tag)
+        if a_tag.name == text_unit_key:
+            try:
+                # # bs4 wrongly aumgmented string?!
+                _from = soup_string.index(the_tag_str)
+                text_units.append((a_tag,
+                                   (_from, _from + len(the_tag_str)),
+                                   (text_unit_key, i)))
+            except ValueError as e:
+                # log it
+                print "substring not found: %s" % a_tag
+                pass
+
+        if forbidden_areas:
+            forbidden += check_forbidden_areas(a_tag,
+                                               forbidden_areas,
+                                               soup_string,
+                                               i)
+
+    if settings.get('no_links_inside_tags', None):
+        forbidden += check_links_inside_tags(soup_string)
+
+    return text_units, forbidden

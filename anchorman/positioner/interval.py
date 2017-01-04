@@ -1,72 +1,61 @@
 # -*- coding: utf-8 -*-
 from intervaltree import IntervalTree
-from anchorman.positioner.slices import element_slices, unit_slices
+from anchorman.positioner.slices import unit_slices, element_slices
 
 
-def to_intervaltree(data, t=None):
-    """Create an intervaltree of all elements (elements, units, ...).
-    :param t:
-    :param data:
-    """
-
-    if t is None:
-        t = IntervalTree()
-
-    overlaps = []
-    existing_values = []
-    existing_a_tags = []
-    for token, slices, _type in data:
-        _from, _to = slices
-        t[_from:_to] = (token, _type)
-
-        if _type[0] == 'restricted_area':
-            overlaps.append((_from, _to, token, _type))
-            a, b = token
-            if a == 'a':
-                existing_values.append(b)
-                existing_a_tags.append((_from, _to))
-
-    # remove all elements in restricted_areas
-    if overlaps:
-        for begin, end, token, _type in overlaps:
-            t.remove_envelop(begin, end)
-
-    return t, existing_values, existing_a_tags
-
-
-def unit_intervals(intervaltree, text_unit):
-    """Loop the intervaltree to get the text unit interval items.
-    :param text_unit:
-    :param intervaltree:
-    """
-
-    text_unit_key_name = text_unit['key'], text_unit['name']
-
-    # add to units if interval_key_name == text_unit_key_name
-    units = [item
-             for item in intervaltree.items()
-             if (item.data[0], item.data[1][0]) == text_unit_key_name]
-
-    return units
-
-
-def intervals(text, elements, settings):
+def intervals(text, elements, config):
     """From the slices of elements and units create an intervaltree.
 
-    :param settings:
-    :param elements:
     :param text:
+    :param elements:
+    :param config:
     """
-    text_unit = settings['text_unit']
+    units, forbidden = unit_slices(text, config)
+    tree = to_intervaltree(forbidden)
 
-    slices = element_slices(text, elements, settings)
-    text_units = unit_slices(text,
-                             text_unit['key'],
-                             text_unit['name'],
-                             text_unit.get('restricted_areas'))
-    slices.extend(text_units)
+    # create interval tree for units and forbidden areas
+    # get possible element slices based on the interval tree
+    # check if they are possible in units or not allowed! by from, to
+    slices = element_slices(text, elements, config)
+    tree = to_intervaltree(slices, tree=tree, elements=True)
+    tree = cleanup_tree(tree)
 
-    intervaltree, existing_values, existing_a_tags = to_intervaltree(slices)
-    text_unit_intervals = unit_intervals(intervaltree, text_unit)
+    return units, tree
 
-    return intervaltree, text_unit_intervals, existing_values, existing_a_tags
+
+def to_intervaltree(data, tree=None, elements=None):
+    """Create an intervaltree for units and forbidden.
+
+    :param data:
+    :param tree:
+    :param elements:
+    """
+    tree = IntervalTree() if tree is None else tree
+
+    if elements is True:
+        # check if the elements can be placed in the tree
+        for token, slices, _type in data:
+            _from, _to = slices
+            appliable = True
+            for x in tree[_from:_to]:
+                x_data = x.data
+                if x_data == 'insidetag' or x_data == 'forbidden':
+                    appliable = False
+
+            if appliable:
+                tree[_from:_to] = (token, _type)
+    else:
+        # data is the forbidden areas in this case
+        for token, slices, _type in data:
+            _from, _to = slices
+            tree[_from:_to] = _type[0]
+
+    return tree
+
+
+def cleanup_tree(tree):
+    """Remove forbidden area intervals from tree."""
+    rm = [x for x in tree if x.data in ['insidetag', 'forbidden']]
+    for interval in rm:
+        tree.remove(interval)
+    return tree

@@ -1,61 +1,27 @@
 # -*- coding: utf-8 -*-
 from anchorman.configuration import get_config
-from anchorman.generator.candidate import retrieve_hits
+from anchorman.validator.find_hits import applicables
 from anchorman.generator.element import remove_elements
-from anchorman.generator.result import augment
+from anchorman.generator.result import augment, filter_applied_against_input
 from anchorman.positioner.interval import intervals
 
 
-def annotate(text,
-             elements,
-             own_validator=None,
-             config=get_config(include_project_config=False)):
+def annotate(text, elements, own_validator=None, config=get_config(
+        include_project_config=False)):
     """Find and annotate elements in text.
 
-    Create an invaltree with elements and units of text, validate the rules
-    to apply elements and augment the text with this result.
-
-    Args:
-        text (str): The first parameter is a text string.
-        elements (list): It is a list of element dicts like the following:
-            {'fox': {'value': '/wiki/fox', 'data-type': 'animal'}}
-        own_validator (list): A list of functions that will be applied in the
-            validation of an element, if it will be applied in the text.
-        config (dict): Load default config from etc/ or get_config the default
-            config andd update to your own rules.
-
-    Returns:
-        text (str): The annotated text.
-
-    Examples:
-        Basic example with config overwrite:
-
-        >>> text = 'The quick brown fox jumps over the lazy dog.'
-        >>> elements = [{'fox': {
-                            'value': '/wiki/fox',
-                            'data-type': 'animal'}
-                        },
-                        {'dog': {
-                            'value': '/wiki/dog',
-                            'data-type': 'animal'}
-                        }]
-        >>> cfg = get_config()
-        >>> cfg['setting']['replaces_at_all'] = 1
-        >>> print annotate(text, elements, config=cfg)
-        'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog .'
+    Create an invaltree with elements and units of text, validate
+    the rules to apply elements and augment the text with this result.
     """
-    settings = config['settings']
-    intervaltree, units, existing_values, existing_a_tags = intervals(text, elements, settings)
-    to_be_applied = retrieve_hits(
-        intervaltree, units, config, own_validator, existing_values, existing_a_tags)
+    units, etree = intervals(text, elements, config)
+    to_be_applied = applicables(units, etree, config, own_validator)
 
-    # apply the items finally, but start from end ...its not like horse riding!
+    # apply the items, but start at the end ...its not like horse riding!
     text = augment(text, to_be_applied)
 
-    return_applied_links = settings.get('return_applied_links')
-    if return_applied_links:
-        applied_links = [item[0].data[1][1] for item in to_be_applied]
-        return text, applied_links
+    if config['settings'].get('return_applied_links'):
+        applied, rest = filter_applied_against_input(elements, to_be_applied)
+        return text, applied, rest
 
     return text
 
@@ -67,9 +33,4 @@ def clean(text, config=get_config(include_project_config=False)):
     :param config:
     :param text:
     """
-    return remove_elements(text, config['markup'], config['settings']['mode'])
-
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+    return remove_elements(text, config)

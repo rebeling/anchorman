@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import re
-
 from anchorman.generator.highlight import augment_highlight
 from anchorman.generator.highlight import create_highlight
 from anchorman.generator.tag import augment_bs4tag
@@ -9,24 +8,19 @@ from anchorman.generator.tag import create_bs4tag
 from anchorman.logger import log
 
 
-def create_element_pattern(mode, markup):
+def create_element_pattern(mode, markup, parser):
     """Create the basic element pattern based on mode and markup.
+
     :param markup:
     :param mode:
     """
-
     try:
-        markup = markup[mode]
-
         if mode == 'tag':
-            pattern = create_bs4tag(markup)
-
+            pattern = create_bs4tag(markup[mode], parser)
         elif mode == 'highlight':
-            pattern = create_highlight(markup)
-
+            pattern = create_highlight(markup[mode])
         else:
             raise NotImplementedError
-
     except KeyError, e:
         log("KeyError: %s" % e)
         raise KeyError
@@ -34,64 +28,62 @@ def create_element_pattern(mode, markup):
     return pattern
 
 
-def create_element(element_pattern, item, mode, markup):
+def create_element(item, config):
     """Create the element that will be inserted in the text.
+
     :param markup:
     :param mode:
     :param item:
     :param element_pattern:
     """
+    markup = config['markup']
+    settings = config['settings']
+    mode = settings['mode']
 
-    markup = markup[mode]
+    element_pattern = create_element_pattern(mode,
+                                             markup,
+                                             settings.get('parser', 'lxml'))
     _element = item.data[1][1]
     original = item.data[0]
 
     if mode == 'tag':
-        element = augment_bs4tag(element_pattern, _element, markup, original)
+        element = augment_bs4tag(
+            element_pattern, _element, markup[mode], original)
     else:
         element = augment_highlight(element_pattern, original)
 
     return element
 
 
-def remove_elements(text, markup, mode):
+def remove_elements(text, config):
     """Remove elements of text based on the markup specifications.
-    :param mode:
-    :param markup:
+
+    :param config:
     :param text:
     """
+    mode = config['settings']['mode']
+    markup_mode = config['markup'][mode]
 
     success = False
-
     if mode == 'tag':
-        text_soup = BeautifulSoup(text, "html.parser")
+        text_soup = BeautifulSoup(text,
+                                  config['settings'].get('parser', 'lxml'))
 
         # use markup info to specify the element you want to find
-        attributes = markup[mode].get('attributes')
-        identifier = markup[mode].get('identifier')
-        tag = markup[mode].get('tag')
-        spfndll = text_soup.findAll
-        anchormans = spfndll(tag, attributes) if attributes else spfndll(tag)
+        found = text_soup.findAll
+        attributes = markup_mode.get('attributes')
+        tag = markup_mode.get('tag')
+        anchors = found(tag, attributes) if attributes else found(tag)
 
-        for anchor in anchormans:
-            if identifier:
-                key, value = identifier.items()[0]
-            else:
-                key, value = attributes.items()[0]
-
-            id_string = '{}="{}"'.format(key, value)
+        for anchor in anchors:
+            id_string = specified_or_guess(markup_mode, attributes)
             anchor_text = anchor.text.encode('utf-8')
-            fuzzy_re = "<{0}.*?{1}.*?>{2}<\/{0}>".format(
-                tag, id_string, anchor_text)
-
+            fuzzy = fuzzy_regex(tag, id_string, anchor_text)
             # use re.sub vs replace to prevent encoding issues
-            text = re.sub(fuzzy_re, anchor_text, text)
-
+            text = re.sub(fuzzy, anchor_text, text)
         success = True
-        # text = text.encode('utf-8')
 
     elif mode == 'highlight':
-        markup_mode = markup[mode]
         pre, post = markup_mode['pre'], markup_mode['post']
         text = text.replace(pre, '').replace(post, '')
         success = True
@@ -100,3 +92,15 @@ def remove_elements(text, markup, mode):
         raise NotImplementedError
 
     return success, text
+
+
+def specified_or_guess(markup_mode, attributes):
+    """"""
+    identifier = markup_mode.get('identifier')
+    key, value = identifier.items()[0] if identifier else attributes.items()[0]
+    return '{}="{}"'.format(key, value)
+
+
+def fuzzy_regex(tag, id_string, anchor_text):
+    """"""
+    return "<{0}.*?{1}[^>]*?>{2}<\/{0}>".format(tag, id_string, anchor_text)

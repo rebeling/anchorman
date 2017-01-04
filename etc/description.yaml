@@ -1,51 +1,27 @@
-settings:
-    # settings / rules for the replacement process
-    # item, link, element ..all reference to the same
-    # concept in the following
 
-    # # 1. return applied links too 
-    # # see wich elements were applied into the text
-    # return_applied_links: True
-    
-    # # 2. Set mode for replacement, default is html tag
-    mode: tag # highlight
+rules:
+    # # Replacement rules and filter
 
-    # # 3. define the text structure
-    # # p and html-paragraph is on per default and theses 
-    # # options guide the input processing
-    text_unit:
-        items_per_unit: null # | 5
-        key: p
-        name: html-paragraph
-        # key: t
-        # name: text
-        # key: s
-        # name: sentence
-
-        # param to exclude certain areas from anchormanning
-        restricted_areas:
-            tags:
-                - img
-                - a
-            classes:
-                - p--heading-
-
-    # # 4. Identify item in the intervall tree ...what for?!
-    element_identifier: entity
-
-    # # 5. Replacement rules and filter
-
-    # # 5.1 how many at all
-    # # How many items will be marked at all in the text
-    # # default all.
+    # # 1. how many items will be replaced at all
+    # # default all, otherwise int
     replaces_at_all: null
 
-    # # 5.2 case sensitive replacement
+    # # 2. case sensitive replacement
     # # Input term has to be exact match in text.
     case_sensitive: true
 
+    # # 3. one item different forms on surface
+    # # how many times should this one 
     # replaces_per_item: 1
     # replaces_per_item_extended_look_up: value_for_key
+
+    # 
+    items_per_unit: null # | 5
+
+    # # better like this
+    # replaces_per_item:
+    #   number: 1
+    #   key: based on value for this key
 
     # # 5.3 apply sorted items
     # # items will placed per default in order they 
@@ -74,6 +50,51 @@ settings:
     #           value: 10
 
 
+# settings / rules for the replacement process
+# item, link, element ..all reference to the same
+# concept in the following
+settings:
+    # # 1. return applied links and rest with the result 
+    # return_applied_links: True
+    
+    # # 2. Set mode for replacement, default is html tag
+    # # this is used in the input parsing to identify units and 
+    # # restricted elements
+    mode: tag # vs highlight
+
+    # # 3. define the text structure
+    # # options to guide the input parsing process
+    # # p and html-paragraph is on per default and these
+    text_unit:
+        key: p
+        name: html-paragraph
+        # key: t
+        # name: text
+        # key: s
+        # name: sentence
+
+        # # # # param to exclude areas from anchormanning
+        # forbidden_areas:
+        #     tags:
+        #         - img
+        #         - a
+        #     classes:
+        #         - first
+
+    # todo check the benchmark for each solution
+    # https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser
+    # html.parser produces false elements, see <img>somthing something
+    # parser: html.parser ...
+    # parser: html5lib # need pip install ...slow
+    parser: lxml # need pip install
+
+    # # 4. Identify the items in the intervall tree
+    element_identifier: entity
+
+    # # 5. do not link inside of a < here >
+    no_links_inside_tags: True
+
+
 markup:
 
     # Markup for html-tags
@@ -84,14 +105,13 @@ markup:
 
         # Default attributes for tag markup, overwrite it!
         attributes:
-            style:
-                "color:blue;cursor:pointer;"
             class:
                 anchorman
 
-        # Exclude keys from the input to be rendered.
-        exclude_keys:
-            - score
+        # # Exclude keys from the input to be rendered.
+        # exclude_keys:
+        #     - score
+        #     - type
 
     # Markup for highlighting context
     highlight:

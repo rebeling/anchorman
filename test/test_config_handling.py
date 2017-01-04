@@ -6,7 +6,7 @@ from anchorman.configuration import parse_yaml
 
 def test_parse_yaml():
 
-    DATA = parse_yaml('data.yaml', loaded_from=__file__)
+    DATA = parse_yaml('../etc/config.yaml', loaded_from=__file__)
     assert isinstance(DATA, dict)
 
 
@@ -19,4 +19,4 @@ def test_yaml_io_error():
 def test_yaml_parsing_error():
 
     with pytest.raises(YAMLError):
-        _ = parse_yaml('data_error.yaml', loaded_from=__file__)
+        _ = parse_yaml('test_config_handling.py', loaded_from=__file__)

@@ -6,7 +6,7 @@ from anchorman.logger import log
 
 
 def parse_yaml(filepath, loaded_from=__file__):
-
+    """Get and parse yaml from absolute path."""
     abspath = os.path.abspath(os.path.dirname(loaded_from))
     path = "/".join([abspath, filepath])
     try:
@@ -22,9 +22,9 @@ def parse_yaml(filepath, loaded_from=__file__):
 
 def get_config(include_project_config=True):
     """Load default configuration.
+
     :param include_project_config:
     """
-
     default = parse_yaml("../etc/description.yaml")
 
     if include_project_config:

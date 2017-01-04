@@ -3,13 +3,24 @@
 
 def augment(text, to_be_applied):
     """Augment the text with the elements in to be applied.
+
     :param text:
     :param to_be_applied:
     """
-
     _pattern = "{}{}{}"
-    for interval, element in reversed(to_be_applied):
+    to_be_applied = sorted(to_be_applied, reverse=True)
+    for interval, element in to_be_applied:
         text = _pattern.format(text[:interval.begin],
                                element,
                                text[interval.end:])
     return text
+
+
+def filter_applied_against_input(elements, to_be_applied):
+    """"""
+    applied = []
+    for item in to_be_applied:
+        applied.append(item[0].data[1][1])
+    rest = [x for x in elements if x not in applied]
+
+    return applied, rest
