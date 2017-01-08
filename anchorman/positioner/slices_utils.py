@@ -18,7 +18,6 @@ def check_forbidden_areas(a_tag, forbidden_areas, soup_string, i):
     """ """
     filter_tags = forbidden_areas.get('tags', [])
     filter_classes = forbidden_areas.get('classes', [])
-
     forbiddens = []
     forbidden_tag = check_tag(a_tag, filter_tags, soup_string, i)
     if forbidden_tag:
@@ -49,31 +48,15 @@ def check_tag(a_tag, filter_tags, soup_string, i):
 
 def check_classes(a_tag, filter_classes, soup_string, i):
     """ """
-    elements = []
     tag_classes = dict(a_tag.attrs).get('class', '')
-    for fclass in filter_classes:
-        for tclass in tag_classes:
-            if fclass in tclass:
-                try:
-                    the_tag_str = str(a_tag)
-                    _from = soup_string.index(the_tag_str)
-                    elements.append(
-                        (a_tag,
-                         (_from, _from + len(the_tag_str)),
-                         ('forbidden', i)))
-                except ValueError as e:
-                    # log it
-                    print "substring not found: %s" % a_tag
-                    pass
-    return elements
+    _from = soup_string.index(str(a_tag))
+    return [(a_tag, (_from, _from + len(str(a_tag))), ('forbidden', i))
+            for fclass in filter_classes
+            for tclass in tag_classes
+            if fclass in tclass]
 
 
 def check_links_inside_tags(soup_string):
-    """ """
-    forbiddens = []
-    tag_regex = re.compile(r"<(\w|/).*?>", re.DOTALL)
-    for match in tag_regex.finditer(soup_string):
-        forbiddens.append((match.group(),
-                           (match.start(), match.end()),
-                           ('insidetag', None)))
-    return forbiddens
+    """Find tag elements and mark the intervall."""
+    return [(match.group(), (match.start(), match.end()), ('insidetag', None))
+            for match in re.finditer(r"<(\w|/).*?>", soup_string)]
