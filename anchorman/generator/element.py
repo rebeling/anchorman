@@ -31,26 +31,18 @@ def create_element_pattern(mode, markup, parser):
 def create_element(item, config):
     """Create the element that will be inserted in the text.
 
-    :param markup:
-    :param mode:
     :param item:
-    :param element_pattern:
+    :param config:
     """
-    markup = config['markup']
-    settings = config['settings']
-    mode = settings['mode']
-
-    element_pattern = create_element_pattern(mode,
-                                             markup,
-                                             settings.get('parser', 'lxml'))
-    _element = item.data[1][1]
-    original = item.data[0]
+    mode = config['settings']['mode']
+    pattern = create_element_pattern(mode, config['markup'],
+                                     config['settings'].get('parser', 'lxml'))
 
     if mode == 'tag':
-        element = augment_bs4tag(
-            element_pattern, _element, markup[mode], original)
+        element = augment_bs4tag(pattern, item.data[1][1],
+                                 config['markup'][mode], item.data[0])
     else:
-        element = augment_highlight(element_pattern, original)
+        element = augment_highlight(pattern, item.data[0])
 
     return element
 
