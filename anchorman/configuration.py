@@ -2,7 +2,7 @@
 import os
 import yaml
 from codecs import open
-from anchorman.logger import log
+from anchorman.utils import log
 
 
 def parse_yaml(filepath, loaded_from=__file__):
