@@ -57,12 +57,7 @@ settings:
     # # 1. return applied links and rest with the result 
     # return_applied_links: True
     
-    # # 2. Set mode for replacement, default is html tag
-    # # this is used in the input parsing to identify units and 
-    # # restricted elements
-    mode: tag # vs highlight
-
-    # # 3. define the text structure
+    # # 2. define the text structure
     # # options to guide the input parsing process
     # # p and html-paragraph is on per default and these
     text_unit:
@@ -98,22 +93,16 @@ settings:
 markup:
 
     # Markup for html-tags
-    tag:
-        tag: a
-        # value_key not used anymore > use some logic for replace the original
-        # with a value of the data > text replace with
+    tag: a
+    # value_key not used anymore > use some logic for replace the original
+    # with a value of the data > text replace with
 
-        # Default attributes for tag markup, overwrite it!
-        attributes:
-            class:
-                anchorman
+    # Default attributes for tag markup, overwrite it!
+    attributes:
+        class:
+            anchorman
 
-        # # Exclude keys from the input to be rendered.
-        # exclude_keys:
-        #     - score
-        #     - type
-
-    # Markup for highlighting context
-    highlight:
-        pre: '${{'
-        post: '}}'
+    # # Exclude keys from the input to be rendered.
+    # exclude_keys:
+    #     - score
+    #     - type
