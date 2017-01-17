@@ -3,6 +3,25 @@ import os
 import yaml
 from codecs import open
 from anchorman.utils import log
+import logging
+import logging.config
+
+
+def setup_logging(default_path='etc/logging.yaml',
+                  default_level=logging.INFO,
+                  env_key='LOG_CFG'):
+    """Setup logging configuration
+    """
+    path = default_path
+    value = os.getenv(env_key, None)
+    if value:
+        path = value
+    if os.path.exists(path):
+        with open(path, 'rt') as f:
+            config = yaml.safe_load(f.read())
+        logging.config.dictConfig(config)
+    else:
+        logging.basicConfig(level=default_level)
 
 
 def parse_yaml(filepath, loaded_from=__file__):
@@ -31,4 +50,8 @@ def get_config(include_project_config=True):
         conf = parse_yaml("../etc/config.yaml")
         default.update(conf)
 
+    setup_logging()
+
     return default
+
+

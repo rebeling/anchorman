@@ -6,6 +6,7 @@ include
 lib
 prof
 index.*
+errors.log
 
 .DS_Store
 .Python

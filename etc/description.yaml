@@ -27,6 +27,7 @@ rules:
     # # items will placed per default in order they 
     # # appear in the text, but if they should be added
     # # based on e.g. score, higher scored items first
+
     # sort_by_item_value:
     #     key: score
     #     default: 0
@@ -57,6 +58,7 @@ settings:
     # # 1. return applied links and rest with the result 
     # return_applied_links: True
     
+    log_level: INFO # DEBUG
     # # 2. define the text structure
     # # options to guide the input parsing process
     # # p and html-paragraph is on per default and these
