@@ -4,6 +4,8 @@ _build
 dist
 include
 lib
+prof
+index.*
 
 .DS_Store
 .Python
