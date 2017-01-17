@@ -4,6 +4,7 @@ from anchorman import annotate, clean, get_config
 
 def test_annotate_settings():
     """Test annotate elements with default and manipulated config."""
+
     text = """<p class="first">Intel analysis shows Putin approved election hacking.</p>\n<p>Russian President Vladimir Putin told a group of <b>foreign policy experts</b> in southern Russia on Thursday that Donald Trump's "extravagant behavior" is just his way of getting his <a class="another one">message</a> across to voters.</p><p><img src="/image.png" title="Vladimir Putin"> The image shows him riding a bear in novo sibirsk.</p><p>And another paragraph about <a href="/link">Vladimir Putin</a> but there is a link already.</p>"""
 
     links = [
@@ -50,7 +51,7 @@ def test_annotate_settings():
     annotated = annotate(text, links)
     assert annotated == expected
 
-    success, cleaned = clean(annotated)
+    cleaned = clean(annotated)
     assert cleaned == text
     assert 'class="anchorman"' not in cleaned
     assert 'a class="another one"' in cleaned
@@ -81,3 +82,17 @@ def test_annotate_settings():
     cfg['rules']['items_per_unit'] = 1
     annotated, applied_links, rest = annotate(text, links, config=cfg)
     assert len(applied_links) == 2
+
+
+    # # -------------------------------
+    # # 3. items replace per paragraph
+    cfg['rules']['replaces_at_all'] = None
+    cfg['rules']['items_per_unit'] = None
+
+    n = 2
+    annotated, applied_links, rest = annotate(text*n, links*n, config=cfg)
+    assert len(applied_links) == (len(links)-1)*n
+
+    n = 10
+    annotated, applied_links, rest = annotate(text*n, links*n, config=cfg)
+    assert len(applied_links) == (len(links)-1)*n
