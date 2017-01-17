@@ -31,8 +31,8 @@ def elements_per_units(units, forbidden, data):
     """
     lookup = set([x for f, t in forbidden for x in range(f, t)])
     for _from, _to in units:
-        yield [(t_from, t_to, token, element)
+        yield ((_from, _to), [(t_from, t_to, token, element)
                for t_from, t_to, token, element in data
                if t_from not in lookup and t_to not in lookup
                # check if element fits the unit
-               if _from < t_from and t_to < _to]
+               if _from < t_from and t_to < _to])

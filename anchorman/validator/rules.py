@@ -1,18 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-def attributes_of(item):
-    """Access intervall item data without knowing the key.
-
-    item is an Interval(34, 37, ('fox', ('entity',
-        {'fox': {'href': '/wiki/fox', 'type': 'animal'}})))
-
-    :param item: intervaltree Interval
-    :returns data: {'href': '/wiki/dog', 'type': 'animal'}
-    """
-    return item.data[1][1].values()[0]
-
-
 def replacements_per_element(token, attributes, candidates, rules):
     """Replace only n elements of the same base element.
 
@@ -91,7 +79,6 @@ def n_times_value_x_at_all(item, candidates, settings):
 
 def filter_by_attribute(attributes, rules):
     """"""
-    # attributes = attributes_of(element)
     for key, val in rules['filter_by_attribute']['attributes']:
         if val == attributes.get(key):
             return False
