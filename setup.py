@@ -17,6 +17,7 @@ setup(
     keywords=config.get('keywords'),
     license=config.get('license'),
     packages=[config['name']],
+    # pytest_plugins=['pytest_profiling'],
     install_requires=[
         line.split('==')[0]
         for line in open('requirements.txt', 'rt').read().split('\n')
