@@ -69,12 +69,12 @@ settings:
         # name: sentence
 
         # # # # param to exclude areas from anchormanning
-        # forbidden_areas:
-        #     tags:
-        #         - img
-        #         - a
-        #     classes:
-        #         - first
+        forbidden_areas:
+            tags:
+                # - img
+                - a
+            # classes:
+            #     - first
 
     # todo check the benchmark for each solution
     # https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser
