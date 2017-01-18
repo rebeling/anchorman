@@ -5,7 +5,8 @@ from anchorman.validator.rules import filter_by_attribute
 from anchorman.validator.rules import replacements_per_element
 
 
-def valid(element, candidates, unit_candidates, rules, own_validator):
+def valid(element, candidates, unit_candidates, rules, old_links,
+          own_validator):
     """Apply the rules specified in settings to the element.
 
     Take care of candidates already validated and the elements already
@@ -20,7 +21,8 @@ def valid(element, candidates, unit_candidates, rules, own_validator):
     # 2.1 replaces_per_element
     # add an entity as often as specified with replaces_per_element
     if rules.get('replaces_per_element'):
-        if replacements_per_element(element, candidates, rules) is False:
+        if replacements_per_element(
+                element, candidates, rules, old_links) is False:
             return False
 
     # 3. replaces_by_attribute per unit

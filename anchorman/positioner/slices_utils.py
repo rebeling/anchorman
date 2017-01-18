@@ -27,7 +27,7 @@ def check_forbidden_areas(
 
         if forbidden_tag:
             token, (_from, _to), _type = forbidden_tag
-            forbiddens.append((_from, _to))
+            forbiddens.append((_from, _to, token.text))
 
         if filter_classes:
             # could this return more than one item?
@@ -36,7 +36,7 @@ def check_forbidden_areas(
             if forbidden_elements:
                 for forbidden_element in forbidden_elements:
                     token, (_from, _to), _type = forbidden_element
-                    forbiddens.append((_from, _to))
+                    forbiddens.append((_from, _to, None))
 
     if settings.get('no_links_inside_tags', None):
         forbiddens += check_links_inside_tags(soup_string)
@@ -52,9 +52,7 @@ def check_tag(a_tag, filter_tags, soup_string):
             _from = soup_string.index(the_tag_str)
             return (a_tag, (_from, _from + len(the_tag_str)), ('forbidden'))
         except ValueError as e:
-            # log it
-            print "substring not found: %s" % a_tag
-            pass
+            log("substring not found: {}, {}".format(a_tag, e))
     return None
 
 
@@ -70,5 +68,5 @@ def check_classes(a_tag, filter_classes, soup_string):
 
 def check_links_inside_tags(soup_string):
     """Find tag elements and mark the intervall."""
-    return [(match.start(), match.end())
+    return [(match.start(), match.end(), None)
             for match in re.finditer(r"<(\w|/).*?>", soup_string)]

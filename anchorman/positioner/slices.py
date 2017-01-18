@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from anchorman.positioner.slices_utils import check_forbidden_areas
 from anchorman.positioner.slices_utils import token_regexes
 from anchorman.positioner.slices_utils import check_links_inside_tags
-
+from anchorman.utils import log
 
 def element_slices(text, elements, config):
     """Get slices of all elements in text.
@@ -78,6 +78,8 @@ def unit_slices(text, config):
 
     forbidden = check_forbidden_areas(
         soup_find_all, forbidden_areas, soup_string, settings)
+
+    log("forbidden {}".format(forbidden))
 
     return text_units_generator, forbidden, soup_string
 

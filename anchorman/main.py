@@ -6,7 +6,7 @@ from anchorman.generator import augment_result, remove_elements
 from anchorman.positioner.interval import intervals
 from anchorman.utils import filter_applied_against_input
 # from anchorman.utils import timeit
-# from anchorman.utils import log, logger
+from anchorman.utils import log
 from anchorman.utils import set_and_log_level
 
 
@@ -21,8 +21,8 @@ def annotate(text, elements, own_validator=None,
     set_and_log_level(config['settings']['log_level'])
     log('starting debugging')
 
-    units, soup_string = intervals(text, elements, config)
-    to_be_applied = applicables(units, config, own_validator)
+    units, old_links, soup_string = intervals(text, elements, config)
+    to_be_applied = applicables(units, old_links, config, own_validator)
 
     log(soup_string)
     log(soup_string[949:953])

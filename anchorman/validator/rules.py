@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from anchorman.utils import log
 
-
-def replacements_per_element(element, candidates, rules):
+def replacements_per_element(element, candidates, rules, old_links):
     """Replace only n elements of the same base element.
 
     A. Merkel, Mum Merkel, Mrs. Merkula - baseform *Angela Merkel*
@@ -13,6 +13,13 @@ def replacements_per_element(element, candidates, rules):
     n = replaces_per_element['number']
 
     found = 0
+
+    # do we really want this or better check items in links
+    # based on attributes only
+    if token in old_links:
+        found += 1
+        # return False
+
     for _, _, candidate, candidate_attributes in candidates:
         if candidate == token:
             found += 1
@@ -22,9 +29,8 @@ def replacements_per_element(element, candidates, rules):
                 la = candidate_attributes.get(key)
                 if ka == la:
                     found += 1
-        except:
-            # ?! logging
-            pass
+        except Exception as e:
+            log("No such attributes: {}".format(attributes))
 
         if found >= n:
             return False

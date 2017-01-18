@@ -21,7 +21,13 @@ def intervals(text, elements, config):
     unit_elements_gen = elements_per_units(
         units, forbidden, element_slices(soup_string, elements, config))
 
-    return unit_elements_gen, soup_string
+    old_links = linked_already(forbidden)
+
+    return unit_elements_gen, old_links, soup_string
+
+
+def linked_already(forbidden):
+    return {token: (f, t) for f, t, token in forbidden if token}
 
 
 def elements_per_units(units, forbidden, data):
@@ -30,7 +36,7 @@ def elements_per_units(units, forbidden, data):
     :param forbidden:
     :param data:
     """
-    lookup = set([x for f, t in forbidden for x in range(f, t)])
+    lookup = set([x for f, t, token in forbidden for x in range(f, t)])
     for _from, _to, string in units:
         yield ((_from, _to, string),
                [(t_from, t_to, token, element)

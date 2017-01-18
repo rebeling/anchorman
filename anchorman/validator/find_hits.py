@@ -10,7 +10,25 @@ def the_applicables(candidates, config):
     return anchors
 
 
-def applicables(elements_per_units, config, own_validator):
+def items_per_unit_satisfied(items_per_unit, unit_candidates, old_links, u_from, u_to):
+    if items_per_unit: 
+        if len(unit_candidates) == items_per_unit:
+            return True
+
+        # check against the old_links in this unit
+        if old_links:
+            count_old_links = len(unit_candidates)
+            for k, v in old_links.iteritems():
+                _f, _t = v
+                if u_from < _f and _t < u_to:
+                    count_old_links += 1
+            if count_old_links >= items_per_unit:
+                return True
+
+    return False
+
+
+def applicables(elements_per_units, old_links, config, own_validator):
     """Loop the units and validate each item in a unit.
 
     :param elements_per_units:
@@ -28,6 +46,7 @@ def applicables(elements_per_units, config, own_validator):
     for from_to_string, elements in elements_per_units:
         i += 1
 
+        u_from, u_to, u_string = from_to_string
         log("UNIT {} {}".format(i, from_to_string))
 
         if len(elements) is 0:
@@ -61,9 +80,15 @@ def applicables(elements_per_units, config, own_validator):
                     replaces_at_all))
                 return the_applicables(candidates, config)
 
+            # we need to check this already before first candidate
+            if items_per_unit_satisfied(items_per_unit, unit_candidates, old_links, u_from, u_to):
+                log("break of items_per_unit: {}".format(
+                    items_per_unit))
+                break
+
             candito = (token, element)
-            if candidate.valid(
-                candito, candidates, unit_candidates, rules, own_validator):
+            if candidate.valid(candito, candidates, unit_candidates,
+                    rules, old_links, own_validator):
 
                 log("valid: {} (uc: {}, c:{})".format(
                     token, len(unit_candidates), len(candidates)))
@@ -72,7 +97,8 @@ def applicables(elements_per_units, config, own_validator):
                 unit_candidates.append((_from, _to, token, element))
 
                 # # 2. text_unit > number_of_items
-                if items_per_unit and len(unit_candidates) == items_per_unit:
+
+                if items_per_unit_satisfied(items_per_unit, unit_candidates, old_links, u_from, u_to):
                     log("break of items_per_unit: {}".format(
                         items_per_unit))
                     break
