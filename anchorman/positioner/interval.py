@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from anchorman.positioner.slices import unit_slices, element_slices
+from anchorman.utils import log
 
 
 def intervals(text, elements, config):
@@ -16,11 +17,11 @@ def intervals(text, elements, config):
     :param elements:
     :param config:
     """
-    units, forbidden = unit_slices(text, config)
-    unit_elements = elements_per_units(
-        units, forbidden, element_slices(text, elements, config))
+    units, forbidden, soup_string = unit_slices(text, config)
+    unit_elements_gen = elements_per_units(
+        units, forbidden, element_slices(soup_string, elements, config))
 
-    return units, unit_elements
+    return units, unit_elements_gen
 
 
 def elements_per_units(units, forbidden, data):
@@ -30,9 +31,10 @@ def elements_per_units(units, forbidden, data):
     :param data:
     """
     lookup = set([x for f, t in forbidden for x in range(f, t)])
-    for _from, _to in units:
-        yield ((_from, _to), [(t_from, t_to, token, element)
-               for t_from, t_to, token, element in data
-               if t_from not in lookup and t_to not in lookup
-               # check if element fits the unit
-               if _from < t_from and t_to < _to])
+    for _from, _to, string in units:
+        yield ((_from, _to, string),
+               [(t_from, t_to, token, element)
+                for t_from, t_to, token, element in data
+                if t_from not in lookup and t_to not in lookup
+                # check if element fits the unit
+                if _from < t_from and t_to < _to])

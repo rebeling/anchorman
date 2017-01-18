@@ -25,10 +25,10 @@ def applicables(elements_per_units, config, own_validator):
     candidates = []
     i = 0
 
-    for fromto, elements in elements_per_units:
+    for from_to_string, elements in elements_per_units:
         i += 1
 
-        log("UNIT {} {}".format(i, fromto))
+        log("UNIT {} {}".format(i, from_to_string))
 
         if len(elements) is 0:
             log("continue, c: {}, raa: {}".format(len(candidates),

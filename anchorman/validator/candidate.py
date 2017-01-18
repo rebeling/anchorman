@@ -25,10 +25,10 @@ def valid(element, candidates, unit_candidates, rules, own_validator):
 
     # 3. replaces_by_attribute per unit
     if rules.get('replaces'):
-        if replacement_by_attribute(attributes, unit_candidates, rules) is False:
+        if replacement_by_attribute(element, unit_candidates, rules) is False:
             return False
         # 3.1
-        if n_times_value_x_at_all(attributes, candidates, rules) is False:
+        if n_times_value_x_at_all(element, candidates, rules) is False:
             return False
 
     # 4. filter_by_attribute

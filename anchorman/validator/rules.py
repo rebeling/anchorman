@@ -35,10 +35,11 @@ def replacements_per_element(element, candidates, rules):
     return True
 
 
-def replacement_by_attribute(treeitem, unit_candidates, settings):
+def replacement_by_attribute(element, unit_candidates, settings):
     """Check if already enough items with a specific attribute are in the
     candidates list for this unit.
     """
+    _, element_attributes = element
     replaces = settings.get('replaces')
     if replaces:
         items_per_unit = replaces['by_attribute'].get('value_per_unit')
@@ -46,7 +47,7 @@ def replacement_by_attribute(treeitem, unit_candidates, settings):
             key = replaces['by_attribute']['key']
 
             attributes = [c.get(key) for c in unit_candidates]
-            tree_item_key_value = treeitem.get(key)
+            tree_item_key_value = element_attributes.get(key)
 
             # ?! should we ignore this or tell the user
             # because None is just counting
@@ -60,8 +61,9 @@ def replacement_by_attribute(treeitem, unit_candidates, settings):
     return True
 
 
-def n_times_value_x_at_all(item, candidates, settings):
+def n_times_value_x_at_all(element, candidates, settings):
     """"""
+    _, element_attributes = element
     replaces = settings.get('replaces')
     key = replaces['by_attribute']['key']
     items_overall = replaces['by_attribute'].get('value_overall')
@@ -69,7 +71,7 @@ def n_times_value_x_at_all(item, candidates, settings):
         all_for_now = 0
 
         for candidate in candidates:
-            value = item.get(key)
+            value = element_attributes.get(key)
             if value == key:
                 all_for_now += 1
                 if all_for_now >= items_overall:
@@ -77,10 +79,11 @@ def n_times_value_x_at_all(item, candidates, settings):
     return True
 
 
-def filter_by_attribute(attributes, rules):
+def filter_by_attribute(element, rules):
     """"""
+    _, element_attributes = element
     for key, val in rules['filter_by_attribute']['attributes']:
-        if val == attributes.get(key):
+        if val == element_attributes.get(key):
             return False
     return True
 

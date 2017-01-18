@@ -69,7 +69,7 @@ def unit_slices(text, config):
     forbidden = check_forbidden_areas(
         soup_find_all, forbidden_areas, soup_string, settings)
 
-    return text_units_generator, forbidden
+    return text_units_generator, forbidden, soup_string
 
 
 def units_gen(soup_findAll, soup_string, text_unit_key):
@@ -79,7 +79,7 @@ def units_gen(soup_findAll, soup_string, text_unit_key):
             try:
                 # # bs4 wrongly aumgmented string?!
                 _from = soup_string.index(the_tag_str)
-                yield (_from, _from + len(the_tag_str))
+                yield (_from, _from + len(the_tag_str), the_tag_str)
             except ValueError as e:
                 # log it
                 print "substring not found: %s" % a_tag
