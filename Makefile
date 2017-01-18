@@ -36,6 +36,13 @@ testprofile:
 testprofile2:
 	env/bin/py.test --profile test/test_settings.py -s -vv
 
+testapp:
+	env/bin/py.test test/test_settings.py -s -vv
+
+testcase:
+	env/bin/py.test test/test_case.py -s -vv
+
+
 clean:
 	rm -rfv .DS_Store .coverage .cache
 	rm -Rf **/__pycache__

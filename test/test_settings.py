@@ -60,6 +60,8 @@ def test_annotate_settings():
     # # 1. return applied links
     number_of_links_to_apply = 3
     cfg = get_config()
+    cfg['settings']['log_level'] = 'DEBUG'
+
     cfg['settings']['return_applied_links'] = True
     cfg['rules']['replaces_at_all'] = number_of_links_to_apply
 
@@ -79,9 +81,12 @@ def test_annotate_settings():
 
     # # -------------------------------
     # # 3. items replace per paragraph
+
+    # from now on, we count all existing links also
+
     cfg['rules']['items_per_unit'] = 1
     annotated, applied_links, rest = annotate(text, links, config=cfg)
-    assert len(applied_links) == 2
+    assert len(applied_links) == 1
 
 
     # # -------------------------------
@@ -103,6 +108,7 @@ def test_annotate_settings():
     cfg['rules']['replaces_per_element'] = {"number": 1, "key": "href"}
     cfg['rules']['replaces_at_all'] = None
     cfg['rules']['items_per_unit'] = None
+
 
     text2 = """<p>Intel analysis shows Putin approved election hacking.</p>\n<p>Russian President Vladimir Putin told a group of <b>foreign policy experts</b> in southern Russia on Thursday.</p><p>Vladimir Putin bought Intel stocks.</b>"""
 
