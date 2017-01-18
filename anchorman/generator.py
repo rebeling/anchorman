@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from bs4 import BeautifulSoup
 import re
+from bs4 import BeautifulSoup
 from anchorman.utils import log
 
 
@@ -15,12 +15,13 @@ def create_element(candidate, config):
 
     _from, _to, token, element = candidate
     attr += element.items()
+    attributes = None
     try:
         attributes = ['{}="{}"'.format(key, val)
                       for key, val in sorted(attr)
                       if key not in exclude_keys]
-    except:
-        print [attr]
+    except Exception as e:
+        log("{}: {}".format(attr, e))
 
     anchor = '<{tag}{attributes}>{text}</{tag}>'.format(
         tag=config['markup']['tag'],
@@ -36,8 +37,7 @@ def remove_elements(text, config):
     :param config:
     :param text:
     """
-    text_soup = BeautifulSoup(text,
-                              config['settings'].get('parser', 'lxml'))
+    text_soup = BeautifulSoup(text, config['settings'].get('parser', 'lxml'))
 
     # use markup info to specify the element you want to find
     found = text_soup.findAll
@@ -69,9 +69,12 @@ def augment_result(text, to_be_applied):
     :param text:
     :param to_be_applied:
     """
-    _pattern = "{}{}{}"
     to_be_applied = sorted(to_be_applied, reverse=True)
+    log(str(to_be_applied))
 
     for _from, _to, token, anchor in to_be_applied:
-        text = _pattern.format(text[:_from], anchor, text[_to:])
+        log("appling: {} {} {}".format(_from, _to, token))
+        log(text)
+
+        text = "{}{}{}".format(text[:_from], anchor, text[_to:])
     return text

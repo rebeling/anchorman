@@ -8,16 +8,12 @@ logger = logging.getLogger('anchorman')
 
 def timeit(method):
     def timed(*args, **kw):
-
         bench = []
         for r in xrange(10):
             ts = time.time()
             result = method(*args, **kw)
             te = time.time()
             bench.append(te-ts)
-            # print '%r (%r, %r) %2.4f sec' % \
-            #       (method.__name__, args, kw, te-ts)
-            # print '%r \t\t%2.4f sec' % (method.__name__, te-ts)
         print '%r \t\t%2.4f sec' % (method.__name__, sum(bench)/len(bench))
         return result
     return timed
@@ -44,6 +40,8 @@ def log(msg, level=None, logger=logger):
     :param msg: Error message string.
     """
     # print logging._levelNames[logger.level] == 'INFO'
+    # if logger.isEnabledFor(logging.DEBUG):
+
     if level == 'INFO':
         logger.info(msg)
     else:

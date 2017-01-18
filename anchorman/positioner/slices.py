@@ -57,9 +57,19 @@ def unit_slices(text, config):
     soup = BeautifulSoup(text, settings.get('parser', 'lxml'))
     soup_string = str(soup)
 
-    # clean up automated augmentation
-    if soup_string.startswith('<html><body>'):
-        soup_string = soup_string[12:-14]
+    prettify = False
+    # clean up automated augmentation and we do not use prettify for now
+    if prettify:
+        # this totally change the input representation to indented structure
+        # better to read, but may to much
+        soup_string = soup.prettify()
+        if soup_string.startswith('<html>\n <body>'):
+            soup_string = soup_string[15:-16]
+    else:
+        # we lose all multiple whitespaces, there is no indentation finally
+        # if there was in the input
+        if soup_string.startswith('<html><body>'):
+            soup_string = soup_string[12:-14]
 
     soup_find_all = soup.findAll(True)
 

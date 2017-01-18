@@ -6,7 +6,8 @@ from anchorman.generator import augment_result, remove_elements
 from anchorman.positioner.interval import intervals
 from anchorman.utils import filter_applied_against_input
 # from anchorman.utils import timeit
-from anchorman.utils import log, logger, set_and_log_level
+# from anchorman.utils import log, logger
+from anchorman.utils import set_and_log_level
 
 
 # @timeit
@@ -20,14 +21,18 @@ def annotate(text, elements, own_validator=None,
     set_and_log_level(config['settings']['log_level'])
     log('starting debugging')
 
-    units, etree = intervals(text, elements, config)
-    to_be_applied = applicables(etree, config, own_validator)
+    units, soup_string = intervals(text, elements, config)
+    to_be_applied = applicables(units, config, own_validator)
+
+    log(soup_string)
+    log(soup_string[949:953])
 
     log('{} of {} to_be_applied'.format(len(to_be_applied), len(elements)))
-    # logger.debug(msg)
 
     # apply the items, but start at the end ...its not like horse riding!
-    text = augment_result(text, to_be_applied)
+    text = augment_result(soup_string, to_be_applied)
+
+    log(text)
 
     if config['settings'].get('return_applied_links'):
         applied, rest = filter_applied_against_input(elements, to_be_applied)

@@ -21,7 +21,7 @@ def intervals(text, elements, config):
     unit_elements_gen = elements_per_units(
         units, forbidden, element_slices(soup_string, elements, config))
 
-    return units, unit_elements_gen
+    return unit_elements_gen, soup_string
 
 
 def elements_per_units(units, forbidden, data):
