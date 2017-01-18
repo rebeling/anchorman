@@ -14,7 +14,8 @@ def token_regexes(elements, case_sensitive):
     return "|".join(patterns)
 
 
-def check_forbidden_areas(soup_find_all, forbidden_areas, soup_string, settings):
+def check_forbidden_areas(
+        soup_find_all, forbidden_areas, soup_string, settings):
     """ """
     filter_tags = forbidden_areas.get('tags', [])
     filter_classes = forbidden_areas.get('classes', [])

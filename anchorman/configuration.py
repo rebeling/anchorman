@@ -7,9 +7,9 @@ import logging
 import logging.config
 
 
-def setup_logging(default_path='etc/logging.yaml',
-                  default_level=logging.INFO,
-                  env_key='LOG_CFG'):
+def setup_logging(
+        default_path='etc/logging.yaml', default_level=logging.INFO,
+        env_key='LOG_CFG'):
     """Setup logging configuration
     """
     path = default_path
@@ -53,5 +53,3 @@ def get_config(include_project_config=True):
     setup_logging()
 
     return default
-
-

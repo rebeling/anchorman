@@ -1,35 +1,35 @@
 # -*- coding: utf-8 -*-
 
 
-def replacements_per_element(token, attributes, candidates, rules):
+def replacements_per_element(element, candidates, rules):
     """Replace only n elements of the same base element.
 
     A. Merkel, Mum Merkel, Mrs. Merkula - baseform *Angela Merkel*
     in most cases just marked once, but set value to as many times u want.
     """
+    token, attributes = element
     replaces_per_element = rules.get('replaces_per_element')
-    extended_look_up_key = rules.get('replaces_per_element_extended_look_up')
+    key = replaces_per_element['key']
+    n = replaces_per_element['number']
 
     found = 0
     for _, _, candidate, candidate_attributes in candidates:
         if candidate == token:
             found += 1
         try:
-            ka = attributes.get(extended_look_up_key)
+            ka = attributes.get(key)
             if ka:
-                la = candidate_attributes.get(extended_look_up_key)
+                la = candidate_attributes.get(key)
                 if ka == la:
                     found += 1
         except:
             # ?! logging
             pass
 
-        if found >= replaces_per_element:
+        if found >= n:
             return False
 
-    # if element.data[0] in existing_values:
-    #     found += 1
-    if found >= replaces_per_element:
+    if found >= n:
         return False
 
     return True

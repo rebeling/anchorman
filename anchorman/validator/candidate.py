@@ -17,8 +17,6 @@ def valid(element, candidates, unit_candidates, rules, own_validator):
     :param rules:
     :param own_validator:
     """
-    token, attributes = element
-
     # 2.1 replaces_per_element
     # add an entity as often as specified with replaces_per_element
     if rules.get('replaces_per_element'):

@@ -1,6 +1,9 @@
 
 rules:
     # # Replacement rules and filter
+    
+    # Todo:
+    # longest_match_first
 
     # # 1. how many items will be replaced at all
     # # default all, otherwise int
@@ -10,18 +13,13 @@ rules:
     # # Input term has to be exact match in text.
     case_sensitive: true
 
-    # # 3. one item different forms on surface
-    # # how many times should this one 
-    # replaces_per_item: 1
-    # replaces_per_item_extended_look_up: value_for_key
+    # # 3. one item different surface forms
+    # # how many times should the one applied 
+    # replaces_per_element:
+    #     number: 1
+    #     key: akey from element attributes
 
-    # 
     items_per_unit: null # | 5
-
-    # # better like this
-    # replaces_per_item:
-    #   number: 1
-    #   key: based on value for this key
 
     # # 5.3 apply sorted items
     # # items will placed per default in order they 

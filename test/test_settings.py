@@ -96,3 +96,33 @@ def test_annotate_settings():
     n = 10
     annotated, applied_links, rest = annotate(text*n, links*n, config=cfg)
     assert len(applied_links) == (len(links)-1)*n
+
+
+    # # -------------------------------
+    # # 3. items replace at all
+    cfg['rules']['replaces_per_element'] = {"number": 1, "key": "href"}
+    cfg['rules']['replaces_at_all'] = None
+    cfg['rules']['items_per_unit'] = None
+
+    text2 = """<p>Intel analysis shows Putin approved election hacking.</p>\n<p>Russian President Vladimir Putin told a group of <b>foreign policy experts</b> in southern Russia on Thursday.</p><p>Vladimir Putin bought Intel stocks.</b>"""
+
+    links2 = [
+        {
+            "Vladimir Putin": {
+                "href": "/putin", "type": "person", "score": 100.42
+            }
+        },
+        {
+            "Putin": {
+                "href": "/putin", "type": "person", "score": 100.42
+            }
+        },
+        {
+            "Intel": {
+                "href": "/intel", "type": "company", "score": 33.33
+            }
+        }
+    ]
+
+    annotated, applied_links, rest = annotate(text2, links2, config=cfg)
+    assert len(applied_links) == 2
