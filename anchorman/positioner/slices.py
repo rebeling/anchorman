@@ -52,7 +52,7 @@ def unit_slices(text, config):
     # diagnose(data)
     settings = config['settings']
     text_unit_key = settings['text_unit']['key']
-    forbidden_areas = settings['text_unit'].get('forbidden_areas', {})
+    forbidden_areas = settings.get('forbidden_areas', {})
 
     soup = BeautifulSoup(text, settings.get('parser', 'lxml'))
     soup_string = str(soup)
@@ -71,13 +71,11 @@ def unit_slices(text, config):
         if soup_string.startswith('<html><body>'):
             soup_string = soup_string[12:-14]
 
-    soup_find_all = soup.findAll(True)
-
     text_units_generator = units_gen(
-        soup_find_all, soup_string, text_unit_key)
+        soup.findAll(True), soup_string, text_unit_key)
 
     forbidden = check_forbidden_areas(
-        soup_find_all, forbidden_areas, soup_string, settings)
+        soup.findAll(True), forbidden_areas, soup_string, settings)
 
     log("forbidden {}".format(forbidden))
 
@@ -93,6 +91,4 @@ def units_gen(soup_findAll, soup_string, text_unit_key):
                 _from = soup_string.index(the_tag_str)
                 yield (_from, _from + len(the_tag_str), the_tag_str)
             except ValueError as e:
-                # log it
-                print "substring not found: %s" % a_tag
-                pass
+                log("substring not found: {}, {}".format(the_tag_str, e))
