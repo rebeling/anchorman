@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+from anchorman.utils import log
 
 
 def allforms(t):
@@ -34,8 +35,11 @@ def check_forbidden_areas(
             forbidden_elements = check_classes(
                 a_tag, filter_classes, soup_string)
             if forbidden_elements:
+                # for forbidden_element in forbidden_elements:
+                #     token, (_from, _to), _type = forbidden_element
+                #     forbiddens.append((_from, _to, None))
                 for forbidden_element in forbidden_elements:
-                    token, (_from, _to), _type = forbidden_element
+                    _from, _to = forbidden_element
                     forbiddens.append((_from, _to, None))
 
     if settings.get('no_links_inside_tags', None):
@@ -58,12 +62,16 @@ def check_tag(a_tag, filter_tags, soup_string):
 
 def check_classes(a_tag, filter_classes, soup_string):
     """ """
-    tag_classes = dict(a_tag.attrs).get('class', '')
-    _from = soup_string.index(str(a_tag))
-    return [(_from, _from + len(str(a_tag)))
-            for fclass in filter_classes
-            for tclass in tag_classes
-            if fclass in tclass]
+    try:
+        _from = soup_string.index(str(a_tag))
+        tag_classes = dict(a_tag.attrs).get('class', '')
+        return [(_from, _from + len(str(a_tag)))
+                for fclass in filter_classes
+                for tclass in tag_classes
+                if fclass in tclass]
+    except ValueError as e:
+        log("substring not found: {}, {}".format(a_tag, e))
+    return None
 
 
 def check_links_inside_tags(soup_string):

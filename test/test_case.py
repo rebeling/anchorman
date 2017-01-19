@@ -108,7 +108,7 @@ def test_annotate_settings():
         "return_applied_links": True,
         "forbidden_areas": {
             "tags": ["img", "a"],
-            "classes": ["first"]
+            "classes": ["first", "p--heading-3"]
         }
     }
 
@@ -118,5 +118,8 @@ def test_annotate_settings():
 
     annotated, applied, rest = annotate(TEXT, links, config=cfg)
 
+    from utils import compare_results
+
     RESULT = re.sub(" +", " ", RESULT)
+    compare_results(annotated, RESULT)
     assert annotated == RESULT

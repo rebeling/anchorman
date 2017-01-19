@@ -18,6 +18,7 @@ def intervals(text, elements, config):
     :param config:
     """
     units, forbidden, soup_string = unit_slices(text, config)
+
     unit_elements_gen = elements_per_units(
         units, forbidden, element_slices(soup_string, elements, config))
 
@@ -41,6 +42,6 @@ def elements_per_units(units, forbidden, data):
         yield ((_from, _to, string),
                [(t_from, t_to, token, element)
                 for t_from, t_to, token, element in data
-                if t_from not in lookup and t_to not in lookup
+                if t_from not in lookup and t_to-1 not in lookup
                 # check if element fits the unit
                 if _from < t_from and t_to < _to])
