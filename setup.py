@@ -1,25 +1,34 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 from setuptools import setup
-import yaml
-import os
-
-path = os.path.dirname(os.path.abspath(__file__))
-config = yaml.load(file(path + '/etc/config.yaml', 'r'))
 
 
 setup(
-    name=config['name'],
-    version=config['version'],
-    author=config['author'],
-    author_email=config.get('author_email'),
-    url=config.get('url'),
-    description=config.get('description'),
-    keywords=config.get('keywords'),
-    license=config.get('license'),
-    packages=[config['name']],
+    name="anchorman",
+    version="0.4.9",
+    author="matthias rebel",
+    author_email="webmaster@rebeling.net",
+    url="https://github.com/rebeling/anchorman",
+    description=("Anchorman takes a list of terms and a text. It finds the "
+                 "terms in this text and replaces them with another "
+                 "representation."),
+    license='Apache 2.0',
+    keywords=["intext-links", "linking", "annotation", "tag", "hypertext"],
+    packages=["anchorman"],
     # pytest_plugins=['pytest_profiling'],
     install_requires=[
-        line.split('==')[0]
-        for line in open('requirements.txt', 'rt').read().split('\n')
-    ]
+        "beautifulsoup4==4.4.1",
+        "html5lib==1.0b8",
+        "lxml==3.3.5",
+        "pytest-cov",
+        "pytest",
+        "pyyaml"
+    ],
+    tests_require=['pytest==2.8.3', 'pytest-cov==2.2.0'],
+    classifiers=(
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Natural Language :: English',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+    )
 )
