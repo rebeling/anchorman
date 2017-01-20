@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="anchorman",
-    version="0.4.9",
+    version="0.4.10",
     author="matthias rebel",
     author_email="webmaster@rebeling.net",
     url="https://github.com/rebeling/anchorman",
@@ -18,7 +18,7 @@ setup(
     install_requires=[
         "beautifulsoup4==4.4.1",
         "html5lib==1.0b8",
-        "lxml==3.3.5",
+        "lxml",
         "pytest-cov",
         "pytest",
         "pyyaml"
