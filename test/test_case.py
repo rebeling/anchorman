@@ -97,10 +97,6 @@ def test_annotate_settings():
             }
         },
         'items_per_unit': 1, #self.links_per_paragraph,
-        'sort_by_item_value': {
-            'key': 'score',
-            'default': 0
-        }
     }
 
     settings = {

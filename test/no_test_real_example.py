@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from anchorman import annotate, clean, get_config
-# http://codepen.io/explosion/pen/ALxpQO
 from utils import fix_bs4_parsing_spaces, compare_results
+# css from here http://codepen.io/explosion/pen/ALxpQO
 
 
 def test_news_article():
@@ -107,8 +107,8 @@ def test_news_article():
     # compare_results(fix_bs4_parsing_spaces(annotated), fix_bs4_parsing_spaces(expected))
     assert fix_bs4_parsing_spaces(annotated) == fix_bs4_parsing_spaces(expected)
 
-    content = open('index.tmpl', 'r').read()
-    open('index.html', 'w').write(content+annotated)
+    content = open('test/data/index.tmpl', 'r').read()
+    open('test/data/real_example.html', 'w').write(content + annotated)
 
     cleaned = clean(annotated)
     assert 'class="anchorman"' not in cleaned
