@@ -28,3 +28,4 @@ anchorman/example.html
 docs/htmlcov
 htmlcov
 .cache
+.tox
