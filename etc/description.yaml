@@ -1,12 +1,8 @@
+---
 
 rules:
-    # # Replacement rules and filter
-    
-    # Todo:
-    # longest_match_first
-
-    # # 1. how many items will be replaced at all
-    # # default all, otherwise int
+    # Replacement rules and filter
+    # # 1. how many items will be replaced at all: default all else int n
     replaces_at_all: null
 
     # # 2. case sensitive replacement
@@ -19,13 +15,12 @@ rules:
     #     number: 1
     #     key: akey from element attributes
 
+    # # 4. how many items will be replaced per unit
     items_per_unit: null # | 5
 
     # # 5.3 apply sorted items
-    # # items will placed per default in order they 
-    # # appear in the text, but if they should be added
-    # # based on e.g. score, higher scored items first
-
+    # # items will placed per default in order they appear in the text,
+    # # but if they should be added sorted based on e.g. score
     # sort_by_item_value:
     #     key: score
     #     default: 0
@@ -49,24 +44,19 @@ rules:
     #           value: 10
 
 
-# settings / rules for the replacement process
-# item, link, element ..all reference to the same
-# concept in the following
+# settings / rules for the replacement process: item, link, element
+# ..all reference to the same concept in the following
 settings:
     # # 1. return applied links and rest with the result 
     # return_applied_links: True
-    
     log_level: INFO # DEBUG
-    # # 2. define the text structure
+    # ?? # 2. define the text structure
     # # options to guide the input parsing process
     # # p and html-paragraph is on per default and these
     text_unit:
         key: p
         name: html-paragraph
-        # key: t
-        # name: text
-        # key: s
-        # name: sentence
+        # key, name: t, text
 
     # # # # param to exclude areas from anchormanning
     forbidden_areas:
@@ -83,15 +73,11 @@ settings:
     # parser: html5lib # need pip install ...slow
     parser: lxml # need pip install
 
-    # # 4. Identify the items in the intervall tree
-    element_identifier: entity
-
-    # # 5. do not link inside of a < here >
+    # # 4. do not link inside of a < here >
     no_links_inside_tags: True
 
 
 markup:
-
     # Markup for html-tags
     tag: a
     # value_key not used anymore > use some logic for replace the original
@@ -99,9 +85,7 @@ markup:
 
     # Default attributes for tag markup, overwrite it!
     attributes:
-        class:
-            anchorman
-
+        class: anchorman
     # # Exclude keys from the input to be rendered.
     # exclude_keys:
     #     - score

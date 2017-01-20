@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-import logging
 from anchorman.configuration import get_config
-from anchorman.validator.find_hits import applicables
-from anchorman.generator import augment_result, remove_elements
+from anchorman.generator import augment_result
+from anchorman.generator import remove_elements
 from anchorman.positioner.interval import intervals
 from anchorman.utils import filter_applied_against_input
-# from anchorman.utils import timeit
 from anchorman.utils import log
 from anchorman.utils import set_and_log_level
+from anchorman.utils import timeit
+from anchorman.validator.find_hits import applicables
 
 
-# @timeit
+@timeit
 def annotate(text, elements, own_validator=None,
              config=get_config(include_project_config=False)):
     """Find and annotate elements in text.

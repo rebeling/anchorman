@@ -14,7 +14,6 @@ def element_slices(text, elements, config):
     :param config:
     """
     case_sensitive = config['rules']['case_sensitive']
-    element_identifier = config['settings']['element_identifier']
     token_regex = re.compile(token_regexes(elements, case_sensitive))
 
     element_slices = []

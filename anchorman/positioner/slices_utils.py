@@ -42,7 +42,7 @@ def check_forbidden_areas(
                     _from, _to = forbidden_element
                     forbiddens.append((_from, _to, None))
 
-    if settings.get('no_links_inside_tags', None):
+    if settings.get('no_links_inside_tags'):
         forbiddens += check_links_inside_tags(soup_string)
 
     return forbiddens

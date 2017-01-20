@@ -1,22 +1,25 @@
-import time
-import sys
-import inspect
-from time import strftime
 import logging
+import time
 logger = logging.getLogger('anchorman')
 
 
 def timeit(method):
     def timed(*args, **kw):
         bench = []
-        for r in xrange(10):
+        for r in xrange(3):
             ts = time.time()
             result = method(*args, **kw)
             te = time.time()
-            bench.append(te-ts)
-        print '%r \t\t%2.4f sec' % (method.__name__, sum(bench)/len(bench))
+            bench.append(te - ts)
+        print '%r \t\t%2.4f sec' % (method.__name__, sum(bench) / len(bench))
         return result
     return timed
+
+
+def disabled(f):
+    return f
+
+timeit = disabled
 
 
 def filter_applied_against_input(elements, to_be_applied):
@@ -41,7 +44,6 @@ def log(msg, level=None, logger=logger):
     """
     # print logging._levelNames[logger.level] == 'INFO'
     # if logger.isEnabledFor(logging.DEBUG):
-
     if level == 'INFO':
         logger.info(msg)
     else:

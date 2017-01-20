@@ -19,6 +19,9 @@ def intervals(text, elements, config):
     """
     units, forbidden, soup_string = unit_slices(text, config)
 
+    # What if I have the positions already
+    # do they align with ...not after the parsing for units.
+
     unit_elements_gen = elements_per_units(
         units, forbidden, element_slices(soup_string, elements, config))
 
@@ -37,7 +40,7 @@ def elements_per_units(units, forbidden, data):
     :param forbidden:
     :param data:
     """
-    lookup = set([x for f, t, token in forbidden for x in range(f, t)])
+    lookup = {x for f, t, token in forbidden for x in range(f, t)}
     for _from, _to, string in units:
         yield ((_from, _to, string),
                [(t_from, t_to, token, element)
