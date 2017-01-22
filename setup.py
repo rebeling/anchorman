@@ -5,7 +5,7 @@ except ImportError:
 
 setup(
     name="anchorman",
-    version="0.4.10",
+    version="0.5.0",
     author="matthias rebel",
     author_email="webmaster@rebeling.net",
     url="https://github.com/rebeling/anchorman",
