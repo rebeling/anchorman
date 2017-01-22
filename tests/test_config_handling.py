@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 from yaml import YAMLError
-from anchorman.configuration import parse_yaml
+from anchorman.settings import parse_yaml
 
 
 def test_yaml_io_error():

@@ -8,7 +8,7 @@ import logging.config
 
 
 def setup_logging(
-        default_path='etc/logging.yaml', default_level=logging.INFO,
+        default_path='../config/logging.yml', default_level=logging.INFO,
         env_key='LOG_CFG'):
     """Setup logging configuration"""
     path = default_path
@@ -43,6 +43,6 @@ def get_config(include_project_config=True):
 
     :param include_project_config:
     """
-    default = parse_yaml("../etc/description.yaml")
+    default = parse_yaml("../config/setup.yml")
     setup_logging()
     return default

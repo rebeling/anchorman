@@ -1,7 +1,57 @@
 # -*- coding: utf-8 -*-
 import re
 from bs4 import BeautifulSoup
-from anchorman.utils import log
+from anchorman.utils import tokens_as_re, log, soup_it
+
+
+def element_slices(text, elements, rules):
+    """Get slices of all elements in text.
+
+    :param text:
+    :param elements:
+    :param config:
+    """
+    case_sensitive = rules['case_sensitive']
+    token_regex = re.compile(tokens_as_re(elements, case_sensitive))
+
+    element_slices = []
+    element_slices_append = element_slices.append
+
+    for match in token_regex.finditer(text):
+        token = match.group()
+        base = None
+
+        for element in elements:
+            check_element = element.keys()[0].encode('utf-8')
+            check_token = token
+
+            if case_sensitive is False:
+                check_element = check_element.lower()
+                check_token = check_token.lower()
+
+            if check_element == check_token:
+                base = element
+                break
+
+        element_slices_append(match.span()+(token, base.values()[0]))
+
+    return element_slices
+
+
+def elements_per_unit(units, forbidden, data):
+    """Create an interval generator for elemets in units.
+
+    :param forbidden:
+    :param data:
+    """
+    lookup = {x for f, t, token in forbidden for x in range(f, t)}
+    for _from, _to, string in units:
+        yield ((_from, _to, string),
+               [(t_from, t_to, token, element)
+                for t_from, t_to, token, element in data
+                if t_from not in lookup and t_to - 1 not in lookup
+                # check if element fits the unit
+                if _from < t_from and t_to < _to])
 
 
 def create_element(candidate, config):
@@ -37,12 +87,12 @@ def remove_elements(text, config):
     :param config:
     :param text:
     """
-    text_soup = BeautifulSoup(text, config['settings'].get('parser', 'lxml'))
-
-    # use markup info to specify the element you want to find
-    found = text_soup.findAll
+    # soup_it
+    soup, _ = soup_it(text, config['settings'])
     attributes = config['markup'].get('attributes')
     tag = config['markup'].get('tag')
+
+    found = soup.findAll
     anchors = found(tag, attributes) if attributes else found(tag)
 
     for anchor in anchors:
@@ -61,20 +111,3 @@ def specified_or_guess(markup, attributes):
     identifier = markup.get('identifier')
     key, value = identifier.items()[0] if identifier else attributes.items()[0]
     return '{}="{}"'.format(key, value)
-
-
-def augment_result(text, to_be_applied):
-    """Augment the text with the elements in to be applied.
-
-    :param text:
-    :param to_be_applied:
-    """
-    to_be_applied = sorted(to_be_applied, reverse=True)
-    log(str(to_be_applied))
-
-    for _from, _to, token, anchor in to_be_applied:
-        log("appling: {} {} {}".format(_from, _to, token))
-        log(text)
-
-        text = "{}{}{}".format(text[:_from], anchor, text[_to:])
-    return text

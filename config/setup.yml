@@ -1,23 +1,21 @@
 ---
+# settings / rules for the replacement process: item, link, element
+# ..all reference to the same concept in the following
 
 rules:
     # Replacement rules and filter
     # # 1. how many items will be replaced at all: default all else int n
     replaces_at_all: null
-
     # # 2. case sensitive replacement
     # # Input term has to be exact match in text.
     case_sensitive: true
-
     # # 3. one item different surface forms
     # # how many times should the one applied 
     # replaces_per_element:
     #     number: 1
     #     key: akey from element attributes
-
     # # 4. how many items will be replaced per unit
     items_per_unit: null # | 5
-
     # # 5.3 apply sorted items
     # # items will placed per default in order they appear in the text,
     # # but if they should be added sorted based on e.g. score
@@ -25,14 +23,24 @@ rules:
     #     key: score
     #     default: 0
 
-    # # 5.4 Filter items against an element attrbute of type x
-    # # and show items_per_unit per attribute 
-    # # ...what about multiple attributes?!
+    # !the following changed - form version 0.4 to 0.5!
     # replaces:
     #         by_attribute:
     #             key: value
     #             value_per_unit: 1
     #             value_overall: 2
+
+    # # 5.4 Filter items against an element attrbute of type x
+    # # and show items_per_unit per attribute 
+    # # ...what about multiple attributes?!
+    # replaces_by_attribute:
+    #       key: value
+    #       value_per_unit: 1
+    #       value_overall: 2
+
+    # n_times_key_value:
+    #       key: value
+    #       value_per_unit: 1
 
     # TBD: Filter items by specific value of its attribute
     # filter_by_attribute:
@@ -43,9 +51,6 @@ rules:
     #         - key: score
     #           value: 10
 
-
-# settings / rules for the replacement process: item, link, element
-# ..all reference to the same concept in the following
 settings:
     # # 1. return applied links and rest with the result 
     # return_applied_links: True
@@ -57,7 +62,6 @@ settings:
         key: p
         name: html-paragraph
         # key, name: t, text
-
     # # # # param to exclude areas from anchormanning
     forbidden_areas:
         tags:
@@ -65,24 +69,20 @@ settings:
             - a
         # classes:
         #     - first
-
     # todo check the benchmark for each solution
     # https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser
     # html.parser produces false elements, see <img>somthing something
     # parser: html.parser ...
     # parser: html5lib # need pip install ...slow
     parser: lxml # need pip install
-
     # # 4. do not link inside of a < here >
     no_links_inside_tags: True
-
 
 markup:
     # Markup for html-tags
     tag: a
     # value_key not used anymore > use some logic for replace the original
     # with a value of the data > text replace with
-
     # Default attributes for tag markup, overwrite it!
     attributes:
         class: anchorman

@@ -7,7 +7,7 @@ from anchorman.utils import timeit
 def test_wiki_linking():
 
     from data.wiki_links import links
-    with open('test/data/wikibody_unlinked.html') as f:
+    with open('tests/data/wikibody_unlinked.html') as f:
         text = f.read()
 
     cfg = get_config()
@@ -21,5 +21,5 @@ def test_wiki_linking():
     # get rest and check
     assert annotated.count('class="anchorman"') == 711
 
-    content = open('test/data/index.tmpl', 'r').read()
-    open('test/data/wikipedia_annotated.html', 'w').write(content + annotated)
+    content = open('tests/data/index.tmpl', 'r').read()
+    open('tests/data/wikipedia_annotated.html', 'w').write(content + annotated)

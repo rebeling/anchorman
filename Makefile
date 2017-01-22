@@ -22,25 +22,25 @@ install: virtualenv
 	${VIRTUALENV_DIR}/bin/python setup.py develop --always-unzip
 
 test:
-	env/bin/py.test --cov-report term-missing --cov=${PWD}/${APP_NAME} test -s -vv 
+	env/bin/py.test --cov-report term-missing --cov=${PWD}/${APP_NAME} tests -s -vv 
 
 testonly:
-	env/bin/py.test test -s -vv 
+	env/bin/py.test tests -s -vv 
 
 
 testprofile:
 	# env/bin/py.test --profile test/test_settings.py -s -vv
-	env/bin/py.test --profile test/test_real_example.py -s -vv
+	env/bin/py.test --profile tests/test_real_example.py -s -vv
 	# env/bin/py.test test/test_settings.py --profile-svg
 
 testprofile2:
-	env/bin/py.test --profile test/test_settings.py -s -vv
+	env/bin/py.test --profile tests/test_settings.py -s -vv
 
 testapp:
-	env/bin/py.test test/test_settings.py -s -vv
+	env/bin/py.test tests/test_settings.py -s -vv
 
 testcase:
-	env/bin/py.test test/test_case.py -s -vv
+	env/bin/py.test tests/test_case.py -s -vv
 
 
 clean:
@@ -52,6 +52,8 @@ clean:
 	rm -Rf dist build
 	rm -Rf *.egg-info
 	rm -Rf .eggs
+	rm -Rf .tox
+	rm -Rf prof
 
 release:
 	# check this out http://peterdowns.com/posts/first-time-with-pypi.html

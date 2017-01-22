@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from anchorman import annotate, clean, get_config
 from utils import fix_bs4_parsing_spaces
+from tests.data.dummy import LINKS
 
 
 def test_annotate_settings():
@@ -8,48 +9,10 @@ def test_annotate_settings():
 
     text = """<p class="first">Intel analysis shows Putin approved election hacking.</p>\n<p>Russian President Vladimir Putin told a group of <b>foreign policy experts</b> in southern Russia on Thursday that Donald Trump's "extravagant behavior" is just his way of getting his <a class="another one">message</a> across to voters.</p><p><img src="/image.png" title="Vladimir Putin"> The image shows him riding a bear in novo sibirsk.</p><p>And another paragraph about <a href="/link">Vladimir Putin</a> but there is a link already.</p>"""
 
-    links = [
-        {
-            "Vladimir Putin": {
-                "href": "/putin", "type": "person", "score": 100.42
-            }
-        },
-        {
-            "Putin": {
-                "href": "/putin", "type": "person", "score": 100.42
-            }
-        },
-        {
-            "Donald Trump": {
-                "href": "/trump", "type": "person", "score": 89.06
-            }
-        },
-        {
-            "Moscow": {
-                "href": "/moscow", "type": "place", "score": 8.12
-            }
-        },
-        {
-            "Russia": {
-                "href": "/russia", "type": "place", "score": 23.12
-            }
-        },
-        {
-            "Intel": {
-                "href": "/intel", "type": "company", "score": 33.33
-            }
-        },
-        {
-            "Election": {
-                "href": "/election", "type": "keyword", "score": 3.33
-            }
-        }
-    ]
-
     expected = """<p class="first"><a class="anchorman" href="/intel" score="33.33" type="company">Intel</a> analysis shows <a class="anchorman" href="/putin" score="100.42" type="person">Putin</a> approved election hacking.</p>\n<p>Russian President <a class="anchorman" href="/putin" score="100.42" type="person">Vladimir Putin</a> told a group of <b>foreign policy experts</b> in southern <a class="anchorman" href="/russia" score="23.12" type="place">Russia</a> on Thursday that <a class="anchorman" href="/trump" score="89.06" type="person">Donald Trump</a>'s "extravagant behavior" is just his way of getting his <a class="another one">message</a> across to voters.</p><p><img src="/image.png" title="Vladimir Putin"/> The image shows him riding a bear in novo sibirsk.</p><p>And another paragraph about <a href="/link">Vladimir Putin</a> but there is a link already.</p>"""
 
     # use default settings
-    annotated = annotate(text, links)
+    annotated = annotate(text, LINKS)
     assert fix_bs4_parsing_spaces(annotated) == fix_bs4_parsing_spaces(expected)
 
     cleaned = clean(annotated)
@@ -60,14 +23,14 @@ def test_annotate_settings():
     # # 1. return applied links
     number_of_links_to_apply = 3
     cfg = get_config()
-    cfg['settings']['log_level'] = 'DEBUG'
+    # cfg['settings']['log_level'] = 'DEBUG'
 
     cfg['settings']['return_applied_links'] = True
     cfg['rules']['replaces_at_all'] = number_of_links_to_apply
 
-    annotated, applied, rest = annotate(text, links, config=cfg)
+    annotated, applied, rest = annotate(text, LINKS, config=cfg)
     assert len(applied) == number_of_links_to_apply
-    assert len(rest) == len(links) - number_of_links_to_apply
+    assert len(rest) == len(LINKS) - number_of_links_to_apply
     assert annotated.count('a class="anchorman"') == number_of_links_to_apply
 
     # # ---------------------------------
@@ -75,7 +38,7 @@ def test_annotate_settings():
     cfg['rules']['case_sensitive'] = False
     cfg['rules']['replaces_at_all'] = None
 
-    annotated, applied_links, rest = annotate(text, links, config=cfg)
+    annotated, applied_links, rest = annotate(text, LINKS, config=cfg)
     assert '<a class="anchorman" href="/election" ' in annotated
     assert len(applied_links) == 6
 
@@ -85,7 +48,7 @@ def test_annotate_settings():
     # from now on, we count all existing links also
 
     cfg['rules']['items_per_unit'] = 1
-    annotated, applied_links, rest = annotate(text, links, config=cfg)
+    annotated, applied_links, rest = annotate(text, LINKS, config=cfg)
     assert len(applied_links) == 1
 
 
@@ -95,12 +58,12 @@ def test_annotate_settings():
     cfg['rules']['items_per_unit'] = None
 
     n = 2
-    annotated, applied_links, rest = annotate(text*n, links*n, config=cfg)
-    assert len(applied_links) == (len(links)-1)*n
+    annotated, applied_links, rest = annotate(text*n, LINKS*n, config=cfg)
+    assert len(applied_links) == (len(LINKS)-1)*n
 
     n = 10
-    annotated, applied_links, rest = annotate(text*n, links*n, config=cfg)
-    assert len(applied_links) == (len(links)-1)*n
+    annotated, applied_links, rest = annotate(text*n, LINKS*n, config=cfg)
+    assert len(applied_links) == (len(LINKS)-1)*n
 
 
     # # -------------------------------
