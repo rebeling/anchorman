@@ -29,8 +29,11 @@ def test_annotate_settings():
     cfg['rules']['replaces_at_all'] = number_of_links_to_apply
 
     annotated, applied, rest = annotate(text, LINKS, config=cfg)
+
+    # Moscow and Election is not in rest, it is not found in the string
+
     assert len(applied) == number_of_links_to_apply
-    assert len(rest) == len(LINKS) - number_of_links_to_apply
+    assert len(rest) == len(LINKS) - number_of_links_to_apply - 2
     assert annotated.count('a class="anchorman"') == number_of_links_to_apply
 
     # # ---------------------------------
