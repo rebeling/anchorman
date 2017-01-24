@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
-from anchorman.utils import log, timeit
+from anchorman.utils import log, timeit, do_profile
 
 
-@timeit
-def valid(element, candidates, unit_candidates, rules, old_links,
-          own_validator):
+# @timeit
+# @do_profile()
+def valid(args, own_validator):
     """Apply the rules specified in settings to the element.
 
     Take care of candidates already validated and the elements already
     added to this_unit.
 
-    :param element:
-    :param candidates:
-    :param unit_candidates:
-    :param rules:
-    :param own_validator:
+    :param args: (element, candidates, unit_candidates, rules, old_links)
+    :param own_validator: a list of new validators to check a candidate
     """
     # 2.1 replaces_per_element
     # add an entity as often as specified with replaces_per_element
@@ -22,8 +19,6 @@ def valid(element, candidates, unit_candidates, rules, old_links,
     #     if replacements_per_element(
     #             element, candidates, rules, old_links) is False:
     #         return False
-
-    args = (element, candidates, unit_candidates, rules, old_links)
 
     if replaces_per_element(*args) is False:
         return False
@@ -57,9 +52,9 @@ def replaces_per_element(element, candidates, _x, rules, old_links):
     A. Merkel, Mum Merkel, Mrs. Merkula - baseform *Angela Merkel*
     in most cases just marked once, but set value to as many times u want.
     """
-    if rules.get('replaces_per_element'):
+    replaces_per_element = rules.get('replaces_per_element')
+    if replaces_per_element:
         token, attributes = element
-        replaces_per_element = rules.get('replaces_per_element')
         key = replaces_per_element['key']
         n = replaces_per_element['number']
 
@@ -68,6 +63,8 @@ def replaces_per_element(element, candidates, _x, rules, old_links):
         # based on attributes only
         if token in old_links:
             found += 1
+            if found >= n:
+                return False
             # return False
 
         for _, _, candidate, candidate_attributes in candidates:
@@ -95,30 +92,30 @@ def replaces_by_attribute(element, candidates, unit_candidates, rules, _x):
     """Check if already enough items with a specific attribute are in the
     candidates list for this unit.
     """
-    if rules.get('replaces_by_attribute'):
+    replaces = rules.get('replaces_by_attribute')
+    if replaces:
         _, element_attributes = element
-        replaces = rules.get('replaces_by_attribute')
-        if replaces:
-            items_per_unit = replaces.get('value_per_unit')
-            if items_per_unit:
-                key = replaces['key']
-                attributes = [c[3].get(key) for c in unit_candidates]
-                tree_item_key_value = element_attributes.get(key)
-                # ?! should we ignore this or tell the user
-                # because None is just counting
-                # if tree_item_key_value is None:
-                #     raise AttributeError
-                if tree_item_key_value:
-                    if attributes.count(tree_item_key_value) >= items_per_unit:
-                        return False
+        items_per_unit = replaces.get('value_per_unit')
+        if items_per_unit:
+            key = replaces['key']
+            attributes = [c[3].get(key) for c in unit_candidates]
+            tree_item_key_value = element_attributes.get(key)
+            # ?! should we ignore this or tell the user
+            # because None is just counting
+            # if tree_item_key_value is None:
+            #     raise AttributeError
+            if tree_item_key_value and \
+               attributes.count(tree_item_key_value) >= items_per_unit:
+                return False
     return True
 
 
 def n_times_key_value(element, candidates, unit_candidates, rules, _x):
     """"""
-    if rules.get('n_times_key_value'):
+    replaces = rules.get('n_times_key_value')
+    if replaces:
         _, element_attributes = element
-        replaces = rules.get('n_times_key_value')
+        # replaces = rules.get('n_times_key_value')
         key = replaces['key']
         items_overall = replaces.get('value_overall')
 
@@ -136,9 +133,10 @@ def n_times_key_value(element, candidates, unit_candidates, rules, _x):
 
 def filter_by_attribute(element, _x, _y, rules, _z):
     """"""
-    if rules.get('filter_by_attribute'):
+    filter_by_attribute = rules.get('filter_by_attribute')
+    if filter_by_attribute:
         _, element_attributes = element
-        for key_val in rules['filter_by_attribute']['attributes']:
+        for key_val in filter_by_attribute['attributes']:
             kv = key_val.items()[0]
             if kv[1] == element_attributes.get(kv[0]):
                 return False

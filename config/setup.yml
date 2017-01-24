@@ -90,3 +90,15 @@ markup:
     # exclude_keys:
     #     - score
     #     - type
+    # rest:
+    #     tag: span
+    #     # value_key not used anymore > use some logic for replace the original
+    #     # with a value of the data > text replace with
+    #     # Default attributes for tag markup, overwrite it!
+    #     attributes:
+    #         class: anchorman
+    #     # # Exclude keys from the input to be rendered.
+    #     exclude_keys:
+    #         - score
+    #         - type
+

@@ -5,6 +5,33 @@ import time
 from bs4 import BeautifulSoup
 logger = logging.getLogger('anchorman')
 
+try:
+    from line_profiler import LineProfiler
+
+    def do_profile(follow=[]):
+        def inner(func):
+            def profiled_func(*args, **kwargs):
+                try:
+                    profiler = LineProfiler()
+                    profiler.add_function(func)
+                    for f in follow:
+                        profiler.add_function(f)
+                    profiler.enable_by_count()
+                    return func(*args, **kwargs)
+                finally:
+                    profiler.print_stats()
+            return profiled_func
+        return inner
+
+except ImportError:
+    def do_profile(follow=[]):
+        "Helpful if you accidentally leave in production!"
+        def inner(func):
+            def nothing(*args, **kwargs):
+                return func(*args, **kwargs)
+            return nothing
+        return inner
+
 
 def timeit(method):
     def timed(*args, **kw):
@@ -25,19 +52,9 @@ def disabled(f):
 timeit = disabled
 
 
-def filter_applied_against_input(elements, to_be_applied):
-    """Return a tuple of applied items and the rest."""
-    # applied = [token for _, _, token, _ in to_be_applied]
-    def elem(token):
-        for x in elements:
-            if token == x.keys()[0]:
-                return x
-
-    applied = [elem(token) for _, _, token, _ in to_be_applied]
-    rest = [x for x in elements if x not in applied]
-    log("\nApplied:\n  {}".format('\n  '.join([str(a) for a in applied])))
-    log("\nRest:\n  {}".format('\n  '.join([str(a) for a in rest])))
-    return applied, rest
+def create_tag(c, d, rest_markup):
+    tag = rest_markup.get('tag')
+    return "<{}{}>{}</{}>".format(tag, ' x ', c, tag)
 
 
 def log(msg, level=None, logger=logger):
@@ -71,11 +88,10 @@ def tokens_as_re(elements, case_sensitive):
     return "|".join(patterns)
 
 
-def check_tags(a_tag, filter_tags, soup_str):
+def check_tags(a_tag, the_tag_str, filter_tags, soup_str):
     """ """
     if a_tag.name in filter_tags:
         try:
-            the_tag_str = str(a_tag)
             _from = soup_str.index(the_tag_str)
             return (_from, _from + len(the_tag_str), a_tag.text)
         except ValueError as e:
@@ -83,12 +99,12 @@ def check_tags(a_tag, filter_tags, soup_str):
     return None
 
 
-def check_classes(a_tag, filter_classes, soup_str):
+def check_classes(a_tag, the_tag_str, filter_classes, soup_str):
     """ """
     try:
-        _from = soup_str.index(str(a_tag))
+        _from = soup_str.index(the_tag_str)
         tag_classes = dict(a_tag.attrs).get('class', '')
-        return [(_from, _from + len(str(a_tag)), None)
+        return [(_from, _from + len(the_tag_str), None)
                 for fclass in filter_classes
                 for tclass in tag_classes
                 if fclass in tclass]

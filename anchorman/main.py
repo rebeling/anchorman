@@ -3,11 +3,11 @@ from anchorman.settings import get_config
 from anchorman.result import augment_result
 from anchorman.elements import remove_elements
 from anchorman.intervals import all_intervals
-from anchorman.utils import filter_applied_against_input
 from anchorman.utils import log
 from anchorman.utils import set_and_log_level
-from anchorman.utils import timeit
+from anchorman.utils import timeit, do_profile
 from anchorman.result import applicables
+from anchorman.elements import create_element
 
 
 # import objgraph
@@ -17,7 +17,8 @@ from anchorman.result import applicables
 # objgraph.show_refs(roots[:3], refcounts=True, filename='roots.png')
 
 
-@timeit
+# @timeit
+# @do_profile()
 def annotate(text, elements, own_validator=None,
              config=get_config(include_project_config=False)):
     """Find and annotate elements in text.
@@ -29,19 +30,40 @@ def annotate(text, elements, own_validator=None,
     # log('starting debugging')
 
     units, old_links, soup_string = all_intervals(text, elements, config)
+
     to_be_applied = applicables(units, old_links, config, own_validator)
+
+
+    markup = config['markup']
+    rest_markup = markup.get('rest')
+    return_applied_links = config['settings'].get('return_applied_links')
+
+    if return_applied_links:
+        rest = [{e[2]: e[3]} 
+                for _, ele in units 
+                for e in ele 
+                if e not in to_be_applied]
+
+    rest_anchors = []
+    if rest_markup:
+        rest_anchors = [create_element(e, rest_markup)
+                        for _, ele in units 
+                        for e in ele 
+                        if e not in to_be_applied]
+
+    anchors = [create_element(c, markup) for c in to_be_applied]
 
     # log(soup_string)
     # log(soup_string[949:953])
     # log('{} of {} to_be_applied'.format(len(to_be_applied), len(elements)))
 
     # apply the items, but start at the end ...its not like horse riding!
-    text = augment_result(soup_string, to_be_applied)
+    text = augment_result(soup_string, anchors + rest_anchors)
+
     # log(text)
 
-    if config['settings'].get('return_applied_links'):
-        applied, rest = filter_applied_against_input(elements, to_be_applied)
-        # log('end of debugging\n')
+    if return_applied_links:
+        applied = [e for a, _, _, _, e in anchors]
         return text, applied, rest
 
     # log('end of debugging\n')

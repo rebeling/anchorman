@@ -2,8 +2,10 @@
 from anchorman.elements import element_slices, elements_per_unit
 from anchorman.units import unit_slices, units_gen
 from anchorman.utils import soup_it
+from anchorman.utils import timeit, do_profile
 
 
+# @do_profile(follow=[soup_it])
 def all_intervals(text, elements, config):
     """From the slices of elements and units create an intervaltree.
 
@@ -24,9 +26,12 @@ def all_intervals(text, elements, config):
     units, forbidden = unit_slices(text, the_soup, settings)
     # What if I have the positions already
     # do they align with ...not after the parsing for units.
-    unit_elements_gen = elements_per_unit(
-        units, forbidden, element_slices(the_soup[1], elements, rules))
+
+    # unit_elements_generator = elements_per_unit(
+    #     units, forbidden, element_slices(the_soup[1], elements, rules))
+    unit_elements = list(elements_per_unit(
+        units, forbidden, element_slices(the_soup[1], elements, rules)))
 
     old_links = {token: (f, t) for f, t, token in forbidden if token}
 
-    return unit_elements_gen, old_links, the_soup[1]
+    return unit_elements, old_links, the_soup[1]

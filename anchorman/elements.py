@@ -54,14 +54,14 @@ def elements_per_unit(units, forbidden, data):
                 if _from < t_from and t_to < _to])
 
 
-def create_element(candidate, config):
+def create_element(candidate, markup):
     """Create the element that will be inserted in the text.
 
-    :param item:
-    :param config:
+    :param candidate: a candidate from links input
+    :param config: anchorman configuration, setup.yml
     """
-    exclude_keys = config['markup'].get('exclude_keys', [])
-    attr = config['markup'].get('attributes', {}).items()
+    exclude_keys = markup.get('exclude_keys', [])
+    attr = markup.get('attributes', {}).items()
 
     _from, _to, token, element = candidate
     attr += element.items()
@@ -74,18 +74,18 @@ def create_element(candidate, config):
         log("{}: {}".format(attr, e))
 
     anchor = '<{tag}{attributes}>{text}</{tag}>'.format(
-        tag=config['markup']['tag'],
+        tag=markup['tag'],
         attributes=' '+' '.join(attributes) if attributes else '',
         text=token)
 
-    return _from, _to, token, anchor
+    return (_from, _to, token, anchor, {token: element})
 
 
 def remove_elements(text, config):
     """Remove elements of text based on the markup specifications.
 
-    :param config:
-    :param text:
+    :param config: anchorman configuration, setup.yml
+    :param text: input text
     """
     # soup_it
     soup, _ = soup_it(text, config['settings'])
@@ -107,7 +107,11 @@ def remove_elements(text, config):
 
 
 def specified_or_guess(markup, attributes):
-    """"""
+    """Without identifier guess the elements to be removed based on markup.
+
+    :param config: anchorman markup from setup.yml
+    :param text: element attributes or identifier
+    """
     identifier = markup.get('identifier')
     key, value = identifier.items()[0] if identifier else attributes.items()[0]
     return '{}="{}"'.format(key, value)

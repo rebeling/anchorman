@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from anchorman import candidate
 from anchorman.utils import sort_em, saturated_unit
-from anchorman.elements import create_element
 from anchorman.utils import log
 
 
@@ -45,8 +44,8 @@ def applicables(elements_per_units, old_links, config, own_validator):
             if saturated_unit(*args):
                 break
 
-            if candidate.valid((token, element), candidates, unit_candidates,
-                               rules, old_links, own_validator):
+            if candidate.valid(((token, element), candidates, unit_candidates,
+                               rules, old_links), own_validator):
                 valid_candidate = (_from, _to, token, element)
                 candidates_append(valid_candidate)
                 unit_candidates_append(valid_candidate)
@@ -63,16 +62,14 @@ def augment_result(text, to_be_applied):
     :param text:
     :param to_be_applied:
     """
-    to_be_applied = sorted(to_be_applied, reverse=True)
-    log(str(to_be_applied))
+    for _from, _to, _, anchor, _ in sorted(to_be_applied, reverse=True):
+        # text = "{}{}{}".format(text[:_from], anchor, text[_to:])
+        text = text[:_from] + anchor + text[_to:]
+        # text2 = ''.join([text2[:_from], anchor, text2[_to:]])
 
-    for _from, _to, token, anchor in to_be_applied:
-        log("appling: {} {} {}".format(_from, _to, token))
-        log(text)
-
-        text = "{}{}{}".format(text[:_from], anchor, text[_to:])
     return text
 
 
 def the_applicables(candidates, config):
-    return [create_element(c, config) for c in candidates]
+    return candidates
+    # return [create_element(c, config) for c in candidates]
