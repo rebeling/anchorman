@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from anchorman import candidate
-from anchorman.utils import sort_em, saturated_unit
+from anchorman.utils import sort_em
+from anchorman.utils import saturated_unit
 from anchorman.utils import log
 
 

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # from anchorman.utils import log
 import re
-
-from bs4 import BeautifulSoup
-from anchorman.utils import check_tags, check_classes, log, do_profile
+from anchorman.utils import check_tags
+from anchorman.utils import check_classes
+from anchorman.utils import log
+from anchorman.utils import do_profile
 
 
 def unit_slices(text, the_soup, settings):

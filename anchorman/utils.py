@@ -5,9 +5,9 @@ import time
 from bs4 import BeautifulSoup
 logger = logging.getLogger('anchorman')
 
+
 try:
     from line_profiler import LineProfiler
-
     def do_profile(follow=[]):
         def inner(func):
             def profiled_func(*args, **kwargs):
@@ -22,7 +22,6 @@ try:
                     profiler.print_stats()
             return profiled_func
         return inner
-
 except ImportError:
     def do_profile(follow=[]):
         "Helpful if you accidentally leave in production!"
@@ -48,13 +47,7 @@ def timeit(method):
 
 def disabled(f):
     return f
-
 timeit = disabled
-
-
-def create_tag(c, d, rest_markup):
-    tag = rest_markup.get('tag')
-    return "<{}{}>{}</{}>".format(tag, ' x ', c, tag)
 
 
 def log(msg, level=None, logger=logger):
@@ -62,8 +55,6 @@ def log(msg, level=None, logger=logger):
 
     :param msg: Error message string.
     """
-    # print logging._levelNames[logger.level] == 'INFO'
-    # if logger.isEnabledFor(logging.DEBUG):
     if level == 'INFO':
         logger.info(msg)
     else:

@@ -2,7 +2,7 @@
 from anchorman.elements import element_slices, elements_per_unit
 from anchorman.units import unit_slices, units_gen
 from anchorman.utils import soup_it
-from anchorman.utils import timeit, do_profile
+# from anchorman.utils import timeit, do_profile
 
 
 # @do_profile(follow=[soup_it])
