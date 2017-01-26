@@ -31,8 +31,13 @@ def test_annotation_rules():
     </div>
     """
 
-    cfg = get_config()
+    cfg = get_config()    
     cfg['settings']['return_applied_links'] = True
+
+    cfg['markup'] = {
+        'anchor_pattern': '<a class="anchorman" type="{type}">{token}</a>',
+        'decorate_anchor_key': 'the_anchor',
+    }
 
     number_of_links_to_apply = 5
     cfg['rules']['replaces_at_all'] = number_of_links_to_apply

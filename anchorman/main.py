@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-from anchorman.settings import get_config
-from anchorman.result import augment_result
+from anchorman.elements import create_element
 from anchorman.elements import remove_elements
 from anchorman.intervals import all_intervals
+from anchorman.result import applicables
+from anchorman.result import augment_result
+from anchorman.settings import get_config
 from anchorman.utils import log
 from anchorman.utils import set_and_log_level
-from anchorman.utils import timeit, do_profile
-from anchorman.result import applicables
-from anchorman.elements import create_element
 
+# from anchorman.utils import timeit, do_profile
 
 # import objgraph
 # # print objgraph.show_most_common_types()
@@ -35,7 +35,7 @@ def annotate(text, elements, own_validator=None,
 
 
     markup = config['markup']
-    rest_markup = markup.get('rest')
+    decorate_markup = markup.get('decorate')
     return_applied_links = config['settings'].get('return_applied_links')
 
     if return_applied_links:
@@ -45,13 +45,13 @@ def annotate(text, elements, own_validator=None,
                 if e not in to_be_applied]
 
     rest_anchors = []
-    if rest_markup:
-        rest_anchors = [create_element(e, rest_markup)
+    if decorate_markup:
+        rest_anchors = [create_element(e, markup)
                         for _, ele in units 
                         for e in ele 
                         if e not in to_be_applied]
 
-    anchors = [create_element(c, markup) for c in to_be_applied]
+    anchors = [create_element(c, markup, anchor=True) for c in to_be_applied]
 
     # log(soup_string)
     # log(soup_string[949:953])

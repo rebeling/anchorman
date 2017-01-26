@@ -80,25 +80,18 @@ settings:
 
 markup:
     # Markup for html-tags
-    tag: a
-    # value_key not used anymore > use some logic for replace the original
-    # with a value of the data > text replace with
-    # Default attributes for tag markup, overwrite it!
-    attributes:
-        class: anchorman
-    # # Exclude keys from the input to be rendered.
-    # exclude_keys:
-    #     - score
-    #     - type
-    # rest:
-    #     tag: span
-    #     # value_key not used anymore > use some logic for replace the original
-    #     # with a value of the data > text replace with
-    #     # Default attributes for tag markup, overwrite it!
+    # ? tag: a
+    # a pattern filled by the attributes of a candidates
+    anchor_pattern: '<a class="{class}">{token}</a>'
+    decorate_anchor_key: 'the_anchor'
+    # the not linked candidates and candidates all may be decorated
+    # decorate:
+    # #     tag: span
     #     attributes:
-    #         class: anchorman
-    #     # # Exclude keys from the input to be rendered.
-    #     exclude_keys:
-    #         - score
-    #         - type
-
+    #         - class
+    #     default_attribute_values:
+    #         class: anchorman_decorator
+    #     decorate_pattern: '<span class="{class}">{the_anchor}</span>'
+    rm_identifier:
+        class: anchorman
+    rm_tag: a

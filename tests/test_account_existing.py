@@ -24,6 +24,11 @@ def test_context_awareness():
     cfg = get_config()
     cfg['settings']['log_level'] = 'DEBUG'
 
+    cfg['markup'] = {
+        'anchor_pattern': '<a class="anchorman" href="{href}" score="{score}" type="{type}">{token}</a>',
+        'decorate_anchor_key': 'the_anchor'
+    }
+
     # use default settings
     annotated = annotate(text, links, config=cfg)
     expected = """<p>Intel analysis shows <a href="/oldlink">Vladimir Putin</a> approved election hacking <a class="anchorman" href="/putin" score="100.42" type="person">Vladimir Putin</a>.</p>"""

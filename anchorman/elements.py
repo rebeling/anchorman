@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import re
 from bs4 import BeautifulSoup
-from anchorman.utils import tokens_as_re, log, soup_it
+from anchorman.utils import tokens_as_re
+from anchorman.utils import log
+from anchorman.utils import soup_it
 
 
 def element_slices(text, elements, rules):
@@ -54,31 +56,95 @@ def elements_per_unit(units, forbidden, data):
                 if _from < t_from and t_to < _to])
 
 
-def create_element(candidate, markup):
+def create_element(candidate, markup, anchor=False):
     """Create the element that will be inserted in the text.
 
     :param candidate: a candidate from links input
     :param config: anchorman configuration, setup.yml
     """
-    exclude_keys = markup.get('exclude_keys', [])
-    attr = markup.get('attributes', {}).items()
-
     _from, _to, token, element = candidate
-    attr += element.items()
-    attributes = None
-    try:
-        attributes = ['{}="{}"'.format(key, val)
-                      for key, val in sorted(attr)
-                      if key not in exclude_keys]
-    except Exception as e:
-        log("{}: {}".format(attr, e))
+    anchor_str = format_element(candidate, markup, anchor)
 
-    anchor = '<{tag}{attributes}>{text}</{tag}>'.format(
-        tag=markup['tag'],
-        attributes=' '+' '.join(attributes) if attributes else '',
-        text=token)
+    return (_from, _to, token, anchor_str, {token: element})
 
-    return (_from, _to, token, anchor, {token: element})
+
+def format_element(candidate, markup, anchor):
+    """Format the anchor the why you want overwrite me!
+
+    Beware of markup rest!
+    Markup rest is called when specified, on the rest of the elements.
+    """
+    _from, _to, token, element = candidate
+    if 'token' not in element:
+        element['token'] = token
+
+    if anchor:
+        anchor_pattern = markup.get('anchor_pattern')
+        the_anchor = anchor_pattern.format(**element)
+    else:
+        the_anchor = token
+
+    element.update({markup.get('decorate_anchor_key'): the_anchor})
+
+    decorate_markup = markup.get('decorate')
+
+    if decorate_markup:
+        decorate_pattern = decorate_markup.get('decorate_pattern')
+        decorated = decorate_pattern.format(**element)
+    else:
+        decorated = the_anchor
+
+    anchorman = decorated
+    return anchorman
+
+
+
+# def format_element(candidate, markup, anchor):
+#     """Format the anchor the why you want overwrite me!
+
+#     Beware of markup rest!
+#     Markup rest is called when specified, on the rest of the elements.
+#     """
+#     _from, _to, token, element = candidate
+#     decorate_markup = markup.get('decorate')
+
+#     def attribute_string(key, element, values):
+#         return '{}="{}"'.format(key, element.get(key, values.get(key)))
+
+#     def pattern_values(token, element, markup):
+#         tag = markup.get('tag', 'span')
+#         anchor_attributes = markup.get('attributes', [])
+#         dav = markup.get('default_attribute_values', {})
+#         the_attributes = [attribute_string(key, element, dav)
+#                           for key in anchor_attributes]
+#         attributes = ' '+' '.join(the_attributes) if the_attributes else ''
+#         return {
+#             'tag': tag,
+#             'attributes': attributes,
+#             'token': token
+#         }
+
+#     def decorator(decorate_markup, element, the_anchor):
+
+#         pattern = '{the_anchor}'
+#         attributes = {'the_anchor': the_anchor}
+
+#         if decorate_markup:
+#             attributes.update(pattern_values(token, element, decorate_markup))
+#             pattern = '<{tag}{attributes}>{the_anchor}</{tag}>'
+
+#         return pattern, attributes
+
+#     if anchor:
+#         the_anchor = '<{tag}{attributes}>{token}</{tag}>'.format(
+#             **pattern_values(token, element, markup))
+#     else:
+#         the_anchor = token
+
+#     pattern, attributes = decorator(decorate_markup, element, the_anchor)
+#     anchorman = pattern.format(**attributes)
+#     return anchorman
+
 
 
 def remove_elements(text, config):
@@ -89,16 +155,18 @@ def remove_elements(text, config):
     """
     # soup_it
     soup, _ = soup_it(text, config['settings'])
-    attributes = config['markup'].get('attributes')
-    tag = config['markup'].get('tag')
+    # attributes = config['markup'].get('attributes')
+    attributes = config['markup'].get('rm_identifier')
+    rm_tag = config['markup'].get('rm_tag')
+    # tag = config['markup'].get('tag')
 
     found = soup.findAll
-    anchors = found(tag, attributes) if attributes else found(tag)
+    anchors = found(rm_tag, attributes) if attributes else found(rm_tag)
 
     for anchor in anchors:
         anchor_text = anchor.text.encode('utf-8')
         fuzzy_re = "<{0}[^>]*?{1}[^>]*?>{2}<\/{0}>".format(
-            tag, specified_or_guess(config['markup'], attributes),
+            rm_tag, specified_or_guess(config['markup'], attributes),
             anchor_text)
         # use re.sub vs replace to prevent encoding issues
         text = re.sub(fuzzy_re, anchor_text, text)
@@ -112,6 +180,6 @@ def specified_or_guess(markup, attributes):
     :param config: anchorman markup from setup.yml
     :param text: element attributes or identifier
     """
-    identifier = markup.get('identifier')
+    identifier = markup.get('rm_identifier')
     key, value = identifier.items()[0] if identifier else attributes.items()[0]
     return '{}="{}"'.format(key, value)

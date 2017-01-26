@@ -63,18 +63,10 @@ def test_annotate_settings():
 
     cfg = get_config()
 
-    markup = {
-        'markup': {
-            'tag': 'a',
-            # 'value_key': self.value_key,
-            'attributes': {
-                "xcolontype": "simple",
-                # "class": "taxonomy-entity"
-            },
-            # pass in but do not render
-            'exclude_keys': ['score', 'type', 'lemma']
-            }
-        }
+    cfg['markup'] = {
+        'anchor_pattern': '<a class="anchorman" entityId="{entityId}" lemma="{lemma}" score="{score}" type_="{type_}">{token}</a>',
+        'decorate_anchor_key': 'the_anchor'
+    }    
 
     rules = {
         'return_applied_links': True,
@@ -109,7 +101,6 @@ def test_annotate_settings():
     }
 
     cfg['settings'].update(settings)
-    cfg['markup'].update(markup)
     cfg['rules'].update(rules)
 
     annotated, applied, rest = annotate(TEXT, links, config=cfg)
