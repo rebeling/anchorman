@@ -1,4 +1,4 @@
-.PHONY: setup virtualenv install test clean release graph
+.PHONY: setup virtualenv install test clean release graph clean_pyc clean_build
 
 VIRTUALENV_DIR=${PWD}/env
 APP_NAME=anchorman
@@ -42,15 +42,20 @@ testapp:
 testcase:
 	env/bin/py.test tests/test_case.py -s -vv
 
+clean_pyc:
+	find . -name '*.pyc' -exec rm -fv {} +
+	find . -name '*.pyo' -exec rm --force {} +
+	find . -name '*~' -exec rm --force  {} +
 
-clean:
+clean_build:
+	rm --force --recursive build/
+	rm --force --recursive dist/
+	rm --force --recursive *.egg-info
+
+clean: clean_build clean_pyc
 	rm -rfv .DS_Store .coverage .cache
 	rm -Rf **/__pycache__
-	find ${PWD} -name '*.pyc' -exec rm -fv {} \;
-	find ${PWD} -name '*.pyo' -exec rm -fv {} \;
 	rm -Rf env
-	rm -Rf dist build
-	rm -Rf *.egg-info
 	rm -Rf .eggs
 	rm -Rf .tox
 	rm -Rf prof

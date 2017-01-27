@@ -3,15 +3,22 @@ try:
 except ImportError:
     from distutils.core import setup
 
+def get_long_description():
+    import os, codecs
+    fpath_here = os.path.dirname(__file__)
+    fpath_readme = os.path.join(fpath_here, 'README.rst')
+    return codecs.open(fpath_readme, 'r', 'utf8').read()
+
 setup(
     name="anchorman",
-    version="0.5.0",
+    version="0.5.1",
     author="matthias rebel",
     author_email="webmaster@rebeling.net",
     url="https://github.com/rebeling/anchorman",
     description=("Anchorman takes a list of terms and a text. It finds the "
                  "terms in this text and replaces them with another "
                  "representation."),
+    long_description=get_long_description(),
     license='Apache 2.0',
     keywords=["intext-links", "linking", "annotation", "tag", "hypertext"],
     packages=["anchorman"],
