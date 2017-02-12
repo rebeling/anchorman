@@ -74,6 +74,9 @@ def tokens_as_re(elements, case_sensitive):
         return list({t, t.lower(), t.upper(), t.title()})
 
     tokens = [e.keys()[0].encode('utf-8') for e in elements]
+    # we iterate the re tokens and want to find the longest matches
+    # first, e.g. *Paris Hilton* vs *Paris* and do not get Paris wrong
+    tokens.sort(key=len, reverse=True)
     forms = [[t] if case_sensitive else allforms(t) for t in tokens]
     patterns = [r"\b{0}\b".format(f) for form in forms for f in form]
     return "|".join(patterns)

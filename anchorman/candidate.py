@@ -137,7 +137,7 @@ def filter_by_attribute(element, _x, _y, rules, _z):
     if filter_by_attribute:
         _, element_attributes = element
         for key_val in filter_by_attribute['attributes']:
-            kv = key_val.items()[0]
-            if kv[1] == element_attributes.get(kv[0]):
+            key = key_val['key'] # .items()[0]
+            if key_val['value'] == element_attributes.get(key):
                 return False
     return True

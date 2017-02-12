@@ -14,7 +14,9 @@ def element_slices(text, elements, rules):
     :param config:
     """
     case_sensitive = rules['case_sensitive']
-    token_regex = re.compile(tokens_as_re(elements, case_sensitive))
+    tar = tokens_as_re(elements, case_sensitive)
+    log(tar)
+    token_regex = re.compile(tar)
 
     element_slices = []
     element_slices_append = element_slices.append

@@ -23,7 +23,7 @@ def applicables(elements_per_units, old_links, config, own_validator):
     i = 0
     for (u_from, u_to, u_string), elements in elements_per_units:
         i += 1
-        # log("UNIT {} {}".format(i, str(u_from, u_to, u_string)))
+        log("UNIT {} {}".format(i, str(u_from)+','+str(u_to) +','+ u_string))
 
         if len(elements) is 0:
             continue
@@ -36,6 +36,9 @@ def applicables(elements_per_units, old_links, config, own_validator):
         unit_candidates_append = unit_candidates.append
         args = items_per_unit, old_links, u_from, u_to, unit_candidates
         elements = sort_em(sort_by_item_value, elements, 3)
+
+        log('\n'.join([str(x) for x in elements]))
+
         for _from, _to, token, element in elements:
             # # check the rules - 1. replaces_at_all
             if replaces_at_all and len(candidates) >= replaces_at_all:
