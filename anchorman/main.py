@@ -30,9 +30,7 @@ def annotate(text, elements, own_validator=None,
     # log('starting debugging')
 
     units, old_links, soup_string = all_intervals(text, elements, config)
-
     to_be_applied = applicables(units, old_links, config, own_validator)
-
 
     markup = config['markup']
     decorate_markup = markup.get('decorate')

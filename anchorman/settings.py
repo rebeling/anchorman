@@ -29,10 +29,10 @@ def parse_yaml(filepath, loaded_from=__file__):
     path = "/".join([abspath, filepath])
     try:
         yaml_data = yaml.load(open(path, 'r', 'utf-8'))
-    except IOError, e:
+    except IOError as e:
         log("No yaml file found: {}".format(e))
         raise IOError
-    except yaml.YAMLError, e:
+    except yaml.YAMLError as e:
         log("Error in configuration file: {}".format(e))
         raise yaml.YAMLError
     return yaml_data

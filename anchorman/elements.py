@@ -26,7 +26,7 @@ def element_slices(text, elements, rules):
         base = None
 
         for element in elements:
-            check_element = element.keys()[0].encode('utf-8')
+            check_element = list(element)[0]
             check_token = token
 
             if case_sensitive is False:
@@ -37,7 +37,7 @@ def element_slices(text, elements, rules):
                 base = element
                 break
 
-        element_slices_append(match.span()+(token, base.values()[0]))
+        element_slices_append(match.span()+(token, list(base.values())[0]))
 
     return element_slices
 
@@ -100,55 +100,6 @@ def format_element(candidate, markup, anchor):
     return anchorman
 
 
-
-# def format_element(candidate, markup, anchor):
-#     """Format the anchor the why you want overwrite me!
-
-#     Beware of markup rest!
-#     Markup rest is called when specified, on the rest of the elements.
-#     """
-#     _from, _to, token, element = candidate
-#     decorate_markup = markup.get('decorate')
-
-#     def attribute_string(key, element, values):
-#         return '{}="{}"'.format(key, element.get(key, values.get(key)))
-
-#     def pattern_values(token, element, markup):
-#         tag = markup.get('tag', 'span')
-#         anchor_attributes = markup.get('attributes', [])
-#         dav = markup.get('default_attribute_values', {})
-#         the_attributes = [attribute_string(key, element, dav)
-#                           for key in anchor_attributes]
-#         attributes = ' '+' '.join(the_attributes) if the_attributes else ''
-#         return {
-#             'tag': tag,
-#             'attributes': attributes,
-#             'token': token
-#         }
-
-#     def decorator(decorate_markup, element, the_anchor):
-
-#         pattern = '{the_anchor}'
-#         attributes = {'the_anchor': the_anchor}
-
-#         if decorate_markup:
-#             attributes.update(pattern_values(token, element, decorate_markup))
-#             pattern = '<{tag}{attributes}>{the_anchor}</{tag}>'
-
-#         return pattern, attributes
-
-#     if anchor:
-#         the_anchor = '<{tag}{attributes}>{token}</{tag}>'.format(
-#             **pattern_values(token, element, markup))
-#     else:
-#         the_anchor = token
-
-#     pattern, attributes = decorator(decorate_markup, element, the_anchor)
-#     anchorman = pattern.format(**attributes)
-#     return anchorman
-
-
-
 def remove_elements(text, config):
     """Remove elements of text based on the markup specifications.
 
@@ -157,16 +108,14 @@ def remove_elements(text, config):
     """
     # soup_it
     soup, _ = soup_it(text, config['settings'])
-    # attributes = config['markup'].get('attributes')
     attributes = config['markup'].get('rm_identifier')
     rm_tag = config['markup'].get('rm_tag')
-    # tag = config['markup'].get('tag')
 
     found = soup.findAll
     anchors = found(rm_tag, attributes) if attributes else found(rm_tag)
 
     for anchor in anchors:
-        anchor_text = anchor.text.encode('utf-8')
+        anchor_text = anchor.text
         fuzzy_re = "<{0}[^>]*?{1}[^>]*?>{2}<\/{0}>".format(
             rm_tag, specified_or_guess(config['markup'], attributes),
             anchor_text)
@@ -183,5 +132,6 @@ def specified_or_guess(markup, attributes):
     :param text: element attributes or identifier
     """
     identifier = markup.get('rm_identifier')
-    key, value = identifier.items()[0] if identifier else attributes.items()[0]
+    first_attribute = list(attributes.items())[0]
+    key, value = list(identifier.items())[0] if identifier else first_attribute
     return '{}="{}"'.format(key, value)

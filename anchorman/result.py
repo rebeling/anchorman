@@ -23,7 +23,7 @@ def applicables(elements_per_units, old_links, config, own_validator):
     i = 0
     for (u_from, u_to, u_string), elements in elements_per_units:
         i += 1
-        log("UNIT {} {}".format(i, str(u_from)+','+str(u_to) +','+ u_string))
+        log("UNIT %s %s, %s, %s" %(i, u_from, u_to, u_string))
 
         if len(elements) is 0:
             continue

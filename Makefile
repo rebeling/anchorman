@@ -48,9 +48,9 @@ clean_pyc:
 	find . -name '*~' -exec rm --force  {} +
 
 clean_build:
-	rm --force --recursive build/
-	rm --force --recursive dist/
-	rm --force --recursive *.egg-info
+	rm -rfv build/
+	rm -rfv dist/
+	rm -rfv *.egg-info
 
 clean: clean_build clean_pyc
 	rm -rfv .DS_Store .coverage .cache
