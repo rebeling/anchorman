@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from utils import fix_bs4_parsing_spaces
+from tests.utils import fix_bs4_parsing_spaces
 from tests.data.dummy import LINKS
 
 
@@ -59,7 +59,7 @@ def test_anchor_format():
     <p id="3">RUMBLE la RUMBLE RUMBLE RUMBLE la RUMBLE RUMBLE la RUMBLE RUMBLE lala RUMBLE RUMBLE la RUMBLE RUMBLE</p>
     </div>"""
 
-    from utils import fix_bs4_parsing_spaces, compare_results
+    from tests.utils import fix_bs4_parsing_spaces, compare_results
     a = fix_bs4_parsing_spaces(annotated)
     b = fix_bs4_parsing_spaces(expected)
     # compare_results(a, b)

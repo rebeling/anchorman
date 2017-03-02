@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from anchorman import annotate, clean, get_config
-from utils import fix_bs4_parsing_spaces, compare_results
+from tests.utils import fix_bs4_parsing_spaces, compare_results
 # css from here http://codepen.io/explosion/pen/ALxpQO
 
 

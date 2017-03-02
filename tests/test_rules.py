@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from anchorman import annotate, clean, get_config
-from utils import fix_bs4_parsing_spaces
+from tests.utils import fix_bs4_parsing_spaces
 from tests.data.dummy import LINKS
 
 
@@ -79,19 +79,19 @@ def test_annotation_rules():
     cfg['settings']['return_applied_links'] = True
     cfg['rules']['filter_by_attribute'] = {
         'attributes': [
-            {'type': 'letterA'},
-            {'score': 42}
+            {'key': 'type', 'value': 'letterA'},
+            {'key': 'score', 'value': 42}
         ]
     }
     annotated, applied, rest = annotate(RTEXT, RLINKS, config=cfg)
     assert len(applied) == 0
 
-    # # number_of_links_to_apply = 5
-    # # cfg['settings']['return_applied_links'] = True
-    # # cfg['rules']['replaces_at_all'] = number_of_links_to_apply
-    # # annotated, applied, rest = annotate(text, LINKS, config=cfg)
-    # # assert len(applied) == number_of_links_to_apply
+    # number_of_links_to_apply = 5
+    # cfg['settings']['return_applied_links'] = True
+    # cfg['rules']['replaces_at_all'] = number_of_links_to_apply
+    # annotated, applied, rest = annotate(text, LINKS, config=cfg)
+    # assert len(applied) == number_of_links_to_apply
 
 
-    # # annotated, applied, rest = annotate(text, LINKS, config=cfg)
-    # # assert len(applied) == number_of_links_to_apply
+    # annotated, applied, rest = annotate(text, LINKS, config=cfg)
+    # assert len(applied) == number_of_links_to_apply

@@ -1,12 +1,14 @@
+# -*- coding: utf-8 -*-
+from __future__ import print_function
 import re
 
 
 def fix_bs4_parsing_spaces(text):
-    text = re.sub("\n <", "\n<", text)
-    text = text.replace('\xc2\xa0', ' ')
-    text = text.replace('\xc2', ' ')
-    text = text.replace('\n', ' ')
-    text = re.sub(" +", " ", text)
+    text = re.sub(u"\n <", u"\n<", text)
+    text = text.replace(u'\xc2\xa0', u' ')
+    text = text.replace(u'\xc2', u' ')
+    text = text.replace(u'\n', u' ')
+    text = re.sub(u" +", u" ", text)
     return text
 
 
@@ -14,8 +16,8 @@ def compare_results(annotated, expected):
 
     for i, x in enumerate(expected):
         if x != annotated[i]:
-            print ">>", [x, annotated[i:10]]
+            print(">> %s" % [x, annotated[i:10]])
             break
 
-    print "expected ", expected[i-10:i+150]
-    print "annotated", annotated[i-10:i+150]
+    print("expected %s" % expected[i-30:i+150])
+    print("annotated %s" % annotated[i-30:i+150])

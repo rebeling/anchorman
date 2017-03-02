@@ -71,7 +71,7 @@ def test_annotate_settings():
 
     annotated, applied, rest = annotate(TEXT, links, config=cfg)
 
-    from utils import compare_results
+    from tests.utils import compare_results
 
     RESULT = re.sub(" +", " ", RESULT)
     compare_results(annotated, RESULT)

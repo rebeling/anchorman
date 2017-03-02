@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from anchorman import annotate, clean, get_config
-from utils import fix_bs4_parsing_spaces
+from tests.utils import fix_bs4_parsing_spaces, compare_results
+
 from tests.data.dummy import LINKS
 
 
