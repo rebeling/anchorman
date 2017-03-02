@@ -47,9 +47,10 @@ def remove_elements(text, config):
 
     for anchor in anchors:
         anchor_text = anchor.text.encode('utf-8')
-        fuzzy_re = "<{0}[^>]*?{1}[^>]*?>{2}<\/{0}>".format(
-            tag, specified_or_guess(config['markup'], attributes),
-            anchor_text)
+        print anchor_text
+        key, value = specified_or_guess(config['markup'], attributes)
+        fuzzy_re = "<{0}[^>]*?{1}=\"{2}[^>]*?>{3}<\/{0}>".format(
+            tag, key, value, anchor_text)
         # use re.sub vs replace to prevent encoding issues
         text = re.sub(fuzzy_re, anchor_text, text)
 
@@ -60,7 +61,7 @@ def specified_or_guess(markup, attributes):
     """"""
     identifier = markup.get('identifier')
     key, value = identifier.items()[0] if identifier else attributes.items()[0]
-    return '{}="{}"'.format(key, value)
+    return key, value #'{}="{}"'.format(key, value)
 
 
 def augment_result(text, to_be_applied):
@@ -74,7 +75,6 @@ def augment_result(text, to_be_applied):
 
     for _from, _to, token, anchor in to_be_applied:
         log("appling: {} {} {}".format(_from, _to, token))
-        log(text)
-
         text = "{}{}{}".format(text[:_from], anchor, text[_to:])
+
     return text
