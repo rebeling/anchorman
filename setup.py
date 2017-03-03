@@ -7,7 +7,7 @@ except ImportError:
 def get_long_description():
     import os, codecs
     fpath_here = os.path.dirname(__file__)
-    fpath_readme = os.path.join(fpath_here, 'README.rst')
+    fpath_readme = os.path.join(fpath_here, 'README.md')
     return codecs.open(fpath_readme, 'r', 'utf8').read()
 
 setup(
