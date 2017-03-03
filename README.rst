@@ -37,7 +37,7 @@ and will be applied if valid.
     >>> text = 'The quick brown fox jumps over the lazy dog.'
     >>> elements = [{'fox': {'value': '/wiki/fox', 'data-type': 'animal'}}]
     >>> print annotate(text, elements)
-    'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog .'
+    'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog.'
 
 
 ## Installation
