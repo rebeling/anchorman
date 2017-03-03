@@ -3,6 +3,8 @@
 VIRTUALENV_DIR=${PWD}/env
 APP_NAME=anchorman
 
+setup: virtualenv install
+
 help:
 	@echo '    setup ........ sets up project'
 	@echo '    test ......... runs unittest'
@@ -12,7 +14,6 @@ help:
 	@echo '    metric ....... code metric at landscap.io'
 	@echo '    pypi ......... project on pypi'
 
-setup: virtualenv install
 
 virtualenv:
 	if [ ! -e ${VIRTUALENV_DIR}/bin/pip ]; then virtualenv ${VIRTUALENV_DIR} --no-site-packages; fi

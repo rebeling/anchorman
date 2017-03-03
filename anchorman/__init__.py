@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 """
-Provide first level access to the functions in main.
+Provide first level access to the application.
 
 >>> anchorman.annotate(...) instead of anchorman.main.annotate(...)
 """

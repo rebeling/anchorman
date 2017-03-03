@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# from anchorman.utils import log
 import re
 from anchorman.utils import check_tags
 from anchorman.utils import check_classes
