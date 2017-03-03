@@ -1,6 +1,4 @@
-====================================
-Welcome to Anchorman
-====================================
+# Welcome to Anchorman
 
 .. image:: https://img.shields.io/pypi/v/anchorman.svg
    :target: https://pypi.python.org/pypi/anchorman
@@ -23,8 +21,7 @@ and will be applied if valid.
     case_sensitive: true
 
 
-Features
-====================================
+## Features
 
 * replacement rules
 * consider text units in the rules (e.g. paragraphs)
@@ -34,8 +31,7 @@ Features
 * return applied elements
 
 
-Usage
-====================================
+## Usage
 
     >>> from anchorman import annotate
     >>> text = 'The quick brown fox jumps over the lazy dog.'
@@ -44,16 +40,14 @@ Usage
     'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog .'
 
 
-Installation
-====================================
+## Installation
 
 To install Anchorman, simply:
 
     pip install anchorman
 
 
-Credits and contributions
-====================================
+## Credits and contributions
 
 We published this at github and pypi to provide our solution to you.
 Pleased for feedback and contributions.
@@ -62,8 +56,7 @@ Thanks [@tarnacious](https://github.com/tarnacious) for inspiration
 and first steps.
 
 
-Todo
-====================================
+## Todo
 
 * check if position exist in input and save extra processing
 * html.parser vs lxml in bs4 - benchmarks and drawbacks
