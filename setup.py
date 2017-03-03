@@ -12,7 +12,7 @@ def get_long_description():
 
 setup(
     name="anchorman",
-    version="0.5.1",
+    version="0.5.2",
     author="matthias rebel",
     author_email="webmaster@rebeling.net",
     url="https://github.com/rebeling/anchorman",
