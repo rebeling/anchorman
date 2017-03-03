@@ -34,8 +34,8 @@ def element_slices(text, elements, config):
             if check_element == check_token:
                 base = element
                 break
-
-        element_slices_append(match.span()+(token, base.values()[0]))
+        if base:
+            element_slices_append(match.span()+(token, base.values()[0]))
 
     return element_slices
 

@@ -47,7 +47,6 @@ def remove_elements(text, config):
 
     for anchor in anchors:
         anchor_text = anchor.text.encode('utf-8')
-        print anchor_text
         key, value = specified_or_guess(config['markup'], attributes)
         fuzzy_re = "<{0}[^>]*?{1}=\"{2}[^>]*?>{3}<\/{0}>".format(
             tag, key, value, anchor_text)
