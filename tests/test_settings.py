@@ -23,11 +23,17 @@ def test_annotate_settings():
 
     cfg['markup'] = {
         'anchor_pattern': '<a class="anchorman" href="{href}" score="{score}" type="{type}">{token}</a>',
-        'decorate_anchor_key': 'the_anchor'
-    }    
+        'decorate_anchor_key': 'the_anchor',
+        # incase to remove the anchors we need to identify them
+        'remove_tag': 'a',
+        'remove_by_attribute': {'class': 'anchorman'}
+    }
 
     cfg['settings']['return_applied_links'] = True
     cfg['rules']['replaces_at_all'] = number_of_links_to_apply
+
+
+
 
     annotated, applied, rest = annotate(text, LINKS, config=cfg)
 
@@ -38,9 +44,12 @@ def test_annotate_settings():
     assert annotated.count('a class="anchorman"') == number_of_links_to_apply
 
     # clean up
-    cleaned = clean(annotated)
+    this_one = annotated + '<p><a class="sth anchorman sth">I stay</a></p>'
+    cleaned = clean(this_one, config=cfg)
+
     assert 'class="anchorman"' not in cleaned
     assert 'a class="another one"' in cleaned
+    assert 'a class="sth anchorman sth"' not in cleaned
 
     # # ---------------------------------
     # # 5.2 keyword Election in text election

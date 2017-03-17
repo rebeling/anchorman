@@ -108,8 +108,11 @@ def remove_elements(text, config):
     """
     # soup_it
     soup, _ = soup_it(text, config['settings'])
-    attributes = config['markup'].get('rm_identifier')
-    rm_tag = config['markup'].get('rm_tag')
+    attributes = config['markup'].get('remove_by_attribute')
+    rm_tag = config['markup'].get('remove_tag')
+
+    if rm_tag is None:
+        raise NotImplementedError
 
     found = soup.findAll
     anchors = found(rm_tag, attributes) if attributes else found(rm_tag)
@@ -117,21 +120,19 @@ def remove_elements(text, config):
     for anchor in anchors:
         anchor_text = anchor.text
         fuzzy_re = "<{0}[^>]*?{1}[^>]*?>{2}<\/{0}>".format(
-            rm_tag, specified_or_guess(config['markup'], attributes),
-            anchor_text)
+            rm_tag, specified_or_guess(attributes), anchor_text)
         # use re.sub vs replace to prevent encoding issues
         text = re.sub(fuzzy_re, anchor_text, text)
 
     return text
 
 
-def specified_or_guess(markup, attributes):
+def specified_or_guess(attributes):
     """Without identifier guess the elements to be removed based on markup.
 
-    :param config: anchorman markup from setup.yml
-    :param text: element attributes or identifier
+    :param attributes: an attribute pair of key and value
     """
-    identifier = markup.get('rm_identifier')
-    first_attribute = list(attributes.items())[0]
-    key, value = list(identifier.items())[0] if identifier else first_attribute
-    return '{}="{}"'.format(key, value)
+    if attributes:
+        return '{}="[^>]*?{}[^>]*?"'.format(*list(attributes.items())[0])
+
+    return ''

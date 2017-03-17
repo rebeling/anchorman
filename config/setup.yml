@@ -1,6 +1,5 @@
 ---
 # settings / rules for the replacement process: item, link, element
-# ..all reference to the same concept in the following
 
 rules:
     # Replacement rules and filter
@@ -80,7 +79,6 @@ settings:
 
 markup:
     # Markup for html-tags
-    # ? tag: a
     # a pattern filled by the attributes of a candidates
     anchor_pattern: '<a class="{class}">{token}</a>'
     decorate_anchor_key: 'the_anchor'
@@ -92,6 +90,8 @@ markup:
     #     default_attribute_values:
     #         class: anchorman_decorator
     #     decorate_pattern: '<span class="{class}">{the_anchor}</span>'
-    rm_identifier:
-        class: anchorman
-    rm_tag: a
+
+    # # # incase to remove the anchors we need to identify them
+    # remove_tag: a
+    # remove_by_attribute:
+    #     class: anchorman
