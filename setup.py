@@ -5,10 +5,11 @@ except ImportError:
     from distutils.core import setup
 
 def get_long_description():
-    import os, codecs
+    import os, codecs, pypandoc
     fpath_here = os.path.dirname(__file__)
     fpath_readme = os.path.join(fpath_here, 'README.rst')
     return codecs.open(fpath_readme, 'r', 'utf8').read()
+
 
 setup(
     name="anchorman",
@@ -17,9 +18,8 @@ setup(
     author_email="webmaster@rebeling.net",
     url="https://github.com/rebeling/anchorman",
     description=(
-        "Anchorman takes a list of terms and a text. It finds the "
-        "terms in this text and replaces them with another "
-        "representation."
+        "Anchorman finds terms in text and replaces them "
+        "with another representation."
     ),
     long_description=get_long_description(),
     license='Apache 2.0',

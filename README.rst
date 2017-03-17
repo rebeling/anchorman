@@ -1,4 +1,5 @@
-# Welcome to Anchorman
+Welcome to Anchorman
+======================
 
 .. image:: https://img.shields.io/pypi/v/anchorman.svg
    :target: https://pypi.python.org/pypi/anchorman
@@ -12,7 +13,7 @@ and enrich the content. Anchorman finds terms in text and replaces
 them with another representation.
 
 The replacement is rule-based. Each term is checked against the rules
-and will be applied if valid.
+and will be applied if valid::
 
     # How many items will be marked at all in the text.
     replaces_at_all: 5
@@ -21,7 +22,8 @@ and will be applied if valid.
     case_sensitive: true
 
 
-## Features
+Features
+--------
 
 * replacement rules
 * consider text units in the rules (e.g. paragraphs)
@@ -31,7 +33,10 @@ and will be applied if valid.
 * return applied elements
 
 
-## Usage
+Usage
+------
+
+This shows a little example how to annotate elements in text::
 
     >>> from anchorman import annotate
     >>> text = 'The quick brown fox jumps over the lazy dog.'
@@ -40,14 +45,16 @@ and will be applied if valid.
     'The quick brown <a href="/wiki/fox" data-type="animal">fox</a> jumps over the lazy dog.'
 
 
-## Installation
+Installation
+------------
 
-To install Anchorman, simply:
+To install Anchorman, simply::
 
     pip install anchorman
 
 
-## Credits and contributions
+Credits and contributions
+-------------------------
 
 We published this at github and pypi to provide our solution to you.
 Pleased for feedback and contributions.
@@ -56,7 +63,8 @@ Thanks [@tarnacious](https://github.com/tarnacious) for inspiration
 and first steps.
 
 
-## Todo
+Todo
+----
 
 * check if position exist in input and save extra processing
 * html.parser vs lxml in bs4 - benchmarks and drawbacks
