@@ -5,7 +5,7 @@ except ImportError:
     from distutils.core import setup
 
 def get_long_description():
-    import os, codecs, pypandoc
+    import os, codecs
     fpath_here = os.path.dirname(__file__)
     fpath_readme = os.path.join(fpath_here, 'README.rst')
     return codecs.open(fpath_readme, 'r', 'utf8').read()
@@ -24,12 +24,11 @@ setup(
     long_description=get_long_description(),
     license='Apache 2.0',
     keywords=[
-        "intext-links",
-        "linking",
-        "annotations",
-        "tags",
         "hypertext",
-        "markup"
+        "markup",
+        "linking",
+        "hyperlinks",
+        "seo"
     ],
     packages=["anchorman"],
     # pytest_plugins=['pytest_profiling'],
@@ -48,7 +47,7 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Text Processing :: Markup'
     )
 )
