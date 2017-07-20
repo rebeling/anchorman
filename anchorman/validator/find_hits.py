@@ -11,7 +11,7 @@ def the_applicables(candidates, config):
 
 
 def items_per_unit_satisfied(items_per_unit, unit_candidates, old_links, u_from, u_to):
-    if items_per_unit: 
+    if items_per_unit:
         if len(unit_candidates) == items_per_unit:
             return True
 
@@ -90,7 +90,7 @@ def applicables(elements_per_units, old_links, config, own_validator):
             if candidate.valid(candito, candidates, unit_candidates,
                     rules, old_links, own_validator):
 
-                log("valid: {} (uc: {}, c:{})".format(
+                log(u"valid: {} (uc: {}, c:{})".format(
                     token, len(unit_candidates), len(candidates)))
 
                 candidates.append((_from, _to, token, element))
@@ -103,6 +103,6 @@ def applicables(elements_per_units, old_links, config, own_validator):
                         items_per_unit))
                     break
             else:
-                log("invalid candidate: {}".format(token))
+                log(u"invalid candidate: {}".format(token))
 
     return the_applicables(candidates, config)

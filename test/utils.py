@@ -3,8 +3,8 @@ import re
 
 def fix_bs4_parsing_spaces(text):
     text = re.sub("\n <", "\n<", text)
-    text = text.replace('\xc2\xa0', ' ')
-    text = text.replace('\xc2', ' ')
+    text = text.replace(u'\xc2\xa0', ' ')
+    text = text.replace(u'\xc2', ' ')
     text = text.replace('\n', ' ')
     text = re.sub(" +", " ", text)
     return text
