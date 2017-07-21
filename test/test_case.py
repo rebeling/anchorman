@@ -118,4 +118,4 @@ def test_annotate_settings():
 
     RESULT = re.sub(" +", " ", RESULT)
     compare_results(annotated, RESULT)
-    assert annotated == RESULT
+    assert annotated == RESULT.decode('utf-8')

@@ -14,7 +14,9 @@ def element_slices(text, elements, config):
     :param config:
     """
     case_sensitive = config['rules']['case_sensitive']
-    token_regex = re.compile(token_regexes(elements, case_sensitive))
+    token_regex = re.compile(
+        token_regexes(elements, case_sensitive), re.UNICODE
+    )
 
     element_slices = []
     element_slices_append = element_slices.append
@@ -24,7 +26,7 @@ def element_slices(text, elements, config):
         base = None
 
         for element in elements:
-            check_element = element.keys()[0].encode('utf-8')
+            check_element = element.keys()[0]
             check_token = token
 
             if case_sensitive is False:
@@ -54,7 +56,7 @@ def unit_slices(text, config):
     forbidden_areas = settings.get('forbidden_areas', {})
 
     soup = BeautifulSoup(text, settings.get('parser', 'lxml'))
-    soup_string = str(soup)
+    soup_string = unicode(soup)
 
     prettify = False
     # clean up automated augmentation and we do not use prettify for now
@@ -83,7 +85,7 @@ def unit_slices(text, config):
 
 def units_gen(soup_findAll, soup_string, text_unit_key):
     for a_tag in soup_findAll:
-        the_tag_str = str(a_tag)
+        the_tag_str = unicode(a_tag)
         if a_tag.name == text_unit_key:
             try:
                 # # bs4 wrongly aumgmented string?!

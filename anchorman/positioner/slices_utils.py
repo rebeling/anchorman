@@ -9,9 +9,9 @@ def allforms(t):
 
 def token_regexes(elements, case_sensitive):
     """Generate a regex for all tokens."""
-    tokens = [e.keys()[0].encode('utf-8') for e in elements]
+    tokens = [e.keys()[0] for e in elements]
     forms = [[t] if case_sensitive else allforms(t) for t in tokens]
-    patterns = [r"\b{0}\b".format(f) for form in forms for f in form]
+    patterns = [ur"\b{0}\b".format(f) for form in forms for f in form]
     return "|".join(patterns)
 
 
@@ -52,7 +52,7 @@ def check_tag(a_tag, filter_tags, soup_string):
     """ """
     if a_tag.name in filter_tags:
         try:
-            the_tag_str = str(a_tag)
+            the_tag_str = unicode(a_tag)
             _from = soup_string.index(the_tag_str)
             return (a_tag, (_from, _from + len(the_tag_str)), ('forbidden'))
         except ValueError as e:
@@ -63,9 +63,9 @@ def check_tag(a_tag, filter_tags, soup_string):
 def check_classes(a_tag, filter_classes, soup_string):
     """ """
     try:
-        _from = soup_string.index(str(a_tag))
+        _from = soup_string.index(unicode(a_tag))
         tag_classes = dict(a_tag.attrs).get('class', '')
-        return [(_from, _from + len(str(a_tag)))
+        return [(_from, _from + len(unicode(a_tag)))
                 for fclass in filter_classes
                 for tclass in tag_classes
                 if fclass in tclass]

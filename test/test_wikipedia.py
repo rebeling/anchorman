@@ -21,5 +21,5 @@ def test_wiki_linking():
     # get rest and check
     assert annotated.count('class="anchorman"') == 711
 
-    content = open('test/data/index.tmpl', 'r').read()
-    open('test/data/wikipedia_annotated.html', 'w').write(content + annotated)
+    # content = open('test/data/index.tmpl', 'r').read()
+    # open('test/data/wikipedia_annotated.html', 'w').write(content + annotated)

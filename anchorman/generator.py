@@ -23,7 +23,7 @@ def create_element(candidate, config):
     except Exception as e:
         log("{}: {}".format(attr, e))
 
-    anchor = '<{tag}{attributes}>{text}</{tag}>'.format(
+    anchor = u'<{tag}{attributes}>{text}</{tag}>'.format(
         tag=config['markup']['tag'],
         attributes=' '+' '.join(attributes) if attributes else '',
         text=token)
@@ -73,7 +73,7 @@ def augment_result(text, to_be_applied):
     log(str(to_be_applied))
 
     for _from, _to, token, anchor in to_be_applied:
-        log("appling: {} {} {}".format(_from, _to, token))
-        text = "{}{}{}".format(text[:_from], anchor, text[_to:])
+        log(u"applying: {} {} {}".format(_from, _to, token))
+        text = u"{}{}{}".format(text[:_from], anchor, text[_to:])
 
     return text
